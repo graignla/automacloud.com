@@ -1,0 +1,16 @@
+#!/bin/ksh
+
+# listing des start_xxxxx
+ls -d $(ls -d /REF/Applis/*|egrep -v "\.old$|\.Z$|\.tar|CVS$"|sed "s/$/\/etc\/start_*/") 2>/dev/null|egrep -v "\..*$|exemple$|_test$" > list_start_all
+
+# listing des start_xxxxx avec gestion de purge de log
+grep "exec rm {}" $(cat list_start_all)|egrep -v "^ *[#]|^$"|sed  -e s"/#.*//" -e "s/^\(.*start_[^:][^:]*\):.*find.*\$[{]*\([0-9A-Z_][0-9A-Z_]*\).*-ctime +\([0-9_][0-9_]*\).*/\1|\2|\3/"|sort -k1 -t"|" |tee  list_start_purge_detail|grep "|" |tee list_start_purge_detail_good|cut -f1 -d"|"|sort -u > list_start_purge
+
+# listing des start ayant un mecanisme de purge non conforme
+grep -v "|" list_start_purge_detail > list_start_purge_detail_bad
+# rm list_start_purge_detail
+
+# listing des start n'ayant pas de mecanisme de purge du tout:
+grep -vxf list_start_purge list_start_all|sort -u > list_start_no_purge
+ls -l list*
+wc -l list_start_all ; wc -l list_start_no_purge list_start_purge ; echo ; wc -l list_start_purge_detail_bad ; wc -l list_start_purge_detail_good

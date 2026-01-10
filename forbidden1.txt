@@ -1,0 +1,819 @@
+#!/bin/ksh
+#set -x
+
+## Mise a jour pour RMDS
+## Correction d'un bug dans le master sur VMWARE (TemplatePTXIVMDS_XX)
+chmod 755 /
+
+## PARAMETRAGE DU NOM DE LA MACHINE
+echo "Entrer le nom de la machine"
+read NOM
+grep "^[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} $NOM" $0 || {
+echo "Le nom n'est pas inscrit dans $0, verifier /etc/hosts du script"
+exit
+}
+echo "Mise a jour de /etc/nodename"
+echo $NOM > /etc/nodename
+echo "Mise a jour /etc/hostname.e1000g0"
+echo "${NOM}" > /etc/hostname.e1000g0
+echo "Mise a jour /etc/hostname.e1000g1"
+echo "${NOM}-gw" > /etc/hostname.e1000g1
+################################################################################
+echo "Mise a jour de /etc/hosts"
+cat > /etc/hosts << EOF
+127.0.0.1       localhost
+150.151.190.70 ptxivmds00
+150.150.2.200 ptxivmds00-gw
+150.151.190.71 ptxivmds01
+150.150.2.231 ptxivmds01-gw
+150.151.190.72 ptxivmds02
+150.150.2.232 ptxivmds02-gw
+150.151.190.73 ptxivmds03
+150.150.2.233 ptxivmds03-gw
+150.151.190.74 ptxivmds04
+150.150.2.234 ptxivmds04-gw
+150.151.190.75 ptxivmds05
+150.150.2.235 ptxivmds05-gw
+150.151.190.76 ptxivmds06
+150.150.2.236 ptxivmds06-gw
+150.151.190.77 ptxivmds07
+150.150.2.237 ptxivmds07-gw
+150.151.190.78 ptxivmds08
+150.150.2.238 ptxivmds08-gw
+150.151.190.79 ptxivmds09
+150.150.2.239 ptxivmds09-gw
+150.151.190.80 ptxivmds10
+150.150.2.240 ptxivmds10-gw
+150.150.2.241 ptxivmds11
+192.1.1.51 ptxivmds11-gw
+150.150.2.242 ptxivmds12
+192.1.1.52 ptxivmds12-gw
+150.150.2.243 ptxivmds13
+192.1.1.53 ptxivmds13-gw
+150.150.2.244 ptxivmds14
+192.1.1.54 ptxivmds14-gw
+150.150.2.245 ptxivmds15
+192.1.1.55 ptxivmds15-gw
+150.150.2.246 ptxivmds16
+192.1.1.56 ptxivmds16-gw
+150.151.190.87 ptxivmds17
+150.151.190.88 ptxivmds18
+150.151.190.89 ptxivmds19
+150.151.190.90 ptxivmds20
+150.151.190.91 ptxivmds21
+150.151.190.92 ptxivmds22
+150.151.190.93 ptxivmds23
+150.151.190.94 ptxivmds24
+EOF
+
+LOGHOST=$(grep $NOM /etc/hosts|grep -v "gw$")
+grep -v "$LOGHOST" /etc/hosts > /etc/hostss
+echo "Fichier /etc/hosts :"
+cat /etc/hostss |tee /etc/hosts
+rm /etc/hostss
+echo $LOGHOST | awk '{print $0" loghost"}' >> /etc/hosts
+echo "Rajout de :"
+tail -1 /etc/hosts
+
+## Adaptation des parametres reseaux pour les machines temps reel ##
+LOGHOSTGW=$(grep $NOM /etc/hosts|grep "gw$")
+echo $LOGHOSTGW | grep 192.1 && {
+	echo "Adaptation pour les machines temps reel : /etc/netmasks & /etc/defaultrouter"
+	echo 192.1.1.202 > /etc/defaultrouter
+	echo $NOM > /etc/hostname.e1000g1
+	echo ${NOM}-gw > /etc/hostname.e1000g0
+	cat > /etc/netmasks << EOF
+192.1.0.0	255.255.0.0
+150.150.0.0	255.255.0.0
+EOF
+}
+
+echo "Desactivation de sendmail"
+svcadm disable sendmail
+
+## Mise a jour rmds-ndd ########################################################
+echo "Mise a jour rmds-ndd"
+## creation du ndd.xml
+echo "creation du ndd.xml"
+cat > /var/svc/manifest/site/ndd.xml << EOF
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<!--
+ Copyright 2007 Sun Microsystems, Inc.  All rights reserved.
+ Use is subject to license terms.
+
+ CDDL HEADER START
+
+ The contents of this file are subject to the terms of the
+ Common Development and Distribution License, Version 1.0 only
+ (the "License").  You may not use this file except in compliance
+ with the License.
+
+ You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+ or http://www.opensolaris.org/os/licensing.
+ See the License for the specific language governing permissions
+ and limitations under the License.
+
+ When distributing Covered Code, include this CDDL HEADER in each
+ file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+ If applicable, add the following below this CDDL HEADER, with the
+ fields enclosed by brackets "[]" replaced with your own identifying
+ information: Portions Copyright [yyyy] [name of copyright owner]
+
+ CDDL HEADER END
+
+	NOTE:  This service manifest is not editable; its contents will
+	be overwritten by package or patch operations, including
+	operating system upgrade.  Make customizations in a different
+	file.
+
+  To use this service, do the following:
+	1) Install this file as /var/svc/manifest/site/ndd.xml
+	2) As root, run:  svccfg import /var/svc/manifest/site/ndd.xml
+	3) Create a shell script at /lib/svc/method/site-ndd which runs
+	   the appropriate ndd commands.
+	4) As root, run:  svcadm enable ndd
+
+  Alternatively, do this during jumpstart:
+	- Install this file as /var/svc/manifest/site/ndd.xml
+	- Place an appropriate shell script at /lib/svc/method/site-ndd
+	- Enable the ndd service in /var/svc/profile/site.xml
+
+  If you're an ISV, please re-name this service to something with
+  your unique stock ticker or java-style reversed name, rather than
+  using "site".  Simply replace "site" throughout this script with a
+  new name.
+
+  If you previously ran some ndd commands before the interfaces were
+  plumbed - indeed, before /usr was known to be mounted; somewhere in
+  the rcS.d/S30network.sh time frame - then you'll need to change the
+  dependent here to svc:/network/physical instead.  If you ran them
+  after rc2.d/S69inet but before rc2.d/S72inetsvc, then make
+  svc:/network/service dependent.
+
+-->
+
+<service_bundle type='manifest' name='site/ndd'>
+
+<service
+	name='site/ndd'
+	type='service'
+	version='1'>
+
+	<create_default_instance enabled='false' />
+
+	<!-- Wait for local filesystems to be available -->
+	<dependency
+		name='fs-local'
+		grouping='require_all'
+		restart_on='none'
+		type='service'>
+		<service_fmri value='svc:/system/filesystem/local' />
+	</dependency>
+
+	<!-- Run ndd commands after network/physical is plumbed. --> 
+	<dependency
+		name='network-physical'
+		grouping='require_all'
+		restart_on='none'
+		type='service'>
+		<service_fmri value='svc:/network/physical' />
+	</dependency>
+
+	<!-- but run the commands before network/initial -->
+	<dependent
+		name='ndd_network-initial'
+		grouping='optional_all'
+		restart_on='none'>
+		<service_fmri value='svc:/network/initial' />
+	</dependent>
+
+	<exec_method
+		type='method'
+		name='start'
+		exec='/lib/svc/method/site-ndd'
+		timeout_seconds='300' />
+
+	<exec_method
+		type='method'
+		name='stop'
+		exec=':true'
+		timeout_seconds='60' />
+
+	<!--
+             Re-running the script shouldn't interrupt service, so just
+	     do so when the admin runs "svcadm refresh ndd".
+	-->
+	<exec_method
+		type='method'
+		name='refresh'
+		exec='/lib/svc/method/site-ndd'
+		timeout_seconds='300' />
+
+	<property_group name='startd' type='framework'>
+		<propval name='duration' type='astring' value='transient' />
+	</property_group>
+
+	<stability value='Unstable' />
+
+	<template>
+		<common_name>
+			<loctext xml:lang='C'> site specific ndd commands
+			</loctext>
+		</common_name>
+		<documentation>
+			<manpage title='ndd' section='1M'
+				manpath='/usr/share/man' />
+		</documentation>
+	</template>
+</service>
+
+</service_bundle>
+EOF
+###############################################################################
+svccfg import /var/svc/manifest/site/ndd.xml
+###############################################################################
+echo "import de /var/svc/manifest/site/ndd.xml"
+cat > /lib/svc/method/site-ndd << EOF
+#!/bin/ksh
+
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+
+# To use this script :
+#  - Get the site/ndd manifest on http://opensolaris.org/os/community/smf/manifests/ndd.xml
+#  - Install the manifest in /var/svc/manifest/site/ndd.xml
+#  - Install the script in /lib/svc/method/site-ndd
+#  - As root, run:  svccfg import /var/svc/manifest/site/ndd.xml
+#  - Customize to your needs (see __custom zone__) 
+#         you may take a look to "Solaris Tunable Parameters Reference Manual"
+#	  on http://docs.sun.com
+#  - As root, run:  svcadm enable ndd
+#
+#  ...take also a look to /var/svc/manifest/site/ndd.xml which may
+#  contains more informations
+#
+#          Nico
+#
+#
+#   2007/11/23 : Version 1.0 : Nicolas Dorfsman : ndo@unikservice.com
+#
+#
+ 
+#__custom zone__
+
+# to set tcp/udp send and receive windows in bytes
+WINSIZE=104876
+
+# This parameter controls how large the send and receive buffers are set 
+# to by an application that uses setsockopt
+MAXBUF=4194304
+CWNDSIZE=2097152
+
+# maximum number of pending TCP connections waiting to be accepted by accept()
+# (on one tcp listner)
+# default is 128
+LISTEN_Q=1024
+
+# he default maximum number of incomplete (three-way handshake not yet finished) 
+# pending TCP connections for a TCP listener. (RFC 793)
+LISTEN_Q0=8192
+
+#END__custom zone__
+
+. /lib/svc/share/smf_include.sh
+
+EXIT_CODE=$SMF_EXIT_OK
+
+run_ndd () {
+
+    ndd -set $1 $2 $3
+    if [[ $? -ne 0 ]]
+    then
+      echo "Property $2 can't be set to $3 (on $1)" | smf_console
+      EXIT_CODE=$SMF_EXIT_MON_DEGRADE
+   fi 
+}
+
+# Main main MAIN
+
+        run_ndd "/dev/tcp" "tcp_xmit_hiwat" $WINSIZE
+        run_ndd "/dev/tcp" "tcp_recv_hiwat" $WINSIZE
+        run_ndd "/dev/udp" "udp_xmit_hiwat" $WINSIZE
+        run_ndd "/dev/udp" "udp_recv_hiwat" $WINSIZE
+	
+	run_ndd "/dev/tcp" "tcp_conn_req_max_q" $LISTEN_Q
+	run_ndd "/dev/tcp" "tcp_conn_req_max_q0" $LISTEN_Q0
+
+	run_ndd "/dev/tcp" "tcp_max_buf" $MAXBUF
+	run_ndd "/dev/tcp" "tcp_cwnd_max" $CWNDSIZE
+
+
+  exit $EXIT_CODE
+EOF
+###############################################################################
+chmod 755 /lib/svc/method/site-ndd
+echo "chmod 755 /lib/svc/method/site-ndd"
+###############################################################################
+svcadm enable ndd
+echo "svcadm enable ndd"
+###############################################################################
+
+## Mise a jour network-anon ###################################################
+echo "Mise a jour network-anon"
+cat > /var/svc/manifest/network/network-anon.xml << EOF
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<!--
+ Copyright 2007 Sun Microsystems, Inc.  All rights reserved.
+ Use is subject to license terms.
+
+ CDDL HEADER START
+
+ The contents of this file are subject to the terms of the
+ Common Development and Distribution License, Version 1.0 only
+ (the "License").  You may not use this file except in compliance
+ with the License.
+
+ You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+ or http://www.opensolaris.org/os/licensing.
+ See the License for the specific language governing permissions
+ and limitations under the License.
+
+ When distributing Covered Code, include this CDDL HEADER in each
+ file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+ If applicable, add the following below this CDDL HEADER, with the
+ fields enclosed by brackets "[]" replaced with your own identifying
+ information: Portions Copyright [yyyy] [name of copyright owner]
+
+ CDDL HEADER END
+
+    NOTE:  This service manifest is not editable; its contents will
+    be overwritten by package or patch operations, including
+    operating system upgrade.  Make customizations in a different
+    file.
+
+  To use this service, do the following:
+    1) Copy this file to /var/svc/manifest/network/network-anon.xml
+       with read permissions (444) only
+    2) As root, run:
+         svccfg import /var/svc/manifest/network/network-anon.xml
+    3) Copy the network-anon script to /lib/svc/method/network-anon
+       with read and execute permissions (555) only
+       This script just runs the appropriate ndd command.
+
+#!/sbin/sh
+
+. /lib/svc/share/smf_include.sh
+
+/usr/sbin/ndd -set /dev/udp udp_smallest_anon_port 32800
+
+# Clear exit status.
+exit $SMF_EXIT_OK
+
+    4) As root, run:
+         svcadm enable anon
+    5) Daemons already running that have anonymous ports assigned and
+       which fall between 32767 and the new value of
+       udp_smallest_anon_port
+       will need to be restarted to release the ports and use the new
+       parameter value. Rebooting would also guarentee this happens.
+
+  Alternatively, do this during jumpstart:
+    - Install this file as /var/svc/manifest/network/network-anon.xml
+    - Place the appropriate shell script at /lib/svc/method/network-anon
+    - Enable the anon service
+
+  This service attempts to assure that an additional range of anonymous
+  ports for UDP traffic are protected by setting the network parameter
+  udp_smallest_anon_port
+  while delaying the startup of various system daemons that use an
+  anonymous port until the parameter is set properly. The SNMP daemons
+  are the most notable cases that must be delayed, though there may be
+  other daemons, and especially those that are customer installed.
+
+  The actual value assigned to udp_smallest_anon_port is defined in the
+  method file /lib/svc/method/network/network-anon .
+
+  There is no a priori way to guarantee either that this script will
+  catch all possible daemons using anon ports or the timing of any
+  particular daemon starting up against others (except via explicit SMF
+  dependency definitions). If it is suspected that some daemon is using
+  an anonymous port below the new value of the parameter (lsof from
+  sunfreeware.com is your friend), then copy one of the "dependent" (NOT
+  "dependency") blocks below and change the name and FMRI fields as
+  appropriate to make that service dependent upon this one.
+
+-->
+
+<service_bundle type='manifest' name='network-anon'>
+
+<service
+	name='network/anon'
+	type='service'
+	version='1'>
+
+	<create_default_instance enabled='false' />
+
+	<!-- Wait for local filesystems to be available -->
+	<dependency
+		name='fs-local'
+		grouping='require_all'
+		restart_on='none'
+		type='service'>
+		<service_fmri value='svc:/system/filesystem/local' />
+	</dependency>
+
+	<!-- run the method before daemons start -->
+	<!-- add dependent blocks here for other daemons as needed -->
+	<!-- copy one of the below blocks, then change name and FMRI -->
+
+	<!-- sma - snmpd is the primary daemon -->
+	<dependent
+		name='anon_sma'
+		grouping='optional_all'
+		restart_on='none'>
+		<service_fmri value='svc:/application/management/sma' />
+	</dependent>
+
+	<!-- seaport - snmpdx and dim are dependent on seaport -->
+	<dependent
+		name='anon_seaport'
+		grouping='optional_all'
+		restart_on='none'>
+		<service_fmri value='svc:/application/management/seaport' />
+	</dependent>
+
+	<!-- end of dependent blocks -->
+
+	<exec_method
+		type='method'
+		name='start'
+		exec='/lib/svc/method/network-anon'
+		timeout_seconds='300' />
+
+	<exec_method
+		type='method'
+		name='stop'
+		exec=':true'
+		timeout_seconds='60' />
+
+	<!--
+             Re-running the script shouldn't interrupt service, so just
+	     do so when the admin runs "svcadm refresh anon".
+	-->
+	<exec_method
+		type='method'
+		name='refresh'
+		exec='/lib/svc/method/network-anon'
+		timeout_seconds='300' />
+
+	<property_group name='startd' type='framework'>
+		<propval name='duration' type='astring' value='transient' />
+	</property_group>
+
+	<stability value='Unstable' />
+
+	<template>
+		<common_name>
+			<loctext xml:lang='C'> network specific ndd commands
+			</loctext>
+		</common_name>
+		<documentation>
+			<manpage title='ndd' section='1M'
+				manpath='/usr/share/man' />
+		</documentation>
+	</template>
+</service>
+
+</service_bundle>
+EOF
+chmod 444 /var/svc/manifest/network/network-anon.xml
+echo "chmod 444 /var/svc/manifest/network/network-anon.xml"
+svccfg import /var/svc/manifest/network/network-anon.xml
+echo "svccfg import /var/svc/manifest/network/network-anon.xml"
+
+cat > /lib/svc/method/network-anon << EOF
+#!/sbin/sh
+
+. /lib/svc/share/smf_include.sh
+
+/usr/sbin/ndd -set /dev/udp udp_smallest_anon_port 32800
+
+# Clear exit status.
+exit $SMF_EXIT_OK
+EOF
+chmod 555 /lib/svc/method/network-anon
+echo "chmod 555 /lib/svc/method/network-anon"
+
+svcadm enable anon
+echo "svcadm enable anon"
+echo "Mise en place de /etc/rcS.d/S69inet"
+cat > /etc/rcS.d/S69inet << EOF
+#!/sbin/sh
+exec 2>&1 /dev/sysmsg
+case "$1" in
+'start')
+    echo "Parametrage de la config reseau pour P2PS"
+    ndd -set /dev/e1000g0 adv_1000fdx_cap 0
+    ndd -set /dev/e1000g0 adv_1000hdx_cap 0
+    ndd -set /dev/e1000g0 adv_100fdx_cap 1
+    ndd -set /dev/e1000g0 adv_100hdx_cap 0
+    ndd -set /dev/e1000g0 adv_10fdx_cap 0
+    ndd -set /dev/e1000g0 adv_10hdx_cap 0
+    ndd -set /dev/e1000g0 adv_autoneg_cap 0
+    ndd -set /dev/e1000g1 adv_1000fdx_cap 0
+    ndd -set /dev/e1000g1 adv_1000hdx_cap 0
+    ndd -set /dev/e1000g1 adv_100fdx_cap 1
+    ndd -set /dev/e1000g1 adv_100hdx_cap 0
+    ndd -set /dev/e1000g1 adv_10fdx_cap 0
+    ndd -set /dev/e1000g1 adv_10hdx_cap 0
+    ndd -set /dev/e1000g1 adv_autoneg_cap 0
+    ndd -set /dev/e1000g2 adv_1000fdx_cap 0
+    ndd -set /dev/e1000g2 adv_1000hdx_cap 0
+    ndd -set /dev/e1000g2 adv_100fdx_cap 1
+    ndd -set /dev/e1000g2 adv_100hdx_cap 0
+    ndd -set /dev/e1000g2 adv_10fdx_cap 0
+    ndd -set /dev/e1000g2 adv_10hdx_cap 0
+    ndd -set /dev/e1000g2 adv_autoneg_cap 0
+    ndd -set /dev/e1000g3 adv_1000fdx_cap 0
+    ndd -set /dev/e1000g3 adv_1000hdx_cap 0
+    ndd -set /dev/e1000g3 adv_100fdx_cap 1
+    ndd -set /dev/e1000g3 adv_100hdx_cap 0
+    ndd -set /dev/e1000g3 adv_10fdx_cap 0
+    ndd -set /dev/e1000g3 adv_10hdx_cap 0
+    ndd -set /dev/e1000g3 adv_autoneg_cap 0
+    ndd -set /dev/ip ip_forwarding 0
+    exit 0
+;;
+'stop')
+    echo "S69inet est invoque avec stop"
+    exit 0
+;;
+*)
+    echo "$0 ne reconnait pas \"$1\", use start/stop"
+    exit 1
+;;
+esac
+EOF
+
+## Mise en place du Merge de /etc/services
+echo "Creation temporaire de /etc/servicess"
+cat > /etc/servicess << EOF
+#ident	"@(#)services	1.32	01/11/21 SMI"
+#
+#
+# Copyright (c) 1999-2001 by Sun Microsystems, Inc.
+# All rights reserved.
+#
+# Network services, Internet style
+#
+tcpmux		1/tcp
+echo		7/tcp
+echo		7/udp
+discard		9/tcp		sink null
+discard		9/udp		sink null
+systat		11/tcp		users
+daytime		13/tcp
+daytime		13/udp
+netstat		15/tcp
+chargen		19/tcp		ttytst source
+chargen		19/udp		ttytst source
+ftp-data	20/tcp
+ftp		21/tcp
+ssh		22/tcp				# Secure Shell
+telnet		23/tcp
+smtp		25/tcp		mail
+time		37/tcp		timserver
+time		37/udp		timserver
+name		42/udp		nameserver
+whois		43/tcp		nicname		# usually to sri-nic
+domain		53/udp
+domain		53/tcp
+bootps		67/udp				# BOOTP/DHCP server
+bootpc		68/udp				# BOOTP/DHCP client
+kerberos	88/udp		kdc		# Kerberos V5 KDC
+kerberos	88/tcp		kdc		# Kerberos V5 KDC
+hostnames	101/tcp		hostname	# usually to sri-nic
+pop2		109/tcp		pop-2		# Post Office Protocol - V2
+pop3		110/tcp				# Post Office Protocol - Version 3
+sunrpc		111/udp		rpcbind
+sunrpc		111/tcp		rpcbind
+imap		143/tcp		imap2		# Internet Mail Access Protocol v2
+ldap		389/tcp				# Lightweight Directory Access Protocol	
+ldap		389/udp				# Lightweight Directory Access Protocol
+submission	587/tcp				# Mail Message Submission
+submission	587/udp				#    see RFC 2476
+ldaps		636/tcp				# LDAP protocol over TLS/SSL (was sldap)
+ldaps		636/udp				# LDAP protocol over TLS/SSL (was sldap)
+#
+# Host specific functions
+#
+tftp		69/udp
+rje		77/tcp
+finger		79/tcp
+link		87/tcp		ttylink
+supdup		95/tcp
+iso-tsap	102/tcp
+x400		103/tcp				# ISO Mail
+x400-snd	104/tcp
+csnet-ns	105/tcp
+pop-2		109/tcp				# Post Office
+uucp-path	117/tcp
+nntp            119/tcp         usenet		# Network News Transfer
+ntp		123/tcp				# Network Time Protocol
+ntp		123/udp				# Network Time Protocol
+netbios-ns	137/tcp				# NETBIOS Name Service
+netbios-ns	137/udp				# NETBIOS Name Service
+netbios-dgm	138/tcp				# NETBIOS Datagram Service
+netbios-dgm	138/udp				# NETBIOS Datagram Service
+netbios-ssn	139/tcp				# NETBIOS Session Service
+netbios-ssn	139/udp				# NETBIOS Session Service
+NeWS		144/tcp		news		# Window System
+slp		427/tcp		slp		# Service Location Protocol, V2
+slp             427/udp         slp             # Service Location Protocol, V2
+mobile-ip	434/udp		mobile-ip	# Mobile-IP
+cvc_hostd	442/tcp				# Network Console
+ike		500/udp		ike		# Internet Key Exchange
+uuidgen		697/tcp				# UUID Generator
+uuidgen		697/udp				# UUID Generator
+#
+# UNIX specific services
+#
+# these are NOT officially assigned
+#
+exec		512/tcp
+login		513/tcp
+shell		514/tcp		cmd		# no passwords used
+printer		515/tcp		spooler		# line printer spooler
+courier		530/tcp		rpc		# experimental
+uucp		540/tcp		uucpd		# uucp daemon
+biff		512/udp		comsat
+who		513/udp		whod
+syslog		514/udp
+talk		517/udp
+route		520/udp		router routed
+ripng		521/udp
+klogin		543/tcp				# Kerberos authenticated rlogin
+kshell		544/tcp		cmd		# Kerberos authenticated remote shell
+new-rwho	550/udp		new-who		# experimental
+rmonitor	560/udp		rmonitord	# experimental
+monitor		561/udp				# experimental
+pcserver	600/tcp				# ECD Integrated PC board srvr
+sun-dr		665/tcp				# Remote Dynamic Reconfiguration
+kerberos-adm	749/tcp				# Kerberos V5 Administration
+kerberos-adm	749/udp				# Kerberos V5 Administration
+kerberos-iv	750/udp         		# Kerberos V4 key server
+krb5_prop	754/tcp				# Kerberos V5 KDC propogation
+ufsd		1008/tcp	ufsd		# UFS-aware server
+ufsd		1008/udp	ufsd
+cvc		1495/tcp			# Network Console
+ingreslock      1524/tcp
+www-ldap-gw	1760/tcp			# HTTP to LDAP gateway
+www-ldap-gw	1760/udp			# HTTP to LDAP gateway
+listen          2766/tcp                        # System V listener port
+nfsd		2049/udp	nfs		# NFS server daemon (clts)
+nfsd		2049/tcp	nfs		# NFS server daemon (cots)
+eklogin		2105/tcp			# Kerberos encrypted rlogin
+lockd		4045/udp			# NFS lock daemon/manager
+lockd		4045/tcp
+dtspc		6112/tcp			# CDE subprocess control
+fs		7100/tcp			# Font server
+apocd	38900/udp
+wnn6		22273/tcp			# Wnn6 jserver
+wnn6		22273/udp			# Wnn6 jserver
+wnn6-ds		26208/tcp	wnn6_DS		# Wnn6 wnnds
+wnn6-ds		26208/udp	wnn6_DS		# Wnn6 wnnds
+snmpd           161/udp        snmp             # SMA snmp daemon
+rmds_ssl_sink	8101/tcp	
+rmds_rssl_sink	14002/tcp
+EOF
+
+## MERGE du fichier services
+echo "MERGE du fichier services"
+cd /etc
+awk '{print $1,$2}' services*|sort|uniq -c|grep "^ *1"|grep -v "#"|awk '{print $3}' > diff
+while read L
+do
+	grep $L servicess
+done < diff >> services
+echo "Lignes rajoutees au fichier /etc/services : $(cat diff)"
+rm servicess diff
+
+## Mise a jour du fichier /etc/system
+echo "Mise a jour du fichier /etc/system"
+cat > /etc/system << EOF
+*ident	"@(#)system	1.18	97/06/27 SMI" /* SVR4 1.5 */
+*
+* SYSTEM SPECIFICATION FILE
+*
+
+* moddir:
+*
+*	Set the search path for modules.  This has a format similar to the
+*	csh path variable. If the module isn't found in the first directory
+*	it tries the second and so on. The default is /kernel /usr/kernel
+*
+*	Example:
+*		moddir: /kernel /usr/kernel /other/modules
+
+
+
+* root device and root filesystem configuration:
+*
+*	The following may be used to override the defaults provided by
+*	the boot program:
+*
+*	rootfs:		Set the filesystem type of the root.
+*
+*	rootdev:	Set the root device.  This should be a fully
+*			expanded physical pathname.  The default is the
+*			physical pathname of the device where the boot
+*			program resides.  The physical pathname is
+*			highly platform and configuration dependent.
+*
+*	Example:
+*		rootfs:ufs
+*		rootdev:/sbus@1,f8000000/esp@0,800000/sd@3,0:a
+*
+*	(Swap device configuration should be specified in /etc/vfstab.)
+
+
+
+* exclude:
+*
+*	Modules appearing in the moddir path which are NOT to be loaded,
+*	even if referenced. Note that `exclude' accepts either a module name,
+*	or a filename which includes the directory.
+*
+*	Examples:
+*		exclude: win
+*		exclude: sys/shmsys
+
+
+
+* forceload:
+*
+*	Cause these modules to be loaded at boot time, (just before mounting
+*	the root filesystem) rather than at first reference. Note that
+* 	forceload expects a filename which includes the directory. Also
+*	note that loading a module does not necessarily imply that it will
+*	be installed.
+*
+*	Example:
+*		forceload: drv/foo
+
+
+
+* set:
+*
+*	Set an integer variable in the kernel or a module to a new value.
+*	This facility should be used with caution.  See system(4).
+*
+*	Examples:
+*
+*	To set variables in 'unix':
+*
+*		set nautopush=32
+*		set maxusers=40
+*
+*	To set a variable named 'debug' in the module named 'test_module'
+*
+*		set test_module:debug = 0x13
+set shmsys:shminfo_shmmax=67108864
+EOF
+
+#############################################################
+echo "Creation du user radmin ..."
+grep "tis::10001:" /etc/group || groupadd -g 10001 tis
+grep "radmin:x:10001:10001:.*:/opt/reuters:/bin/sh" /etc/passwd || {
+	echo "radmin:x:10001:10001:Reuters Administrative Account:/opt/reuters:/bin/sh" >> /etc/passwd
+	echo "radmin:gR/NoQ/o2mB12:14159::::::" >> /etc/shadow
+}
+
+
+test -d /opt/reuters || mkdir /opt/reuters
+chown radmin:tis /opt/reuters
+
+
+echo "Ternine... reboot dans 5 secondes"
+sleep 5
+sync
+reboot

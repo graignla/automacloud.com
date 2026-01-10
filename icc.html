@@ -1,0 +1,115 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Laurent GRAIGNIC">
+   <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+   <meta name="Description" content="Informations sur les profils ICC">
+   <meta name="KeyWords" content="colorimètre,simulation,ICC,color management,colorsync,Lab,épreuve de contrôle,bon à tirer,CMS,Profile ICC,profil icc,spectrophotomètre, densitomètre, simulation offset,calibrage écran,sonde décran,chromiste,epson,epson 5000,cromalin,rvb,cmjn,formation couleur,couleur">
+   <title>Informations sur les profils ICC.</title>
+</head>
+<body text="#000000" bgcolor="#DED9C9" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+<a href="index.html">Retour &agrave; l'accueil</a>
+<center><table COLS=1 WIDTH="100%" BGCOLOR="#DED9C9" >
+<tr>
+<td>
+<table border="0" width="100%">
+  <tr>
+    <td width="50%"><font color="#006600"><font size=+1><b><u>QU’EST CE QU’UN PROFILE
+ICC ?</u></b></font></font></td>
+  </center>
+  <td width="50%">
+    <p align="right"><font color="#006600"><b>Par Laurent Graignic</b></font></td>
+</tr>
+</table>
+<center><font color="#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+
+<p><br>
+<blockquote><font size=-1>C’est un fichier qui p&egrave;se de 32Ko &agrave;
+plus de 1Mo. Le format de ce fichier est d&eacute;fini par l’International
+Color Consortium (ICC), organisme mandat&eacute; par Apple, Microsoft,
+Gr&eacute;tag, Sun Microsyst&egrave;me, Scitex et d’autres encore.</font>
+<br><font size=-1>Il en existe de trois sortes : Les profiles &eacute;cran,
+les profiles scanner et les profiles d’impression. Chacun poss&eacute;dant
+sa propre structure.</font>
+<br><font size=-1>Un profile contient notamment des tables 3D (Sorte de
+biblioth&egrave;que colorim&eacute;trique) &agrave; m&ecirc;me de caract&eacute;riser
+tr&egrave;s finement un p&eacute;riph&eacute;rique informatique. A ce titre,
+il est amusant de noter que tout le monde consid&egrave;re une presse offset
+ou un Cromalin comme un p&eacute;riph&eacute;rique informatique.</font></blockquote>
+
+<blockquote><font size=-1>Typiquement, les profiles servent &agrave; passer
+d’un espace colorim&eacute;trique &agrave; un autre. Par Exemple :</font>
+<p><font size=-1>Lab &lt;-------> RVB</font>
+<br><font size=-1>Lab &lt;-------> CMJN</font>
+<br><font size=-1>Lab &lt;-------> CMJ</font>
+<br><font size=-1>Lab &lt;-------> CMJNOV</font></blockquote>
+
+<blockquote>&nbsp;
+<br><font size=-1>Le &laquo;Lab &raquo; est un espace couleur normalis&eacute;
+par la CIE (Commission Internationale de l’&eacute;clairage) et repr&eacute;sente
+avec trois coordonn&eacute;es (L, a et b) la couleur per&ccedil;ue par
+&laquo;l’observateur standard &raquo; tel que l’a d&eacute;finie exp&eacute;rimentalement
+la CIE sur un &eacute;chantillon repr&eacute;sentatif de la population
+humaine. Une valeur Lab exprime donc une perception color&eacute;e.</font>
+<p><font size=-1>On s’aper&ccedil;oit donc, dans l’exemple ci dessous,
+que pour transformer du RVB d’acquisition scanner en CMJN offset, on doit
+utiliser bout &agrave; bout les deux profiles correspondant et que le &laquo;langage
+commun &raquo; pr&eacute;sent &agrave; la jonction est le Lab. D’o&ugrave;
+la notion d’espace d’&eacute;change.</font></blockquote>
+
+<center><img SRC="dessin1.gif" BORDER=1 height=82 width=411></center>
+
+<blockquote>&nbsp;
+<br><font size=-1>Certaines technologies autre que ICC utilisent des espaces
+d’&eacute;changes diff&eacute;rents de type RVB. L’avantage du Lab est
+sa propri&eacute;t&eacute; unique &agrave; quantifier les &eacute;carts
+de couleurs comme la distance s&eacute;parant les points repr&eacute;sent&eacute;s
+par les couleurs. Cette propri&eacute;t&eacute; est n&eacute;cessaire pour
+effectuer de fa&ccedil;on judicieuse les compressions de couleur et de
+contraste indispensable lorsqu’il s'agit &laquo;imprimer &raquo; un ekta.</font>
+<br>&nbsp;
+<p><u><font size=-1>CAS DE L’EPREUVE NUMERIQUE</font></u>
+<p><font size=-1>Une &eacute;preuve est une simulation de l’offset sur
+une imprimante de technologie diff&eacute;rente. Le fichier CMJN &agrave;
+imprimer exprime la couleur en termes de m&eacute;lange d’encre d&eacute;pos&eacute;
+sur papier par un proc&eacute;d&eacute; offset.</font>
+<br><font size=-1>Une simulation consiste donc &agrave; transformer les
+donn&eacute;es originales de m&eacute;lange d’encre en couleur per&ccedil;ues
+(Lab), puis de transformer la couleur ainsi connue en un nouveau m&eacute;lange
+d’encre d&eacute;pendant cette fois des caract&eacute;ristiques de l’imprimante.
+La transformation par profile s’&eacute;tablit comme suit :</font>
+<br>&nbsp;</blockquote>
+
+<center><img SRC="dessin2.jpg" BORDER=1 height=88 width=405></center>
+
+<blockquote>&nbsp;
+<br><font size=-1>Les profiles ne constituent pas &agrave; eux seuls des
+outils autonomes. Ils doivent &ecirc;tre utilis&eacute;s par un &laquo;CMS
+&raquo; (Color Managment System) souvent pr&eacute;sent dans le Syst&egrave;me
+d’exploitation.</font>
+<br><font size=-1>A titre d’exemple, le CMS d’Apple s’appelle Colorsync,
+et celui de Microsoft, ICM.</font>
+<br><font size=-1>Il est &agrave; noter que les derni&egrave;res versions
+de Photoshop, d’Xpress et d’Illustrator int&egrave;grent les fonctionnalit&eacute;s
+offertes par le CMS de Mac OS et de Windows 98.</font>
+<p><font size=-1>Le Rip BEST exploite un CMS diff&eacute;rent et tr&egrave;s
+performant s’appelant&nbsp; Logosync (Qui tourne aussi d’ailleurs sur Mac
+et sur PC).</font>
+<p><font size=-1>D’autres syst&egrave;mes sont dits &raquo;compatible ICC
+&raquo; lorsqu’ils sont capables d’utiliser les informations contenues
+dans un profile ICC pour g&eacute;n&eacute;rer des param&egrave;tres de
+r&eacute;glage ou des profiles propri&eacute;taires. C’est le cas du Fierry.</font>
+<p><font size=-1>L’utilisation des profiles ICC avec les CMS cit&eacute;s
+plus haut offre des simulations de tr&egrave;s bonne qualit&eacute;. Technologiquement,
+la qualit&eacute; d’une simulation n’est limit&eacute;e que par la qualit&eacute;s
+des profiles. Avec la r&eacute;serve &eacute;vidente que l’espace des couleurs
+de l’imprimante soit &eacute;tendue et puisse contenir sans le comprimer
+l’espace des couleurs &agrave; simuler. C’est le cas des Epson 5000 et
+9000.</font></blockquote>
+</td>
+</tr>
+</table></center>
+<a href="index.html">Retour &agrave; l'accueil</a>
+</body>
+</html>

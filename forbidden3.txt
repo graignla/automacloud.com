@@ -1,0 +1,16 @@
+#!/bin/ksh
+# Date avant synchro
+DATE=$(date)
+#installation des package ntp
+pkgadd -d /cdrom/sol_10_807_x86/Solaris_10/Product SUNWntpu SUNWntpr
+#Creation du fichier de conf de NTPD
+cat > /etc/inet/ntp.conf << EOF
+server 127.127.1.0
+fudge 127.127.1.0 stratum 14
+server 150.151.192.1
+EOF
+# Demarrage du service
+svcadm enable svc:/network/ntp
+sleep 2
+echo "AVANT : $DATE"
+echo "APRES : $(date)"

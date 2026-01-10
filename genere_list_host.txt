@@ -1,0 +1,47 @@
+#!/bin/ksh
+#set -x
+>ping.result
+OS=$(uname)
+GREP=grep
+AWK=awk
+[ "$OS" = "SunOS" ] && {
+        GREP=/usr/xpg4/bin/grep
+        AWK=/usr/xpg4/bin/awk
+}
+
+[ "$1" = "-s" ] && {
+>not_respond_ssh
+##- Fabrication d'une liste theoriquement complete a partir des traces
+ls /files/ftp_server/pub/aa/result|$GREP ".*[A-Za-z][A-Za-z]*[0-9]\{3\}.*"|sed "s/.*\.\([A-Za-z][A-Za-z]*[0-9]\{3\}\).*/\1/"|sort -u > given_list
+
+##- recuperation du type precis d'OS
+for I in $(cat given_list)
+do
+	#echo $(ssh $I "uname -a") |tee -a respond_ssh.tmp&
+	echo $(ssh $I "uname -a")|grep -v "^$"|awk -v HOST="$I" '{print $0,HOST}'|tee -a respond_ssh.tmp&
+	sleep 1
+	kill -0 $! 2>/dev/null && kill -9 $! 2>/dev/null && echo $I |tee -a  not_respond_ssh
+done 
+
+sort -u respond_ssh.tmp > respond_ssh
+rm respond_ssh.tmp
+}
+
+##- Testing not reponding host to ssh...
+>ping.result.alive
+>no.ping.result
+for I in $(cat not_respond_ssh)
+do
+	ping -c 1 $I 2> /dev/null|grep icmp_seq=|awk '{print $4'}|sort -u >> ping.result.alive& 
+	sleep 1
+	kill -0 $! 2>/dev/null && kill -9 $! 2>/dev/null && echo $I |tee -a no.ping.result|awk '{print "no ping : "$0}'
+done 
+
+$AWK '$1 ~/^Linux/ {print $2}' respond_ssh|cut -f1 -d.|sort -u > Linux.hostname
+$AWK '$1 ~/^SunOS/ {print $2}' respond_ssh|cut -f1 -d.|sort -u > SunOS.hostname
+egrep -v "^SunOS|^Linux" respond_ssh > Autres_OS
+cat Linux.hostname SunOS.hostname ping.result.alive no.ping.result given_list|sort|uniq -c|awk '$1 == 1' > unknown_host
+echo "Parc Machines UNIX : ($(ls -l --time-style=iso  given_list |awk '{print $6,$7}'))"
+echo "---------------------------"
+wc -l Linux.hostname SunOS.hostname ping.result.alive Autres_OS no.ping.result unknown_host
+wc -l given_list

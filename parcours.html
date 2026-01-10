@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parcours Professionnel - Expert Cloud Automation VMware</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --accent-glow: #22d3ee;
+            --highlight: #fbbf24;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-glow);
+            text-decoration: none;
+            font-family: 'Space Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-brand::before {
+            content: '◆';
+            color: var(--highlight);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-glow);
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-glow), var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .legend {
+            display: inline-flex;
+            gap: 2rem;
+            padding: 1.5rem 2rem;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+            align-items: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .legend-marker {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--bg-darker);
+            border: 3px solid var(--highlight);
+            box-shadow: 0 0 0 4px var(--bg-darker), 0 0 20px var(--highlight);
+            animation: pulseMarker 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+		
+		.legend-marker-small {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--bg-darker);
+            border: 2px solid var(--highlight);
+            box-shadow: 0 0 0 4px var(--bg-darker), 0 0 20px var(--highlight);
+            animation: pulseMarker 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 4rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent,
+                var(--primary) 10%,
+                var(--secondary) 90%,
+                transparent
+            );
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+
+        .timeline-content {
+            width: calc(50% - 3rem);
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: auto;
+        }
+
+        /* Timeline marker */
+        .timeline-marker {
+            position: absolute;
+            top: 2rem;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--bg-darker);
+            border: 3px solid var(--border);
+            z-index: 10;
+            box-shadow: 0 0 0 4px var(--bg-darker);
+        }
+
+        .timeline-marker.high-value {
+            border-color: var(--highlight);
+            box-shadow: 0 0 0 4px var(--bg-darker), 0 0 20px var(--highlight);
+            animation: pulseMarker 2s ease-in-out infinite;
+        }
+
+        /* Mission Card */
+        .mission-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .mission-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mission-card.high-value::before {
+            background: linear-gradient(90deg, var(--highlight), #f59e0b);
+            opacity: 1;
+        }
+
+        .mission-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+        }
+
+        .mission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .mission-period {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-glow);
+            font-weight: 700;
+        }
+
+        .mission-company {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .mission-company.high-value {
+            color: var(--highlight);
+        }
+
+        .mission-via {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .mission-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 0.25rem;
+            color: var(--accent-glow);
+        }
+
+        .mission-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mission-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #c084fc;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title::before {
+            content: '▸';
+            color: var(--accent-glow);
+        }
+
+        .section-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .achievements {
+            list-style: none;
+        }
+
+        .achievements li {
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .achievements li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: var(--accent-glow);
+            font-size: 0.7rem;
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes pulseMarker {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline-content {
+                width: calc(100% - 80px);
+                margin-left: 80px !important;
+            }
+
+            .timeline-marker {
+                left: 30px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .legend {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .mission-company {
+                font-size: 1.5rem;
+            }
+
+            .mission-header {
+                flex-direction: column;
+            }
+        }
+		.mission-section a {
+			color: lightgreen;
+			text-decoration: underline; /* optionnel, tu peux mettre 'none' si tu ne veux pas de soulignement */
+		}
+
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="nav-brand">ACCUEIL</a>
+            <div class="nav-links">
+                <a href="#timeline">Parcours</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Références & Projets</h1>
+            <p class="subtitle">Parcours professionnel en<BR>- Automatisation Cloud VMware<BR>- Ingénieurie UNIX</p>
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-marker-small"></span>
+                    <span>* Mission à forte valeur ajoutée</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section id="timeline" class="timeline">
+        <div class="container">
+            
+            <!-- Mission ESRI -->
+            <div class="timeline-item" id="ESRI">
+                <div class="timeline-marker high-value"></div>
+                <div class="timeline-content">
+                    <div class="mission-card high-value">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">AOÛT 2025 - SEPT 2025</div>
+                                <h2 class="mission-company high-value">ESRI</h2>
+                                <div class="mission-via">Meudon</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>FREELANCE</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Logiciels de Cartographie</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Mission Préliminaire Expertise ARIA</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Projet PAAS</div>
+                            <div class="section-content">
+                                Dans le cadre d'un projet de PAAS à destination des projets et de l'avant-vente
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                vSphere 6.7, NSX, Veeam, ARIA, Windows, Active Directory, vROP
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Réalisations</div>
+                            <div class="section-content">
+                                En binôme avec l'architecte interne :
+                                <ul class="achievements">
+                                    <li>Réalisation d'un POC pour le provisionnement à la demande dans vRA d'un environnement de base complet (2 réseaux et 3 VM Windows)</li>
+                                    <li>Expertise technique sur vRA - Aide aux décisions d'architecture, accompagnement d'équipe et développement</li>
+                                    <li>Mise au point d'un scénario de démonstration pour le POC (2 projets et 2 utilisateurs)</li>
+                                    <li>Création de Alice et Bob, les users de démonstration</li>
+                                    <li>Définition des conventions de nommage pour les projets, les déploiements, les VM, les profiles, les tags</li>
+                                    <li>Création de 2 projets</li>
+                                    <li>Création des network profiles et storage profiles utilisés pour le POC</li>
+                                    <li>Définition et publication des blueprints</li>
+                                    <li>Mise en place des catalog items</li>
+                                    <li>Développement d'un Day2 pour la gestion des sauvegardes Veeam (Gestion via API du vCenter des balises/attributs des VM)</li>
+                                    <li>Mise en place d'un Day2 d'ajout de disque avec une souscription pour le nommage, le formatage et le montage automatique du disque ajouté dans Windows</li>
+                                    <li>Mise en place d'une souscription de suppression des machines déprovisionées dans l'AD</li>
+                                    <li>Présentation Réussie du POC au DSI (Suite du projet possible en Novembre 2025)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission KYNDRYL -->
+            <div class="timeline-item" id="KYNDRYL">
+                <div class="timeline-marker high-value"></div>
+                <div class="timeline-content">
+                    <div class="mission-card high-value">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">JANV 2024 - FÉV 2025</div>
+                                <h2 class="mission-company high-value">KYNDRYL</h2>
+                                <div class="mission-via">via TekSystems</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>FREELANCE</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Transports</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Ingénieur Cloud ARIA Automation - Full remote</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                vSphere 6.7, ARIA (vRA/vRO 8.12), NSX, vROPS, FTP
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre collaboratif</div>
+                            <div class="section-content">
+                                Une équipe de 20 personnes chargée de mettre en place "from scratch" le cloud multi-tenants des clients de KYNDRYL
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Réalisations</div>
+                            <div class="section-content">
+                                <ul class="achievements">
+                                    <li>Dev d'un workflow imbriqué dans un XAAS qui va appeler par API (wrapper) un blueprint de provisionnement de VM. Objectif: Inclure la création de la VM dans un processus plus large d'actions de post provisionning.</li>
+                                    <li>NSX automation : Développement d'un workflow dédié à la création d'un custom resource "Routing zone" correspondant à la création dans NSX d'un routeur Tier1 avec définition de route advertising via série d'appels RestAPI à NSX.</li>
+                                    <li>NSX automation: Développement d'un workflow de création d'une custom resource "Network Security Group", correspondant à la création de segments dans NSX ainsi que la création dans vRA des network profiles.</li>
+                                    <li>Création du catalog item "Network Security Group" avec action (external source) pour le checking des overlap CIDR.</li>
+                                    <li>Dev de 2 workflows de suppression de deployment (Mode success only et mode always)</li>
+                                    <li>Dev d'actions lock/unlock avec timeout: Mécanisme de "manage concurencies" basé sur les identifiants des process vRO à protéger.</li>
+                                    <li>Définition et implémentation de la structure des configurations vRO permettant la gestion multi-tenants sur un seul vRO</li>
+                                    <li>Dev de la feature "start/stop/restart VM" : workflow + catalog Item (XAAS) + Day2 resource action.</li>
+                                    <li>Dev de la feature "change CPU/RAM VM" : Workflow + catalog Item (XAAS) + Day2 resource action.</li>
+                                    <li>Application des règles affinité/anti-affinité au niveau compute et stockages sur 2 sites. Réalisation du workflow "relocate VM storage".</li>
+                                    <li>Dev d'action get et del vCenter Session ID sur la nouvelle version d'API du vCenter et dev du code permettant les call API utilisant ces sessionID sans utilisation du restHost vCenter.</li>
+                                    <li>Adaptation de cloud templates (blueprint)</li>
+                                    <li>Gestion de Dynamic types associés à des custom resources</li>
+                                    <li>Rédaction du "Quick Start Guide" à destination des clients pour la prise en main de KPC</li>
+                                    <li>3 réunions d'architecture et de suivi de dev par jour depuis le début du projet.</li>
+                                    <li>Développement d'un workflow "Onboard VM" pour le passage des cloud.vsphere.machine de "discovered" à "managed".</li>
+                                    <li>Création et paramétrage de deux nouveaux tenants (nouveaux clients KPC) sur l'assembler, le service broker et vRO</li>
+                                    <li>Création de users dans IDM</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission EDF 2023 -->
+            <div class="timeline-item" id="EDF2">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">SEPT 2023 - DÉC 2023</div>
+                                <h2 class="mission-company">EDF</h2>
+                                <div class="mission-via">via OBS - Nanterre</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>FREELANCE</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Transports</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Ingénieur Cloud ARIA Automation</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                vSphere 6.7, vRA/vRO 8.12, Citrix, VDI, Jira
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre collaboratif</div>
+                            <div class="section-content">
+                                Renforcement d'une équipe de 2 personnes responsable du MCO et des évolutions du Cloud privé d'EDF
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Réalisations</div>
+                            <div class="section-content">
+                                <ul class="achievements">
+                                    <li>Développement et mise en place d'un Day2 "Change description" et ses actions de présentation</li>
+                                    <li>Refonte complète des workflows planifiés de mails d'avertissement avant expiration de bail et avant destruction des VDI</li>
+                                    <li>MEP de 4 packages vRO pour mise à jour du portail myCloud</li>
+                                    <li>Refonte du système d'envoi de mail (Traçabilité et résilience)</li>
+                                    <li>Troubleshooting sur problème de clonage de master Citrix sur certains gabarits</li>
+                                    <li>Automatisation des tests de recette : Création d'un design non monolithique extensible pour intégration des workflows de test de provisionnement VDI avec Day2</li>
+                                    <li>Troubleshooting sur les actions personnalisées déclenchées après le provisionnement de VM</li>
+                                    <li>Participation aux réunions d'architecture IT</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission Commission Européenne -->
+            <div class="timeline-item" id="CE">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">JUIL 2022 - AOÛT 2023</div>
+                                <h2 class="mission-company">Commission Européenne</h2>
+                                <div class="mission-via">via NTT Belgique</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>FREELANCE</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Public Européen</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Ingénieur Cloud ARIA Automation - Full TT</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                vSphere 7, vRA 8, vRO 8, vTOM, vSAN, NSX-T
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre collaboratif</div>
+                            <div class="section-content">
+                                Renforcement de l'équipe "CMP DevOps", puis de l'équipe VMware
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Réalisations</div>
+                            <div class="section-content">
+                                <ul class="achievements">
+                                    <li>Équipe CMP: Mise en place d'actions de présentation de bluePrint pour les nameSpace et les loadBalancer</li>
+                                    <li>Manipulation custom resources et dynamic type</li>
+                                    <li>Équipe VMware: Migration vRO7 vers vRO8 - Adaptation de tous les workflows et reprise de tous les paramétrages</li>
+                                    <li>Rédactions documentaires dans JIRA</li>
+                                    <li>Mise à niveau des workflows assurant le patching automation des ESXi (Délégation de script PowerShell à vTOM)</li>
+                                    <li>Refonte des exports xml de description de l'infrastructure (Depuis vCenter). Mutualisation du code pour une réduction du nombre de workflow de 150 à 30</li>
+                                    <li>Remplacement de la planification par un système de boucle "AutoLaunch"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission RATP -->
+            <div class="timeline-item" id="RATP">
+                <div class="timeline-marker high-value"></div>
+                <div class="timeline-content">
+                    <div class="mission-card high-value">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">NOV 2019 - JUIN 2022</div>
+                                <h2 class="mission-company high-value">RATP</h2>
+                                <div class="mission-via">via PropulseIT - Noisy Le Grand</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>FREELANCE</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Transports</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Ingénieur DevOps - Expert vRealize Automation / Orchestration</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                vRealize Automation 7.5, vRealize Orchestrator 7.5, vCenter, Efficient IP SOLIDServer (IPAM), Jira
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre collaboratif</div>
+                            <div class="section-content">
+                                Renforcement de l'équipe d'orchestration cloud (3 personnes)
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Réalisations</div>
+                            <div class="section-content">
+                                <ul class="achievements">
+                                    <li>Acquisition et exploitation de l'API de l'IPAM (Efficient IP SOLIDServer) - requêtes REST pour gestion DNS et recherche d'IP disponibles</li>
+                                    <li>Livraison d'un XAAS à l'usage des admin fonctionnels leur permettant de gérer pour les intégrateurs les services disponibles du catalogue</li>
+                                    <li>Étude et réalisation d'un workflow d'aide à la migration de VMs entre LANs avec vérification prérequis et mise à jour des properties vCAC</li>
+                                    <li>Test de bout en bout : Développement complet d'un workflow testant périodiquement le provisionnement de bout en bout d'un ensemble de VM, avec capacité d'apprendre à reconnaître les erreurs (Distance de Levenstein) et capitaliser sur leur résolution</li>
+                                    <li>Surveillance Réseaux : Workflow parcourant via l'IPAM tous les LANs pour comptabiliser les IPs utilisés, libres, ou inutilement réservées avec remontées d'alertes</li>
+                                    <li>Développement d'un ensemble de workflows pour la fourniture de KPI (Mail avec csv en pièce jointe)</li>
+                                    <li>Migration vers une nouvelle version du plan d'adressage IP - Élaboration d'une feuille de route détaillant toutes les implémentations dans les différentes chaînes d'orchestration</li>
+									<li>Etude d’impact, développement et test des nouveaux composants à mettre en place lors de la MEP</li>
+                                    <li>Workflow d'automatisation pour le parcours de tous les réseaux en vue de leur initialisation et mise en conformité avec le nouveau plan d'adressage</li>
+                                    <li>Réalisation de blueprints XAAS pour la gestion des IP applicative conforme au nouveau plan d'adressage</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission SFR -->
+            <div class="timeline-item" id="SFR">
+                <div class="timeline-marker high-value"></div>
+                <div class="timeline-content">
+                    <div class="mission-card high-value">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">JANV 2019 - JUIL 2019</div>
+                                <h2 class="mission-company high-value">SFR DISTRIBUTION</h2>
+                                <div class="mission-via">via ACENSI - Courbevoie</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>FREELANCE</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Télécoms</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Ingénieur Cloud Automation vRO / vCD sur le projet Phoenix</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                vCloud Director 9.2, vRealize Orchestrator 7.4, vSphere, NSX-V, Infoblox, Salt, Wallix Bastion, PPS, Jira, NetBackup
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre collaboratif</div>
+                            <div class="section-content">
+                                Forfait en mode Agile au sein d'une équipe de 3 développeurs. En relation avec l'architecte cloud, VMware, les équipes Infrastructure et d'exploitations
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Réalisations en mode agile</div>
+                            <div class="section-content">
+                                <ul class="achievements">
+                                    <li>Étude de vCloud Director dans le cadre du projet Phoenix et des offres "hosting" et "housing"</li>
+                                    <li>Migration et Portage de blueprint vRA vers des services vCloudDirector (Implémenté sous vRO)</li>
+                                    <li>Réalisation de nombreux modules techniques pour le IAAS</li>
+                                    <li>Workshops de méthodes et technique de développement / tests unitaires et process de livraison</li>
+									<li>
+										Implémentation sur vRO d'un 
+										<a href="ipam.html" target="ipam.html">
+											workflow réalisant la fonction d'IPAM
+										</a> 
+										pour la gestion des IP des "vCloud External Network" avec fonction de réservation temporaire
+									</li>
+
+                                    <li>Workshops sur technos connexes : NetBackup, Life Cycle Manager, vRealize Operations</li>
+                                    <li>Acquisition et exploitation d'APIs pour l'intégration de Infoblox, PPS, WALLIX, RDN, SALT</li>
+                                    <li>IAAS : Implémentation du use case IAAS de provisionnement de VM (Windows et Linux) dans les organisations cloud (vDC + réseaux NSX)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission BP2I / BNP PARIBAS -->
+            <div class="timeline-item" id="BP2I">
+                <div class="timeline-marker high-value"></div>
+                <div class="timeline-content">
+                    <div class="mission-card high-value">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">MARS 2016 - DÉC 2018</div>
+                                <h2 class="mission-company high-value">BP2I - BNP PARIBAS</h2>
+                                <div class="mission-via">via BSM - Montreuil</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>FREELANCE</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Bancaire</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">DESIGNER vRO pour le Cloud BP2I de BNP Paribas (VMware)</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                vRealize Orchestrator 7.2, NetApp MetroCluster, WFA, Isilon (EMC), Maximo Asset Management, IBM ICO + ICD et BPM
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Projets</div>
+                            <div class="section-content">
+                                Projet "Fileaas" - Stockage réseau en mode fichier AAS pour tous les métiers de BNP Paribas<br>
+                                + Projet Load Balancer AAS + Projet Gérer Alias AAS + Projet Appliance AAS + Projet LISTER_BASE
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Réalisations</div>
+                            <div class="section-content">
+                                <ul class="achievements">
+								    <li>Designer principal du
+										<a href="IllustrManageShare.html" target="_blank">
+											projet Stockage réseau Fileaas
+										</a>(NFS + CIFS) déployé en production pour tous les métiers de BNP Paribas
+									</li>
+                                    <li>Designer principal du projet Stockage réseau Fileaas (NFS + CIFS) déployé en production pour tous les métiers de BNP Paribas</li>
+                                    <li>Acquisition et exploitation de l'API REST de NetApp WFA et de l'API de l'IPAM pour automatisation complète du provisionnement de stockage</li>
+                                    <li>Conception et développement de workflows complexes pour la gestion du cycle de vie des ressources de stockage</li>
+                                    <li>Intégration avec Maximo pour la gestion d'actifs et la traçabilité</li>
+                                    <li>Migration vers IBM ICO et ICD avec adaptation de tous les workflows</li>
+									<li>Projet 
+										<a href="LISTER_BASE.pdf" target="_blank">
+											LISTER_BASE
+										</a>: Etude et développement d’un module d’orchestration technique mesurant les changements de configuration Oracle d’instances présentes dans un scope de VM donné pour mise à jour du référenciel de l’orchestrateur central ICD et fournissant aussi un référentiel dynamique de noms pour la création de nouvelles instances.</li>
+                                    <li>Formation et accompagnement des équipes sur les nouvelles solutions d'orchestration</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission ELS GESTION -->
+            <div class="timeline-item" id="ELS">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">SEPT 2015 - FÉV 2016</div>
+                                <h2 class="mission-company">ELS GESTION</h2>
+                                <div class="mission-via">Montrouge</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>FREELANCE</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur légale</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Administrateur Système UNIX</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                Linux, applications maison, LDAP, virtualisation
+                            </div>
+                        </div>
+						    <div class="mission-section">
+                            <div class="section-title">Réalisations</div>
+                            <div class="section-content">
+                                Au sein de l'équipe infra:
+                                <ul class="achievements">
+                                    <li>Script de purge</li>
+                                    <li>Script de rattachemet des serveurs UNIX à l'Activ Directory</li>
+                                    <li>Maintien en conditions opérationnelles</li>
+                                    <li>Support utilisateurs (Développeurs)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission THALES TGS -->
+            <div class="timeline-item" id="THALES">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">AVRIL 2014 - AVRIL 2015</div>
+                                <h2 class="mission-company">THALES TGS</h2>
+                                <div class="mission-via">Portage salarial + ATOS - Meudon La Forêt</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>Portage Salarial</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Défense</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Développeur vRO - Équipe Architecture</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Projet EF++</div>
+                            <div class="section-content">
+                                Infrastructure virtuelle de fourniture de Cloud privé à destination des entités THALES
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                vCenter 5.1, vCloud Director, vShield, Operation Manager, PowerShell, BASH, JavaScript, Suse Linux Enterprise Server 11, OSGD, Terminal Server, GPO, Active Directory
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Réalisations</div>
+                            <div class="section-content">
+                                En relation avec le chef de projet EF++ :
+                                <ul class="achievements">
+                                    <li>Traduction d'expression de besoins</li>
+                                    <li>Conceptualisation des Solutions techniques à mettre en œuvre</li>
+                                    <li>Développement et exploitation des solutions (À base de workflows VCO - vCenter Orchestrator), utilisant l'API VCO 5.1 et du code JavaScript</li>
+                                    <li>Mise au point de workflows permettant d'appliquer de façon adaptive n'importe quelle série de post-installation sur des VM (Linux ou Windows) en cours de déploiement</li>
+                                    <li>Rédaction de la documentation technique pour 13 workflows dont une documentation d'exploitation avancée pour la partie post-installation</li>
+                                    <li>Exploitation du workflow de post-installation pour la customisation Windows Update (Serveur WSUS)</li>
+                                    <li>Exploitation du workflow de post-installation pour l'inscription des VM dans le monitoring TMT (Thales Monitoring Template)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission GIVAUDAN -->
+            <div class="timeline-item" id="GIVAUDAN">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2013</div>
+                                <h2 class="mission-company">GIVAUDAN</h2>
+                                <div class="mission-via">Genève</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>FREELANCE</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Parfums</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Ingénieur Systèmes Linux & AIX</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                450 serveurs : IBM P570/P595/P720 AIX, Linux RedHat, VMware vSphere 4, Orchestrator, Nagios, NetBackup
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Projet Mayworkflower</div>
+                            <div class="section-content">
+                                Infogérance de l'informatique du groupe GIVAUDAN à Genève. Audit des actions à réaliser dans chacune des phases du projet : Workshops / Shadowing / Mirroring / Desk
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission EDF 2012 -->
+            <div class="timeline-item" id="EDF">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">AVRIL - JUILLET 2012</div>
+                                <h2 class="mission-company">EDF</h2>
+                                <div class="mission-via">Portage salarial + ATOS - Colombes</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>Portage Salarial</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Énergies</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Industrialisateur Outils Systèmes</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                SAP, IBM P-Series AIX, Linux RedHat, NFS, LDAP, GPFS, CRS, Oracle RAC, Grid Control, HP Storage, PATROL, Control-M, CFT
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Projet SIMM V7</div>
+                            <div class="section-content">
+                                Infrastructure SAP Haute Disponibilité. Adaptation et maintenance de l'outil appsimm (8000 lignes de code déployé sur plusieurs centaines de serveurs IBM et RedHat)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission OBERTHUR TECHNOLOGIES -->
+            <div class="timeline-item" id="OBERTHUR">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2011 - 2012</div>
+                                <h2 class="mission-company">OBERTHUR TECHNOLOGIES</h2>
+                                <div class="mission-via">Colombes</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>FREELANCE</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Télécoms</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Intégrateur Plateforme Orange/Santander</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                VMware vSphere 4.1, Windows Server, Linux, Storage EMC
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission EdenWall Technologies -->
+            <div class="timeline-item" id="EDENWALL">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2011</div>
+                                <h2 class="mission-company">EdenWall Technologies</h2>
+                                <div class="mission-via">Paris</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>FREELANCE</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Sécurité IT</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Administrateur Systèmes & Réseaux</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                Solutions de sécurité réseau, Firewall, Linux
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission HSBC -->
+            <div class="timeline-item" id="HSBC">
+                <div class="timeline-marker high-value"></div>
+                <div class="timeline-content">
+                    <div class="mission-card high-value">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2010 - 2011</div>
+                                <h2 class="mission-company high-value">HSBC</h2>
+                                <div class="mission-via">Portage salarial - Courbevoie</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>Portage Salarial</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Bancaire</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Intégrateur pour la Mise en Production Projet 2FA (Banque en ligne)</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                Veritas Cluster System, Oracle RAC 11G, Oracle DataGuard, ODBC, LDAP, Vasco Identikey, Debian, SuSe 10, VMware 3.5, Load Balancer BIG IP, Cisco GSLB, Certificats SSL, Patrol, LVM
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Projet 2FA</div>
+                            <div class="section-content">
+                                Système d'authentification forte à deux facteurs exploitant des tokens. Déploiement dans quatre environnements répartis sur des infrastructures UK et France
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Réalisations</div>
+                            <div class="section-content">
+                                <ul class="achievements">
+                                    <li>Installation, configuration, administration et intégration des Serveurs Identikey et des IHM Tomcat dans les infrastructures du projet 2FA réparties entre UK et France</li>
+                                    <li>Mise en production dans les délais avec Félicitation du client</li>
+                                    <li>Gestion des connexions ODBC aux différentes bases de données Oracle, des certificats SSL, des licences et des Storage key dans tous les environnements</li>
+                                    <li>Administration système des serveurs SUSE 10 et Debian 4 pour Identikey</li>
+                                    <li>Interface technique avec l'éditeur VASCO</li>
+                                    <li>Industrialisation de l'installation dans tous les environnements</li>
+                                    <li>Rédaction et livraison de la documentation technique pour tous les environnements</li>
+                                    <li>Intégration en BAS, DEV, Préprod et Production</li>
+                                    <li>Diagnostique de problèmes liés aux infrastructures administrées par UK (Load balancing, GSLB - Probing et failover)</li>
+                                    <li>Maintien en Conditions Opérationnelles dans la phase pilote</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission Calyon Cheuvreux -->
+            <div class="timeline-item" id="CHEVREUX">
+                <div class="timeline-marker high-value"></div>
+                <div class="timeline-content">
+                    <div class="mission-card high-value">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2009</div>
+                                <h2 class="mission-company high-value">Calyon Cheuvreux</h2>
+                                <div class="mission-via">Portage salarial - Courbevoie</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>Portage Salarial</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Bancaire - Crédit Agricole Cheuvreux</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Administrateur Systèmes - Équipe Architecture</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                800 serveurs RedHat sur HP + Sun, RedHat 3/4/5, RHN Satellite, Ubuntu, NIS, SSH, kickstart, NAS (NetApp), SAN (HP-EVA8400), Blade HP-C7000, Brocade SANSwitch, Cisco Catalyst, Sybase, Amanda, Networker, Lotus Notes, ITRS
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Projets menés à bien</div>
+                            <div class="section-content">
+                                <ul class="achievements">
+                                    <li>Mise en place et Administration du serveur "RedHat Network Satellite" - Packaging et documentation de l'installation</li>
+                                    <li>Migration progressive des systèmes vers les Releases 5.3 ou 4.8 (32 & 64 bits)</li>
+                                    <li>Automatisation de post-installation pour une plateforme partenaire (5 machines en DMZ)</li>
+                                    <li>Simulateur de lancement d'applications</li>
+                                    <li><a href="md5test.txt" target="_blank">Outil de vérification</a>
+										pour environ 6000 fichiers de configurations sur l'intégralité du parc Sun + RedHat</li>
+                                    <li>Installation de machines virtuelles VMware à des fins de test</li>
+                                    <li>Outils de recensement des serveurs</li>
+                                    <li>Audit des paramètres de purge des logs des 450 applications Cheuvreux</li>
+                                    <li>Maintien en Conditions Opérationnelles - Support unix Niveau 2</li>
+                                    <li>Administration SSH : Validation et distribution des accès SSH à clés publiques</li>
+                                    <li>Mise en production & homologation d'applications selon planning de déploiement</li>
+                                    <li>Installation des nouveaux serveurs par le réseau : Boot automatique (PXE) avec Anaconda/kickstart</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission Reuters -->
+            <div class="timeline-item" id="REUTERS">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2008</div>
+                                <h2 class="mission-company">Reuters</h2>
+                                <div class="mission-via">Portage salarial - Puteaux</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>Portage Salarial</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Logiciels de salles de marchés</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Administrateur Systèmes UNIX et Intégrateur</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre</div>
+                            <div class="section-content">
+                                Équipe de 14 personnes assurant la gestion de l'infrastructure. 2700 équipements dont 500 serveurs UNIX et 220 serveurs Windows
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                Solaris 8/9/10, RedHat 4/5, AIX, HP-UX, VMware ESX, Veritas VCS, NFS, NIS, LDAP, SSH
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission RTE -->
+            <div class="timeline-item" id="RTE">
+                <div class="timeline-marker high-value"></div>
+                <div class="timeline-content">
+                    <div class="mission-card high-value">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2007 - 2008</div>
+                                <h2 class="mission-company high-value">RTE</h2>
+                                <div class="mission-via">Portage salarial - Colombes</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>Portage Salarial</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Transport d'Énergie</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Intégrateur Systèmes UNIX & Applications Nationales</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                Serveurs BULL, Solaris, RedHat, infrastructure réseau nationale RTE
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Réalisations</div>
+                            <div class="section-content">
+                                Mise en conformité de la plateforme aux normes RTE sur 3 serveurs BULL. Validation de patchs. Administration et intégration d'applications nationales pour le transport d'énergie
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission AREVA -->
+            <div class="timeline-item" id="AREVA">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2007</div>
+                                <h2 class="mission-company">AREVA</h2>
+                                <div class="mission-via">Portage salarial</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>Portage Salarial</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Nucléaire</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Administrateur Systèmes UNIX</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre</div>
+                            <div class="section-content">
+                                Administration systèmes sur le plateau AREVA NC-NP-RLF (Compte Cogema Framatome Areva)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission CETELEM -->
+            <div class="timeline-item" id="CETELEM">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2006 - 2007</div>
+                                <h2 class="mission-company">CETELEM</h2>
+                                <div class="mission-via">Portage salarial - Courbevoie</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>Portage Salarial</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Bancaire</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Assistant Chef de Projet Plateforme Éditique</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Projet Alliance</div>
+                            <div class="section-content">
+                                Aiguillage, routage et gestion de la plateforme éditique CETELEM-COFINOGA dans le cadre du projet Alliance. Administration et optimisation des flux de production documentaire
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission RENAULT Plessis Robinson -->
+            <div class="timeline-item" id="ATOS">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2005 - 2006</div>
+                                <h2 class="mission-company">RENAULT - Novadis</h2>
+                                <div class="mission-via">Via SSII - Le Plessis Robinson</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>SSII</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Automobile</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Analyste d'Exploitation - Industrialisateur</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre technique</div>
+                            <div class="section-content">
+                                Autosys, CFT, Windows 2K, Solaris, HP-UX, AIX, FTP
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Responsabilités</div>
+                            <div class="section-content">
+                                Pour ATOS Infogérance : Dans le département d'Industrialisation des applications "Commerce & Logistique". Pour l'application mondiale "CRM" ainsi que 6 autres applications : Déploiements des applicatifs (Siebel, Websphere et Oracle en environnement UNIX Sun, IBM, HP). Suivi de prod, traitement des incidents, optimisation des flux et des traitements sous Autosys
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission RICOH -->
+            <div class="timeline-item" id="RICOH">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <div class="mission-card">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2004</div>
+                                <h2 class="mission-company">RICOH</h2>
+                                <div class="mission-via">Clamart - Siège France</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>CDI</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Construction de copieurs multifonctions</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Ingénieur Support au Digital Lab</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre</div>
+                            <div class="section-content">
+                                Au département marketing du siège. Au sein du laboratoire de tests et d'essais digital : Tests et validation de solutions d'impression et de numérisation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission RENAULT Guyancourt -->
+            <div class="timeline-item" id="RENAULT">
+                <div class="timeline-marker high-value"></div>
+                <div class="timeline-content">
+                    <div class="mission-card high-value">
+                        <div class="mission-header">
+                            <div>
+                                <div class="mission-period">2001 - 2003</div>
+                                <h2 class="mission-company high-value">RENAULT - Technocentre</h2>
+                                <div class="mission-via">Via SSII (Alten) - Guyancourt</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mission-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">💼</span>
+                                <span>SSII</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🏢</span>
+                                <span>Secteur Automobile - Design Renault</span>
+                            </div>
+                        </div>
+
+                        <h3 class="mission-title">Administrateur Systèmes UNIX & NT</h3>
+
+                        <div class="mission-section">
+                            <div class="section-title">Périmètre</div>
+                            <div class="section-content">
+                                Pour Alten, au sein d'une équipe de 7 personnes administrant l'informatique du Design de Renault (15 serveurs, 300 postes et leurs périphériques)
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Environnement système</div>
+                            <div class="section-content">
+                                IRIX, HP-UX, NIS, NFS, Automount, NT4/2000, Filer (Network Appliance), Samba, Intranet, FTP anonyme
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Réalisations / Responsabilités</div>
+                            <div class="section-content">
+                                <ul class="achievements">
+                                    <li>Création et gestion des comptes utilisateurs en environnement mixte</li>
+                                    <li>Gestions des droits d'accès et des zones d'échanges</li>
+                                    <li>Transfert de comptes intra-design</li>
+                                    <li>Assistance utilisateur</li>
+                                    <li>Intégration dans le réseau du design des stations Irix freelance</li>
+                                    <li>Résolution des incidents clients serveurs niveau 1 & 2</li>
+                                    <li>Suivi des interventions fournisseurs</li>
+                                    <li>Installation, configuration et intégration des stations UNIX (IRIX) dans le domaine NIS</li>
+                                    <li>Administration du serveur DIST (150 machines)</li>
+                                    <li>Installation, configuration et intégration des stations "designer" NT et 2000 (+ migration) dans le domaine NT</li>
+                                    <li>Demandes DNS "renault.com"</li>
+                                    <li>Administration de 5 stations HP-UX</li>
+                                    <li>Restaurations et sauvegardes sur Tina</li>
+                                    <li>Gestion des quotas de ressources sur Filer Network Appliance (2 Filer de 200 Téra Octets)</li>
+                                    <li>Récupération des données "snapshot" sur FILER</li>
+                                    <li>Surveillance systèmes</li>
+                                    <li>Développement de scripts d'administration système</li>
+                                    <li>Développement d'outils pour la production centralisée d'impression grand format</li>
+                                    <li>Développement et Mise en place (Sous unix) d'un outil pour la gestion et la génération de CDROM de données confidentielles</li>
+                                    <li>Action de conseil pour le projet de calibrage couleur de l'ensemble de la chaîne graphique du design</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mission-section">
+                            <div class="section-title">Environnement logiciels</div>
+                            <div class="section-content">
+                                CAO : Alias, Euclide, Catia, Maya, Opticore - PAO : Photoshop, Illustrator - Bureautique : Pack office Microsoft, Acrobate, Netscape
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+
+    <!-- Scroll to top button -->
+    <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
+
+    <script>
+        // Force page reload when navigating back from cache
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
+        // Scroll to top functionality
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+#!/bin/ksh
+
+##- recoit en argument 1 le nom d'un fichier contenant une liste de machine sur lesquelles uploader le script "md5test"
+#   recoit en argument 2 l'option avec laquelle devra etre execute md5test sur les machines
+#   Sans arguments c'est l'option -v qui est prise par defaut
+#   Minute l'execution des process et les kill apres un temps alloue.
+
+#set -x
+
+set $1 ${2:--v}
+
+MD5TEST=~lagra/laurent/MD5TEST/md5test
+[ -x $MD5TEST ] || { echo "Verifier $MD5TEST s.v.p   Abort." ; exit
+}
+WDIR=`(cd $(dirname $0);pwd)`/`basename $0`_DIR/$(date +%m%d).$$
+mkdir -p $WDIR 2>/dev/null
+
+## ***** UPLOAD ***** ##
+########################
+for HOST in $(cat $1)
+do
+	scp $MD5TEST $HOST:/tmp > /dev/null && echo $HOST UPLOADED &
+done >&2
+sleep 4
+C=$(ps|grep scp|wc -l|awk '{print $1}')
+while [ $C -gt 0 ] 
+do
+	sleep 1
+	C=$(expr $C - 1 )
+	exec ps|grep scp >/dev/null|| C=0
+	CURRENT_NBR=$(exec ps|grep scp|wc -l|awk '{print $1}')
+	echo "Dans $C sec. AutoKill de $CURRENT_NBR process(s) restant(s)"
+	[ $C -gt $CURRENT_NBR ] && C=$CURRENT_NBR
+done >&2
+pgrep -lt $(ps|tail -1|awk '{print $2}')|grep -v $$|egrep "ssh$|scp$"|awk '{print $1}'|xargs kill 2>/dev/null && echo killed >&2
+
+
+## ***** EXECUTION ***** ##
+###########################
+exec > ${WDIR}/$(basename $0).result
+for HOST in $(cat $1)
+do
+	ssh $HOST /tmp/md5test $2 &
+done 
+sleep 4
+C=$(ps|grep ssh|wc -l|awk '{print $1}')
+while [ $C -gt 0 ]
+do
+	sleep 1
+        C=$(expr $C - 1 )
+	exec ps|grep ssh >/dev/null|| C=0
+	CURRENT_NBR=$(exec ps|grep ssh|wc -l|awk '{print $1}')
+        echo "Dans $C sec. AutoKill de $CURRENT_NBR process(s) restant(s)" >&2
+	[ $C -gt $CURRENT_NBR ] && C=$CURRENT_NBR
+done
+
+pgrep -lt $(ps|tail -1|awk '{print $2}')|grep -v $$|egrep "ssh$|scp$"|awk '{print $1}'|xargs kill  2>/dev/null && echo killed >&2
+
+# Comptabilite machine "non atteintes", "testees", "a tester"
+############################################################
+# extraction nom de machine testees
+cut -f1 -d: ${WDIR}/$(basename $0).result|sed "s/^OK //"|sort -u > ${WDIR}/$(basename $0).TESTED
+# constitution des machines testee qui n'ont pas subie la verification
+grep -vxf ${WDIR}/$(basename $0).TESTED $1 > ${WDIR}/$(basename $0)$2-TESTED-RAS
+wc -l ${WDIR}/$(basename $0).TESTED ${WDIR}/$(basename $0)$2-TESTED-RAS >&2
+wc -l $1 >&2
+cat ${WDIR}/$(basename $0).TESTED ${WDIR}/$(basename $0)$2-TESTED-RAS > ${WDIR}/$(basename $0).tmp
+grep -vxf ${WDIR}/$(basename $0).tmp $1 |awk '{print "Machines non-atteintes("NR"): "$1}' >&2
+\rm ${WDIR}/$(basename $0).tmp
+
+## Analyse synthetique et exploitable des resultats
+###################################################
+awk  'NF == 5 && $4 == "expecting" {print $1,$2,$3}' ${WDIR}/$(basename $0).result|tr -s ":" " "|sort -u|sort -k2 > ${WDIR}/$(basename $0).to_modify
+awk '{print $2,$3}' ${WDIR}/$(basename $0).to_modify|sort|uniq -c|sort -r > ${WDIR}/$(basename $0).to_modify.stat
+while read LINE
+do
+        NBR=$(echo $LINE|awk '{print $1}')
+        MD5=$(echo $LINE|awk '{print $3}')
+        awk -v MD5="$MD5" -v NBR="$NBR" '$3 == MD5 {print $2,$4,$3,"# "NBR" machine(s) dont "$1}' ${WDIR}/$(basename $0).to_modify
+done < ${WDIR}/$(basename $0).to_modify.stat > ${WDIR}/$(basename $0).to_modify.final
+#done < ${WDIR}/$(basename $0).to_modify.stat > ${WDIR}/$(basename $0).to_modify.final
+\rm ${WDIR}/$(basename $0).to_modify.stat ${WDIR}/$(basename $0).to_modify
+echo +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ >&2
+echo "                      ${WDIR}/$(basename $0).to_modify.final" >&2
+echo +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ >&2
+cat ${WDIR}/$(basename $0).to_modify.final >&2
+echo +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ >&2
+#rm -r $(echo ${WDIR}|sed "s/[^/][^/]*$/[0-1][0-9][0-3][0-9].*/")

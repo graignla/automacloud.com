@@ -1,0 +1,2 @@
+TO=lgraignic@smtpnotes.caic.com
+tail -3 log|tee message.tmp|grep -vxqf message && { mail -s test $TO < message.tmp ; cat message.tmp > message; }

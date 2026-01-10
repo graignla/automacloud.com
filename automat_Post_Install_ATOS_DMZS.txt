@@ -1,0 +1,255 @@
+#!/bin/ksh
+# Laurent graignic
+# Script a copier et executer dans le /tmp des machines juste kikstartees pour les mettre en conformite avec cet environnement
+#set -x
+clear
+DMZ_ATOS=SAHNBCMJPID
+NORMAL=HBGPM
+DEFAULT=$NORMAL
+
+echo "
+ S =Deconfiguration des service ypbind sendmail autofs ....
+ A =Arret des service ypbind sendmail autofs ....
+ H =/etc/hosts
+ G =GATEWAY (/etc/sysconfig/network)
+ N =Enleve toute trace de reference aux NIS 
+ D =Met en place le daily.sh specail DMZ
+ B =BOND (ifcfg-bond0 ifcfg-eth1 ifcfg-eth0 modprobe.conf) 
+ C =Compte atos root troot
+ M =Installer les misc depuis sapn001
+ J =Installer JRE-1.5.0.18
+ P =psp-8.25.rhel5.x86_64.en.tar.gz (Installation des agents Compac)
+ I =Mise a niveau di firmware de l'ILO
+ X =Installation de xx-checker
+
+ Installer en DMZ pour ATOS = $DMZ_ATOS
+ Installer en DMZ = SAHNBMJPID
+ Installer en NORMAL = $NORMAL
+ Installer en AUTRE = ???
+
+Enter parameters : [$DEFAULT]"
+read REP
+PARM=$DEFAULT
+[ "$REP" != "" ] && PARM=$REP
+
+echo $PARM|grep -q A && {
+echo "
+== deconfiguration des services ypbind sendmail autofs .... =="
+for SERVICE in ypbind sendmail autofs
+do
+	chkconfig $SERVICE off
+done
+/etc/init.d/ypbind stop
+
+echo "
+== Arret des service ypbind sendmail autofs nscd .... =="
+for SERVICE in sendmail autofs
+do
+	service $SERVICE stop nscd
+done
+ps -e|awk '$4~/automount/ {print $1}'|xargs kill -9
+}
+
+echo "(Pour info uniquement si option reseau non selectionnees)
+== Congiguration IP / NETMASK
++++++++++++++++++++++++++++++"
+IPADDR=$(grep IPADDR /etc/sysconfig/network-scripts/ifcfg-*0|cut -f2 -d=|head -1)
+IP_ACTU=$IPADDR
+echo "Enter the correct IP ? [$IPADDR]"
+read REP
+[ "$REP" = "" ] || IPADDR=$REP
+NETMASK=$(grep NETMASK /etc/sysconfig/network-scripts/ifcfg-*0|cut -f2 -d=|head -1)
+echo "Enter the correct NETMASK ? [$NETMASK]"
+read REP
+[ "$REP" = "" ] || NETMASK=$REP
+HOST=$(hostname)
+echo "Enter the correct HOSTNAME ? [$HOST]"
+read REP
+[ "$REP" = "" ] || HOST=$REP
+GATEWAY=$(grep ^GATEWAY /etc/sysconfig/network|cut -f2 -d=)
+echo "Enter the correct GATEWAY ? [$GATEWAY]"
+read REP
+[ "$REP" = "" ] || GATEWAY=$REP
+echo $PARM|grep -q G && {
+cat << EOF|tee /etc/sysconfig/network
+NISDOMAIN=cheuvreux
+NETWORKING_IPV6=yes
+HOSTNAME=$HOST
+NETWORKING=yes
+GATEWAY=$GATEWAY
+NOZEROCONF=yes
+EOF
+}
+
+echo $PARM|grep -q H && {
+echo "/etc/hosts
++++++++++++"
+cat << EOF |tee  /etc/hosts
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+127.0.0.1	localhost.localdomain localhost
+$IPADDR	$HOST
+145.248.41.239 insight
+# Lors du changement de nom de la machine, ne pas oublier de modifier aussi dans /etc/mail/local-host-names.
+EOF
+}
+
+echo $PARM|grep -q N && {
+echo "Retrait de \"NISDOMAIN=cheuvreux\" dans /etc/sysconfig/network
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+grep -vx "NISDOMAIN=cheuvreux" /etc/sysconfig/network > /tmp/network...
+cat /tmp/network... |tee /etc/sysconfig/network
+rm /tmp/network...
+echo "
+Suppression des nis dans /etc/nsswitch.conf:
+++++++++++++++++++++++++++++++++++++++++++++"
+grep -v "^netgroup" /etc/nsswitch.conf|sed -e "s/^\([^#]..*:\)\(.*files.*\)/\1	files/" |tee /etc/nsswitch.conf-|egrep -v "^[ \t]*#|^$"
+cat /etc/nsswitch.conf- > /etc/nsswitch.conf
+rm /etc/nsswitch.conf-
+#grep -v "^netgroup.*nis$" /etc/nsswitch.conf|sed -e "s/^\([^#]..*:\)\(.*files.*\)/\1 files/"|egrep -v "^[ \t]*#|^$"
+}
+
+echo $PARM|grep -q D && {
+echo "Remplacement de daily.sh
++++++++++++++++++++++++
+Sur sapn001, lancer la commande : scp /root/atos_pasyn_DMZ/daily.sh $IP_ACTU:/etc/daily.sh
+Taper Enter une fois la commande acheve:"
+read REP
+COMMENT='/etc/daily.sh --> NON MIS A JOUR !! --- ATTENTION --- !!'
+grep -q daily_dmz.sh  /etc/daily.sh && COMMENT="/etc/daily.sh --> OK"
+echo $COMMENT
+}
+
+echo $PARM|grep -q B && {
+echo "/etc/sysconfig/network-scripts/ifcfg-bond0
+++++++++++++++++++++++++++++++++++++++++++++"
+cat << EOF |tee /etc/sysconfig/network-scripts/ifcfg-bond0
+DEVICE=bond0
+ONBOOT=yes
+BOOTPROTO=none
+USERCTL=no
+IPADDR=$IPADDR
+NETMASK=$NETMASK
+EOF
+
+echo "
+/etc/sysconfig/network-scripts/ifcfg-eth1
+++++++++++++++++++++++++++++++++++++++++++++"
+cat << EOF |tee /etc/sysconfig/network-scripts/ifcfg-eth1
+# Broadcom Corporation NetXtreme II BCM57711E 10Gigabit PCIe
+DEVICE=eth1
+ONBOOT=yes
+USERCTL=no
+MASTER=bond0
+SLAVE=yes
+BOOTPROTO=none
+TYPE=Ethernet
+EOF
+
+echo "
+/etc/sysconfig/network-scripts/ifcfg-eth0
+++++++++++++++++++++++++++++++++++++++++++++"
+cat << EOF |tee /etc/sysconfig/network-scripts/ifcfg-eth0
+# Broadcom Corporation NetXtreme II BCM57711E 10Gigabit PCIe
+DEVICE=eth0
+ONBOOT=yes
+USERCTL=no
+MASTER=bond0
+SLAVE=yes
+BOOTPROTO=none
+TYPE=Ethernet
+EOF
+
+echo "
+Modification de /etc/modprobe.conf
+++++++++++++++++++++++++++++++++++"
+cat << EOF |tee /etc/modprobe.conf
+alias bond0 bonding
+alias eth0 bnx2x
+alias eth1 bnx2x
+alias scsi_hostadapter cciss
+alias net-pf-10 off
+options bond0 miimon=100 mode=active-backup primary=eth0
+EOF
+}
+
+echo $PARM|grep -q C && {
+userdel atos
+echo "
+Ajout du compte \"atos\"  ->
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+grep "^atos:" /etc/shadow || echo "atos:\$1\$LElW0YKi\$MjJnqsOSmKrRbYyfTm/mt.:14455:0:99999:7:::" | tee -a /etc/shadow
+grep -x "atos:x:6839:507::/disk01/atos:/bin/bash" /etc/passwd || echo "atos:x:6839:507::/disk01/atos:/bin/bash" |tee -a /etc/passwd
+grep -x "atos:x:507:" /etc/group || echo "atos:x:507:" |tee -a /etc/group
+mkdir /disk01/atos ; chown 6839:507 /disk01/atos ; chmod 700 /disk01/atos
+
+echo "
+Change mot de passe root et troot -> 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+cat << EOF |tee /tmp/shadow
+root:\$1\$TvpjqIFw\$xdjWEU3bnJmLVvA1QXbXm0:14455:0:99999:7:::
+troot:\$1\$moyfqsPJ\$nzXHsVryFwk3mXNPreK0B1:14455::::::
+EOF
+egrep -v "^root|^troot" /etc/shadow >> /tmp/shadow
+cat /tmp/shadow > /etc/shadow
+rm /tmp/shadow
+LINMAJ=$(getent shadow root troot|egrep "TvpjqIFw|moyfqsPJ"|wc -l|awk '{print $1}')
+[ "$LINMAJ" -ne 2 ] && { echo "WARNING !! problème dans le changement des password \"root\" et \" troot\"" ; sleep 3 ; }
+}
+
+echo $PARM|grep -q M && {
+echo "
+Pour installer les misc:
+Sur sapn001, lancer la commande : /files/distrib_misc/install_misc -ps $IP_ACTU
+Taper Enter une fois la commande acheve:"
+read REP
+}
+
+echo $PARM|grep -q P && {
+COMMENT="Les Agents COMPAC ne sont pas installes, pour les re-installer:"
+ls /opt/hp/hpsmh/bin/rotatelogs /opt/hp/hpsmh/sbin/hpsmhd /opt/hp/vcagent/bin/vcagentd >/dev/null && COMMENT="Les Agents COMPAC semblent installes, pour les installer a nouveau:"
+echo "
+${COMMENT}"
+echo "Sur sapn001, lancer la commande : scp /root/atos_pasyn_DMZ/psp-8.25.rhel5.x86_64.en.tar.gz $HOST:/tmp
+Taper Enter une fois le transfert acheve:"
+read REP
+REP=N
+[ -f /tmp/psp-8.25.rhel5.x86_64.en.tar.gz ] && { echo "Installation des Agents Compac... Y/N ?     [N]" ; read REP ; }
+[ "$REP" = "y" -o "$REP" = "Y" ] && {
+	getent passwd hpsmh || { echo creation du user hpsmh... ; /usr/sbin/groupadd -o -g 59001 hpsmh ; /usr/sbin/useradd -o -u 401 -g 59001 -s /sbin/nologin -M -r -d /opt/hp/hpsmh hpsmh ; getent passwd hpsmh ; }
+	cp /usr/sbin/useradd /usr/sbin/useradd.save
+	cat /bin/true > /usr/sbin/useradd
+	gzip -dc /tmp/psp-8.25.rhel5.x86_64.en.tar.gz|(cd /tmp ; tar xvf -)
+	cd /tmp/compaq/csp/linux
+	./install825.sh -nui
+	mv /usr/sbin/useradd.save /usr/sbin/useradd
+	/etc/init.d/hpvca restart
+	}
+echo "Vous pouvez verifier le fonctionnement des agents Compac sur https://${HOST}.caic.com:2381/
+ou https://${IP_ACTU}:2381/"
+[ "$IPADDR" = "${IP_ACTU}" ] || echo ou sur https://$IPADDR:2381/  apres reboot
+}
+
+echo $PARM|grep -q J && {
+echo "Pour installer le JRE-1.5.0.18:
+Sur sapn001, lancer la commande : scp /root/atos_pasyn_DMZ/jre-1_5_0_18-linux-amd64-rpm.bin $IP_ACTU:/tmp
+Taper Enter une fois le transfert acheve:"
+read REP
+/tmp/jre-1_5_0_18-linux-amd64-rpm.bin
+
+echo "
+Mise en place des liens normes dans /usr/java
++++++++++++++++++++++++++++++++++++++++++++++"
+ln -s /usr/java/jre1.5.0_18 /usr/java/latest
+ln -s /usr/java/latest /usr/java/default
+ls -l /usr/java
+}
+
+echo $PARM|grep -q I && {
+echo installation de firmware ILO pas encore implemente
+}
+echo $PARM|grep -q X && {
+echo Sur sapn001, lancer la commande : cd /REF/Applis/xxchecker/INSTALL ; ./make_install_xxchecker -ps $HOST
+}
+echo "FIN DU SCRIPT"
+

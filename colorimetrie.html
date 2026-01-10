@@ -1,0 +1,160 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Laurent GRAIGNIC">
+   <meta name="GENERATOR" content="Mozilla/4.7 [fr] (Win98; U) [Netscape]">
+   <meta name="Description" content="Visualisation 3D d'espaces couleur offset obtenu par divers méthodes d'échantillonnage.">
+   <meta name="KeyWords" content="colorimètre,simulation,ICC,color management,colorsync,Lab,épreuve de contrôle,bon à tirer,CMS,Profile ICC,profil icc,spectrophotomètre, densitomètre, simulation offset,calibrage écran,sonde décran,chromiste,epson,epson 5000,cromalin,rvb,cmjn,formation couleur,couleur">
+   <title>color management</title>
+</head>
+<body text="#000000" bgcolor="#CCC0B0" link="#FF0000" vlink="#FF0000" alink="#FF0000">
+
+<center>
+<hr SIZE=6 WIDTH="65%"><b><i><font color="#CC33CC"><font size=+3>Colorim&eacute;trie,
+Exemple :</font></font></i></b>
+<br><b><i><font color="#CC33CC"><font size=+3>Cr&eacute;ation des Profils
+ICC de Sortie</font></font></i></b></center>
+
+<hr SIZE=6 WIDTH="65%">
+<br><a href="index.html">Retour &agrave; l'accueil</a>
+<br>&nbsp;
+<center><table BORDER COLS=1 WIDTH="600" BGCOLOR="#333333" >
+<tr>
+<td>
+<center>
+<p><font color="#FFCCFF"><font size=+1>On appelle charte</font></font><font color="#33CCFF">
+un "patchwork" de carr&eacute;s color&eacute;s servant &agrave; &eacute;chantillonner
+un espace couleur (dans le but d'en cr&eacute;er un mod&egrave;le).</font>
+<p><font color="#FFCCFF"><font size=+1>Avec une charte r&eacute;duite</font></font><font color="#33CCFF">,
+on constate, dans certains cas de figure, que les essais de simulation
+aboutissent &agrave; des r&eacute;sultats parfaits. On constate toutefois
+que ces r&eacute;sultats se d&eacute;gradent l'orsque que l'on s&eacute;loigne
+du cas de figure id&eacute;al qui est celui ayant permis la cr&eacute;ation
+du profil.</font>
+<p><font color="#33CCFF">Par cons&eacute;quent, ces chartes ne r&eacute;pondent
+pas aux exigences de l'&eacute;preuvage dont l'objectif est de fournir
+une simulation parfaite dans <u>tous</u> les cas de figure.&nbsp;</font>
+<p><font color="#FFCCFF"><font size=+1>Avec une charte comprenant 2160
+patchs</font></font><font color="#33CCFF"> de couleur r&eacute;partis de
+fa&ccedil;on homog&egrave;ne dans l'espace couleur &agrave; caract&eacute;riser,
+on obtient une simulation&nbsp; ICC parfaite en toute circonstance.</font>
+<p><font color="#33CCFF">Une telle simulation peut donc &ecirc;tre s&eacute;rieusement
+propos&eacute;e en tant que </font><font color="#FFCCFF"><font size=+1>standard
+de r&eacute;f&eacute;rence</font></font><font color="#33CCFF">. Ce qui
+permet de concurrencer des syst&egrave;mes d'&eacute;preuves num&eacute;riques
+beaucoup plus chers.</font>
+<p><font color="#FFFFFF"><font size=+1>Un tel syst&egrave;me ne fonctionne
+qu'avec les encres et le papier utilis&eacute;s lors du calibrage, ce qui
+justifie la fourniture de ces consommables.</font></font></center>
+</td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<br>&nbsp;
+<center><table COLS=1 WIDTH="90%" HEIGHT="50" BGCOLOR="#FFFFCC" >
+<tr>
+<td>
+<center><b><font color="#FF6666"><font size=+1>CI-DESSOUS :</font></font></b>
+<br><b><font color="#FF6666"><font size=+1>LA REPRESENTATION 3D PERMET
+D'APRECIER LA QUALITE DE CES CHARTES D'ECHANTILLONNAGE ...</font></font></b></center>
+</td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<br>&nbsp;
+<center><table BORDER CELLSPACING=5 WIDTH="97%" >
+<caption><b><font color="#FFFFFF"><font size=+2>Voici la couleur telle
+qu'on ne la voit jamais</font></font></b></caption>
+
+<tr>
+<td><img SRC="far1521.jpg" height=292 width=300 align=CENTER></td>
+
+<td BGCOLOR="#DCCC8D">
+<blockquote>
+<center><font face="Bookman Old Style"><font color="#000000">Ce cube est
+une repr&eacute;sentation "3D" en 1521 points de l'ensemble de l'espace
+Lab.</font></font>
+<p><font face="Bookman Old Style"><font color="#000000">C'est-&agrave;-dire
+l'espace couleur normalis&eacute; par la CIE faisant actuellement r&eacute;f&eacute;rence
+pour la mod&eacute;lisation des perceptions color&eacute;es humaines.</font></font></center>
+</blockquote>
+</td>
+</tr>
+
+<tr>
+<td><img SRC="256ok.jpg" height=291 width=300 align=CENTER></td>
+
+<td BGCOLOR="#DCCC8D">
+<blockquote>
+<center><font face="Bookman Old Style"><font color="#000000">Ces points,
+toujours de coordonn&eacute;es Lab, proviennent de mesures faites en offset
+couch&eacute; et font appara&icirc;tre clairement les limites de restitution
+du proc&eacute;d&eacute;. On constate qu'aucun point ne sort d'une limite
+formant un pentag&ocirc;ne (sur un plan perpendiculaire &agrave; l'angle
+d'observation).&nbsp;</font></font>
+<br><font face="Bookman Old Style"><font color="#000000">Par ailleurs,
+le nombre de points (256) est largement insuffisant pour offrir la d&eacute;finition
+n&eacute;cessaire &agrave; l'&eacute;tablissement de profil ICC exploitable
+en environnement professionnel.</font></font></center>
+</blockquote>
+</td>
+</tr>
+
+<tr>
+<td><img SRC="432.jpg" height=278 width=300 align=CENTER></td>
+
+<td BGCOLOR="#DCCC8D">
+<blockquote><font face="Bookman Old Style">Cette charte de 432 points baptis&eacute;e
+TC2.9&nbsp;</font>
+<br><font face="Bookman Old Style">est livr&eacute;e en standard avec le
+spectroscan de Gr&eacute;tag et donne dans l'ensemble d'assez bons r&eacute;sultats.
+Sa faiblesse se situe &agrave; l'arri&egrave;re dans la zone sombre qui
+pr&eacute;sente un d&eacute;ficit de d&eacute;finition dans l'&eacute;chantillonnage
+de l'encre noire. Dans cette zone (&agrave; l'arri&egrave;re-plan de cette
+vue) l'impr&eacute;cision atteint un seuil critique incompatible avec une
+utilisation en &eacute;preuvage couleur.</font></blockquote>
+</td>
+</tr>
+
+<tr>
+<td BGCOLOR="#999999"><img SRC="it873.jpg" height=268 width=300 align=CENTER></td>
+
+<td BGCOLOR="#DCCC8D">
+<blockquote><font face="Bookman Old Style">Baptis&eacute;e IT8 7/3, cette
+charte a &eacute;t&eacute; con&ccedil;ue par la "FOGRA" pour la caract&eacute;risation
+de l'Offset. Sa faiblesse r&eacute;side dans les "trous" visibles entre
+les branches du "sapin". Cette charte compte tout de m&ecirc;me 928 &eacute;chantillons
+!</font>
+<p><font face="Bookman Old Style">A l'exp&eacute;rience, m&ecirc;me avec
+un "Profile Maker Pro" les interpolations induisent des erreurs visibles
+au premier coup d'oeil.</font></blockquote>
+</td>
+</tr>
+
+<tr>
+<td BGCOLOR="#BBBAB9"><img SRC="vueface.jpg" height=261 width=300 align=ABSCENTER></td>
+
+<td BGCOLOR="#DCCC8D">
+<blockquote>
+<center><font face="Bookman Old Style">Cette charte n'a pas de nom.</font>
+<br><font face="Bookman Old Style">(Elle est de ma conception).</font>
+<br><font face="Bookman Old Style"><font size=-2>Je remercie "Logo softwar"
+(aujourd'hui&nbsp; Gr&eacute;tag)&nbsp; pour la qualit&eacute; de ses outils
+de transformation et de visualisation.</font></font>
+<br><font face="Bookman Old Style">Avec 2160 points elle poss&egrave;de
+un niveau de d&eacute;finition sup&eacute;rieure aux chartes utilis&eacute;es
+par le "</font><b><font color="#009900"><font face="Arial Narrow">GROS
+MALIN</font><font face="Bookman Old Style"> </font><font face="Arial Narrow">NUMERIQUE</font></font></b><font face="Bookman Old Style">"
+(Que tout le monde connait). Une charte haute d&eacute;finition et homog&egrave;ne,
+&agrave; ma connaissance sans &eacute;gale pour une utilisation dans le
+cadre de l'&eacute;preuvage.</font></center>
+</blockquote>
+</td>
+</tr>
+</table></center>
+<a href="index.html">Retour &agrave; l'accueil</a>
+</body>
+</html>

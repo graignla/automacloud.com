@@ -1,0 +1,1199 @@
+Diver HBA : Qlogic ; HP ; RedHat (Tous fait sur la base de Qlogic)
+Redhat utilise le demon "multipathd" et le /dev/mapper
+HP & Qlogic offre la possibilité de faire realiser un mappage hardware ne montrant qu'un seul path a l'OS.
+
+montrer l'adresse ip
+hostname -i
+
+
+wget depuis l'exterieur par le proxy : Exemple ->
+wget ftp://anonymous%40ftp.hp.com@proxy_prof.caic.com/pub/softlib2/software1/supportpack-linux/p1130755984/v45796/psp-8.10.rhel4.x86_64.en.tar.gz
+ou
+wget ftp://anonymous%40ftp.hp.com@proxy_prof.caic.com:/pub/softlib2/software1/supportpack-linux/p1130755984/v45796/psp-8.10.rhel4.x86_64.en.tar.gz
+
+PARTITION : Pour creer des partitions sous linux : 3 méthodes.
+1) fdisk (Taille limitée à 2Teras
+2) GPT (GnuPart)
+3) LVM
+
+Pour les base de donéées, on peut utiliser le FS Ext2, car ...
+
+hp/hp_fibreutile/adapteur info
+lssd
+lshd 
+
+SYBASE : connaitre les dataserver qui tourne:
+pgrep -fl dataserv|sed "s/.*dataserver -s\([a-zA-Z]*\) .*/\1/"|grep -v ^[0-9]
+
+
+Compilation de programme c
+++++++++++++++++++++++++++
+fred@bar ~ $ tar -zvxf wget-1.5.3.tar.gz
+fred@bar ~ $ cd wget-1.5.3
+fred@bar ~/wget-1.5.3 $ less README
+fred@bar ~/wget-1.5.3 $ ./configure
+fred@bar ~/wget-1.5.3 $ make
+fred@bar ~/wget-1.5.3 $ su
+root@bar /home/fred/wget-1.5.3 # make install
+
+ou
+
+foo:~ $ ls -la rootkit.c
+-rw-rw-r-- 1 jack jack 3736 Mar 24 15:42 rootkit.c
+foo:~ $ cc -o rootkit rootkit.c
+
+
+swap : trouver de l'info sur le swap :
+++++++++++++++++++++++++++++++++++++++
+top
+cat /proc/swaps ou /sbin/swapon -s
+(/sbin/swapon = /sbin/swapoff)
+
+exemple creation swap dans un fichier de 2 mega:
+# swapon -s
+$ free
+$ dd if=/dev/zero of=testswap bs=1k count=2000  # creation d'un fichier equiv mkfile
+$ /sbin/mkswap testswap
+# swapon testswap
+# swapon -s
+$ free
+# swapoff testswap
+$ free
+
+Documentation : exemple sur expression reguliere :
+++++++++++++++++++++++++++++++++++++++++++++++++++
+info --apropos regular
+info regex
+
+
+
+
+trouver un package a partir du nom de la commande quand celle-ci n'est pas sur la machine qui est enregistrée sur le satellite avec yum
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[troot@sapn001 ~]# yum provides "*/uuencode"
+Loaded plugins: rhnplugin, security
+Excluding Packages in global exclude list
+Finished
+clone-rhel-i386-server-5/filelists                                                                                                 |  17 MB     00:01
+
+sharutils-4.6.1-2.i386 : The GNU shar utilities for packaging and unpackaging shell archives.
+Repo        : clone-rhel-i386-server-5
+Matched from:
+Filename    : /usr/bin/uuencode
+
+
+Pour la visite des mec de hp pour le san mardi 20 Oct :
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+paarc001:/disk01/amanda/amandadumps/iozone/mk_test1 (resultat sous /disk01/paarc001_XXXXXX_XXXX_disk01_amanda_amandadumps_iozone
+Christian.Combarieu@hp.com
+olivier.jovene@hp.com
+
+
+parametrage TCP/IP : voir et modifier 
++++++++++++++++++++++++++++++++++++++
+grep "." /proc/sys/net/ipv4/conf/eth0/*
+
+/proc/sys/net/ipv4/conf/eth0/accept_redirects:1
+/proc/sys/net/ipv4/conf/eth0/accept_source_route:0
+/proc/sys/net/ipv4/conf/eth0/arp_announce:0
+/proc/sys/net/ipv4/conf/eth0/arp_filter:0
+/proc/sys/net/ipv4/conf/eth0/arp_ignore:0
+/proc/sys/net/ipv4/conf/eth0/bootp_relay:0
+/proc/sys/net/ipv4/conf/eth0/disable_policy:0
+/proc/sys/net/ipv4/con..............
+...........
+...etc
+
+
+Quand les fichiers speciaux des physicals volumes sont abscents alors que que les metadata du superbloc pointent dessus:
+++++++++++++++++++++++++++
+>>vgchange -a y VolGroup<<  -> (vgchange -available yes) >>ou>> pour tout rendre available: vgchange -ay
+++++++++++++++++++++++++++
+root@nc6000# lvm lvscan
+        inactive '/dev/VolGroup/lv_root' 30,27 GB inherit
+        inactive '/dev/VolGroup/lv_swap' 1,00 GB inherit
+        ACTIVE '/dev/vg_nc6000/lv_home' 46,84 GB inherit
+        ACTIVE '/dev/vg_nc6000/lv_root' 30,00 GB inherit
+        ACTIVE '/dev/vg_nc6000/lv_swap' 2,00 GB inherit
+root@nc6000#
+Quand le probleme existe au reboot:
++++++++++++++++++++++++++++++++++++
+pasyb073:/etc [troot 108]-# cat /etc/init.d/activate_lv_for_this_machine_at_reboot
+#!/bin/bash
+. /etc/init.d/functions
+if /sbin/lvm.static vgscan > /dev/null 2>&1 ; then
+   action $"Activating Logical Volume for all Volume groups:" /sbin/lvm.static vgchange -a y
+fi
+
+
+root@nc6000# pvscan
+        PV /dev/sdb5 VG VolGroup lvm2 [31,27 GB / 0 free]
+        PV /dev/sda6 VG vg_nc6000 lvm2 [78,84 GB / 0 free]
+        Total: 2 110,11 GB / in use: 2 110,11 GB / in no VG: 0 0
+
+root@nc6000# vgscan
+        Reading all physical volumes. This may take a while...
+        Found volume group "VolGroup" using metadata type lvm2
+        Found volume group "vg_nc6000" using metadata type lvm2
+
+root@nc6000# vgchange -a y VolGroup
+        2 logical volume(s) in volume group "VolGroup" now active
+
+root@nc6000# lvscan
+        ACTIVE '/dev/VolGroup/lv_root' 30,27 GB inherit
+        ACTIVE '/dev/VolGroup/lv_swap' 1,00 GB inherit
+        ACTIVE '/dev/vg_nc6000/lv_home' 46,84 GB inherit
+        ACTIVE '/dev/vg_nc6000/lv_root' 30,00 GB inherit
+        ACTIVE '/dev/vg_nc6000/lv_swap' 2,00 GB inherit
+root@nc6000#
+root@nc6000# mkdir fc10
+root@nc6000# mount /dev/VolGroup/lv_root /media/fc10/
+
+
+Pour tenter de rendre les montages persistants : (Ne fonctionne pas)
+mount|awk '{print $1}'|xargs ls -l|awk '{print "lvchange -My  --major "$5" --minor "$6,$10}'|sed "s/,//" > /tmp/cmde.sh.lvm.lagra
+umount $(mount|egrep "log|data"|awk '{print $3}')
+cat /tmp/cmde.sh.lvm.lagra|sh
+lvchange -My  --major 253 --minor 5 /dev/mapper/vega_vg-log05
+lvchange -My  --major 253 --minor 6 /dev/mapper/vega_vg-log06
+lvchange -My  --major 253 --minor 57 /dev/mapper/vega_vg-log07
+lvchange -My  --major 253 --minor 58 /dev/mapper/vega_vg-log08
+
+Autes infos: 
+for I in /dev/mapper/*; do echo -n "$I " ; egrep -w "LABEL=$(e2label $I)" /etc/fstab|awk '{print $1,$2}' ; done
+
+
+
+Pour determiner si une machine a une carte HBA Fibre chanel et comment elle le vit -> Quelques astuces:
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+lspci -s 07:00.* -v
+
+lspci|grep Fibre
+dmesg|grep -i qla
+cat /proc/scsi/qla2xxx/0
+find /proc/scsi -type f|xargs egrep -i "fibre|qlogic|qla"
+ou
+find /proc/scsi -type f|xargs cat|egrep -i "fibre|qlogic|qla"
+
+
+amanda :
+++++++++
+infos sur paexp012:/disk01/amanda/etc/amanda/
+installe sur paarc001:/files/amanda
+
+Envoyer un mail en testant un fichier de log:
++++++++++++++++++++++++++++++++++++++++++++++
+tail -1 log|tee message.tmp|grep -vxqf message && { mail -s test $TO < message.tmp ; cat message.tmp > message; }
+
+
+Infos sur le smart array controller:
+++++++++++++++++++++++++++++++++++++
+[root@bkulc001 proc]# hpacucli ctrl all show status ; hpacucli controller all show
+
+
+
+lsof -p PID
+lsof
+
+Annuaire, notememnt pour l'adresse des filiales : http://pawww002.caic.com/annu/index_fr.jsp
+
+Hp France : From monday to friday from 09h to 17h (except holiday) -> Customer_number:1328 TEL:0826 10 4949
+ou directement pro : 0825 00 41 23
+
+
+rapide synthese de /var/log/messages sur SunOS : awk '{print $5}' /var/adm/messages|cut -f1 -d[|sort|uniq -c|sort
+
+idee de commande pour extraire des lignes comprenant Mesg entre les dernieres occurences de deux chaines.... dur dur
+egrep -nh "start process|stop process" $FIC|cut -f1 -d:|tail -2|tr '\012' ' '|sed "s/$/\n/"|sed "s/\([^ ][^ ]*\) \([^ ][^ ]*\)/awk '\$0 ~\/Mesg\/ \&\& NR > \1 \&\& NR < \2 {print}' $FIC/"|sh
+
+monitoring / itrs /netprob
+Il y a des choses avoir dans
+/files/geneos/NetAgent/NetProbe/etc
+/REF/Applis/itrs/NetAgent/NetProbe/etc
+PRINCIPES:la gatway monitor planiifie des lancement de script qui lui renvoi des informations selon ce principe:
+EXemple
+1)  echo "Process,log,etat,code_erreur
+2)  echo "$PROCESSE,$LOG,$ETAT,$CODERREUR"
+OU autres
+
+Pour ajouter une route static sur une interface bond:
+[root@paslc00y network-scripts]# cat /etc/sysconfig/network-scripts/route-bond0.78
+194.110.98.2/32 via 192.168.211.254
+/etc/init.d/network restart
+
+ou
+
+exemple de fichier zebra.conf:
+++++++++++++++++++++++++++++++++
+[root@paslc00y network-scripts]# cat /etc/zebra.conf
+! -*- zebra -*-
+!
+! zebra sample configuration file
+!
+! $Id: zebra.conf.sample,v 1.14 1999/02/19 17:26:38 developer Exp $
+!
+hostname paslc00y
+password zebra
+enable password zebra
+!
+! Interface's description.
+!
+!interface lo
+interface lo
+interface bond0.78
+! description test of desc.
+!
+!interface sit0
+! multicast
+
+!
+! Static default route sample.
+!
+!
+ip route 194.110.98.2/32 192.168.211.254
+!
+!
+
+!log file zebra.log
+-------------------
+Il faut killer -9 les process zebra et faire un /etc/init.d/zebra start pour prise en compte d'une modif de config
+zebra demmarre a priori si /etc/zebra.conf existe
++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[root@paslc00y network-scripts]# netstat -rn
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+194.110.98.2    192.168.211.254 255.255.255.255 UGH       0 0          0 bond0.78
+192.168.211.224 0.0.0.0         255.255.255.224 U         0 0          0 bond0.78
+10.136.70.32    0.0.0.0         255.255.255.224 U         0 0          0 bond0.309
+145.248.185.128 0.0.0.0         255.255.255.128 U         0 0          0 bond0.35
+0.0.0.0         10.136.70.62    0.0.0.0         UG        0 0          0 bond0.309
+
+
+pour fouiller dans tous les fichiers jusqu'a 2 niveaux:
+ls -lad .[!.]*/.[!.]* */*|grep ^-|awk '{print $NF}'|xargs grep -l XXX
+
+NIS : panis001 : mgr ne" gère pas la base password, il faut donc lire les modifs localement et mettre à jour le nis avec :
+cd /var/yp/cheuvreux ; make -f ../Makefile passwd
+
+
+pamqs003:/disk01/Javelin.4.3.5/aggregate/log -> passage d'ordres
+tail -f /disk01/Javelin.4.3.5/aggregate/log/fulllog_$(date +%Y%m%d).log|tr '\001' '|'
+
+Insight : (Voir Pascal LUISSIER qui s'en occupe)
+https://pains903.caic.com:50000/j_security_check
+LOGIN/PASSWD: -> voir gens du pc pour ouvrir un compte
+
+****************************************************************************************************************
+Do you wish to reconfigure the HP Version Control Agent? [Y/N]Y
+
+
+The hpvca-2.2.1-2.linux.rpm component requires input:
+Please enter the Version Control Repository Manager server name []: insight
+
+
+The hpvca-2.2.1-2.linux.rpm component requires input:
+Please enter the Version Control Repository Manager login user []: vcaccount
+
+
+The hpvca-2.2.1-2.linux.rpm component requires input:
+Please enter the Version Control Repository Manager login user password []:
+Please retype password:
+
+Would you like to save the Configuration parameters?
+NOTE: If yes, they will be stored in /var/hp/hppldu.cfg
+with 'root only' access! [Y/N]: Y
+
+Verification : https://pagnu011.caic.com:2381/
+
+
+
+cpuid :
++++++++
+dmidecode|grep "^[^A-Z]*ID: [^0][^0]"|sed "s/ //g"|cut -f2 -d:|awk '{print "ibase=16;"$0";obase=10;"}'|bc
+
+Pour avoir le détail des lame dans un blade hp :
+++++++++++++++++++++++++++++++++++++++++++++++++
+ssh -l Administrator pabldc35 "SHOW SERVER INFO ALL"
+Server Blade #2 Information:
+        Type: Server Blade
+        Manufacturer: HP
+        Product Name: ProLiant BL460c G1
+        Part Number: 459483-B21
+        System Board Spare Part Number: 438249-001
+        Serial Number: CZJ8300538
+        UUID: 34393534-3338-5A43-4A38-333030353338
+        Server Name: PANWZ020
+        Asset Tag: [Unknown]
+        ROM Version: I15 11/02/2008
+
+        CPU 1: Quad-Core Intel Xeon 3000 MHz
+        CPU 2: Not present
+        Memory: 6144 MB
+
+        Embedded Ethernet
+          NIC 1 MAC Address: 00:21:5A:A8:43:FC
+          NIC 2 MAC Address: 00:21:5A:A8:53:04
+        iSCSI 1 MAC Address: 00:21:5A:A8:43:FD
+        iSCSI 2 MAC Address: 00:21:5A:A8:53:05
+
+
+Pour re-configurer les acces login/password d'une carte ILO pou serveur Proliant qui n'est pas dans un blade:
+hponcfg --writeconfig  /tmp/0
+vi /tmp/0
+hponcfg -f /tmp/0
+
+
+Adresse mail pour remonte automatique d'alerte vers les archi :
+IT.ArchiUnix@smtpnotes.
+
+
+pgrep
+pkill
+C:\WINDOWS\system32\mmc.exe
+C:\WINDOWS\pchealth\helpctr\binaries\msconfig.exe
+
+
+
+-----------------------------------------------------------------------------------
+USERS ROOTS : trfo(4/5)cedech
+-----------------------------------------------------------------------------------
+Du domaine : kroot
+Local : root & troot
+
+-----------------------------------------------------------------------------------
+sapn001 peut aller sur toutes les machine grace a sa clé public ssh, même si la machine n'est pas inscrite dans le NIS.
+-----------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------------
+INSTALLATION VMware:
+----------------------------------------------------------------------------------- 
+Il faut être administrateur de son poste pour l'installer correctement.
+kickstart :
+1) Repérer la mac du PC a installer
+2)root@pajps001 # cd /tftpboot/pxelinux.cfg
+3)cp default.5u2 01-00-0c-29-c8-da-e7
+4)vi 01-00-0c-29-c8-da-e7
+	..../disk01/jumpstart_linux_redhat_AS5_update2/...
+
+------------
+-----------------------------------------------------------------------
+JUMSTART / KIKSTART
+-----------------------------------------------------------------------------------
+5) (ds autre fenêtre) : cd /disk01/jumpstart_linux_redhat_AS5_update2
+cp reference.cfg ks-pavmw001.cfg ; ls -l
+...
+-rw-r--r--   1 root     other       4723 Dec  4 15:05 ks-zunis004-bis.cfg
+-rw-r--r--   1 root     other       4718 Feb 16 09:52 ks-pavmw001.cfg
+-rw-r--r--   1 root     other       4718 Sep 22 11:30 reference.cfg
+...
+APRES EDITION :
++++++++++++++++
+root@pajps001 # diff reference.cfg ks-bkslc001.cfg
+5c5
+< nfs --server 10.136.51.225 --dir /disk01/jumpstart_linux_redhat_AS5_update3_AMD64
+---
+> nfs --server 10.136.23.1 --dir /disk01/jumpstart_linux_redhat_AS5_update3_AMD64
+24c24
+< network --device eth0 --bootproto static --ip 10.136.51.175 --netmask 255.255.255.224 --gateway 10.136.51.254 --nameserver=10.136.70.73 --hostname pa-
+---
+> network --device eth0 --bootproto static --ip 10.136.23.98 --netmask 255.255.255.0 --gateway 10.136.23.254 --nameserver=10.136.22.1 --hostname bkslc001
+139c139
+< HOSTNAME=pa-
+---
+> HOSTNAME=bkslc001
+
+
+SI ON VEUT CONSERVER /disk01
+++++++++++++++++++++++++++++
+#preserve# #bootloader
+#preserve# bootloader --location=mbr
+#preserve# # The following is the partition information you requested
+#preserve# # Note that any partitions you deleted are not expressed
+#preserve# # here so unless you clear all partitions first, this is
+#preserve# # not guaranteed to work
+#preserve# zerombr yes
+#preserve# clearpart --initlabel --all
+#preserve# part /boot --fstype ext3 --size=128 --ondisk=cciss/c0d0
+#preserve# part / --fstype ext3 --size=5120 --ondisk=cciss/c0d0
+#preserve# part /var --fstype ext3 --size=3072 --ondisk=cciss/c0d0
+#preserve# part swap --size=4096 --ondisk=cciss/c0d0
+#preserve# part /disk01 --fstype ext3 --size=1 --grow --ondisk=cciss/c0d0
+
+# on garde la table des partitions et le contenu de /disk01. Les
+# tailles des partitions --size ne sont pas importantes avec l'option
+# --onpart
+bootloader --location=mbr
+zerombr no
+part /boot --fstype ext3 --size=128 --onpart cciss/c0d0p1
+part / --fstype ext3 --size=5120 --onpart cciss/c0d0p2
+part /var --fstype ext3 --size=3072 --onpart cciss/c0d0p5
+part swap --size=4096 --onpart cciss/c0d0p3
+part /disk01 --fstype ext3 --size=1 --onpart cciss/c0d0p6 --noformat
+
+
+6) Dans vi /tftpboot/pxelinux.cfg/01-00-0c-29-c8-da-e7
+	..../disk01/jumpstart_linux_redhat_AS5_update2/pavmw001
+
+7) vi /disk01/jumpstart_linux_redhat_AS5_update2/pavmw001
+
+network --bootproto=static --device=eth0 --gateway=10.136.54.254 --ip=10.136.54.38 --netmask=255.255.255.0 --nameserver=145.248.13.141 --host
+name=pavmrh01
+
+part /boot --fstype ext3 --size=128 --ondisk=sda
+part / --fstype ext3 --size=5120 --ondisk=sda
+part /var --fstype ext3 --size=3072 --ondisk=sda
+part swap --size=4096 --ondisk=sda
+part /disk01 --fstype ext3 --size=1 --grow --ondisk=sda
+
+
+8)DHCP : le serveur depend du reseau
+http://padns003/WebDhcp/
+http://panis005/WebDhcp/
+	Choir "DOUMER" -> restreindre
+	inscrire la machine et vérifier qu'elle est bien dans la liste
+NOTE : Pour rajouter des package après l'installation automatique :
+mkdir /mnt/perso_general
+mount -t nfs -o udp 10.136.51.225:/disk01/jumpstart_linux/perso_general /mnt/perso_general
+
+
+
+-----------------------------------------------------------------------------------
+DHCP : voir les requette sur son sous reseau : killer le dhcpd et le relancer en mode debug :  /usr/local/sbin/dhcpd  -d (SUN)
+Aussi : snoop -d bge0pwd
+snoop -o /tmp/capturesnoop port 67 port 68
+-----------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------
+awk : ypcat hosts|awk '{print substr($2,1,5)}'
+-----------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------
+Liste des serveurs NIS : ypcat -k ypservers|sort
+-----------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------
+SCRIPT DAILY :
+-----------------------------------------------------------------------------------
+Il sont dans sapn001:/disk01/ftp_server/pub/aa/script/rc.daily.d
+
+
+admin unix : ps -ef donne le nom des binaires - lsof (ls open files) les fichiers ouverts - lsof|grep -i ntpe
+exemple :
+# lsof -p 17776
+COMMAND   PID   USER   FD   TYPE DEVICE    SIZE   NODE NAME
+bash    17776 ducamp  cwd    DIR    3,9    4096  32163 /home/ducamp
+bash    17776 ducamp  rtd    DIR    3,9    4096      2 /home
+admin unix reseau catalyst : un utilitaire (cdpr) permet de de connaitre le nom du catalyst auquel on la machine chaque inerface de la machine.
+
+admin unix : cat /proc/net/bonding/bond0 : donne des informations sur la carte logique "bond" qui réuni deux cartes physique pour redondance ou double perf.
+exemple de config sans VLAN : (Voir http://www.phcha.com/documentation/Fiche.php?num=74#label0000176)
+==> /etc/modprobe.conf <==
+
+alias bond0 bonding
+alias eth0 bnx2x
+alias eth1 bnx2x
+alias scsi_hostadapter cciss
+alias net-pf-10 off
+options bond0 miimon=100 mode=active-backup primary=eth0
+
+==> ifcfg-bond0 <==
+DEVICE=bond0
+ONBOOT=yes
+BOOTPROTO=none
+USERCTL=no
+IPADDR=10.136.102.33
+NETMASK=255.255.255.224
+BONDING_OPTIONS="mode=active-backup primary=eth0 miimon=5000"
+
+
+==> ifcfg-eth0 <==
+# Broadcom Corporation NetXtreme II BCM57711E 10Gigabit PCIe
+DEVICE=eth0
+ONBOOT=yes
+USERCTL=no
+MASTER=bond0
+SLAVE=yes
+BOOTPROTO=none
+TYPE=Ethernet
+
+==> ifcfg-eth1 <==
+# Broadcom Corporation NetXtreme II BCM57711E 10Gigabit PCIe
+DEVICE=eth1
+ONBOOT=yes
+USERCTL=no
+MASTER=bond0
+SLAVE=yes
+BOOTPROTO=none
+TYPE=Ethernet
+
+==> ifcfg-lo <==
+DEVICE=lo
+IPADDR=127.0.0.1
+NETMASK=255.0.0.0
+NETWORK=127.0.0.0
+# If you're having problems with gated making 127.0.0.0/8 a martian,
+# you can change this to something else (255.255.255.255, for example)
+BROADCAST=127.255.255.255
+ONBOOT=yes
+NAME=loopback
+
+
+
+
+
+client sql : /bin/sqlsh
+********************************************************************************************
+Recapitulatif tache de deploiement:
+
+En livraisons, les applis arrivent dans
+---------------------------------------
+	/projet/$OS_VER/$aplli_name
+	EX:
+	/projet/Linux2.6/AthexClearingIntegrator/etc
+
+
+CREATE.SH
+---------
+	DE_PROJET_A_REF
+	---------------
+	Editer le script /REF/Applis/reference/DE_PROJET_A_REF
+		Mettre en valeur de "A" le nom de l'appli EX: AthexClearingIntegrator
+
+	Lancer create.sh :
+		cd /REF/Applis/reference
+		sh /create.sh nom_appli_en_minuscules
+	Cette operation crée l'arborescence suivants:
+/REF/Applis/athexclearingintegrator
+/REF/Applis/athexclearingintegrator/INSTALL
+/REF/Applis/athexclearingintegrator/INSTALL/DE_HC_A_PROD
+/REF/Applis/athexclearingintegrator/INSTALL/DE_PROJET_A_HC
+/REF/Applis/athexclearingintegrator/INSTALL/README.first
+/REF/Applis/athexclearingintegrator/INSTALL/NETGROUP
+/REF/Applis/athexclearingintegrator/INSTALL/MISE_EN_PROD_BINAIRE.log
+/REF/Applis/athexclearingintegrator/etc
+/REF/Applis/athexclearingintegrator/etc/start_athexclearingintegrator
+/REF/Applis/athexclearingintegrator/etc/stop_athexclearingintegrator
+/REF/Applis/athexclearingintegrator/etc/.cvsignore
+/REF/Applis/athexclearingintegrator/conf
+/REF/Applis/athexclearingintegrator/conf/.cvsignore
+/REF/Applis/athexclearingintegrator/conf/athexclearingintegrator.ini
+/REF/Applis/athexclearingintegrator/.cvsignore
+
+	DE_HC_A_PROD et DE_PROJET_A_HC
+	------------------------------
+	Editer ces deux scripts et en effacer les lignes inutiles (De Linux ou de SunOS)
+	Lancer ces deux scripts qui vont copier les binaires sur:
+/REF/Linux2.6/athexclearingintegrator/bin.2.6/athexclearingintegrator_hc
+/REF/Linux2.6/athexclearingintegrator/bin.2.6/athexclearingintegrator		 
+
+	Comparer les 2 scripts pour finaliser le 1er a partir du 2eme
+	-------------------------------------------------------------
+/REF/Applis/athexclearingintegrator/etc/start_athexclearingintegrator
+	et
+/projet/Linux2.6/AthexClearingIntegrator/etc/start_athexclearingintegrator
+
+	DEPLOYER EN PROD OU EN HOMOLOGATION
+	-----------------------------------
+
+Pour savoir sur quelles serveurs sont déja déployées les applis
+____________________________
+sapn001:
+ 
+____________________________
+Infos aussi presente dans la base parc
+alimenté par les scripts : filechecker netchecker pschecker dont ls fichier de conf sont sur sapn001:/REF/Applis/xxchecker/conf
+Infods aussi presente dans les netgroup NIS
+Les scripts 
+
+
+chemin des applications sur sapn001
+root@sapn001 # pwd
+/REF/Applis (homologation)
+La presence d'un rep CVS indique que que cvs est utilisé
+cvs add start_athexdealintegrator (mettre start_athexdealintegrator dans la gestion cvs)
+cvs commit start_athxdealintegrator (creer un point de restauration pour start_athexdealintegrator)
+tester les differences : cvs diff -u start_athexdealintegrator
+
+/projet (Livraison)
+
+
+Pour un deploiement, lire le README.1st dans le rep de l'application
+Exemple de deploiement :
+/REF/Applis/etc/make_install_in_new -a athexdealintegrator -s -p pasap012
+/REF/Applis/etc/make_move_new_inprod -a athexdealintegrator -s -h pasap012
+
+sur les serveur d'application : exemple pour determiner la version du bianire :
+[root@bksap012 bin.2.6]# strings athexdealintegrator|grep CACV
+@(#)CACVersion athexdealintegrator Version 1.0 12/11/2008 17:04:41
+
+exemple pour verifier les changements inervenus suite a un deployement
+Comparer athexdealintegrator et athexdealintegrator.new
+diff -rub athexdealintegrator athexdealintegrator.new
+
+Comparaison de variables entre le .ini et start_ : exemple
+root@sapn001 # for I in $(grep "export " start_athexclearingintegrator.projet|awk '{print $2}'); do grep $I ../conf/athexclearingintegrator.ini; done|sed "s/.*[{]\(.*\)[}].*/\1/"|sort|uniq -c
+   2 ATHEXCLEARINGINTEGRATOR_HOME
+   1 ATHEXCLEARINGINTEGRATOR_LOG_NAME
+   1 ATHEXCLEARINGINTEGRATOR_PREFIX
+   1 EUROMIDDLE_DB
+   2 EUROMIDDLE_DB_DATABASE
+   2 EUROMIDDLE_DB_PASSWORD
+   2 EUROMIDDLE_DB_USER
+   1 PROCESSSHORTNAME
+root@sapn001 # grep "export " start_athexclearingintegrator.projet |awk '{print $2}'|sort|uniq -c
+   1 ATHEXCLEARINGINTEGRATOR_APP_NAME
+   1 ATHEXCLEARINGINTEGRATOR_HOME
+   1 ATHEXCLEARINGINTEGRATOR_INI_NAME
+   1 ATHEXCLEARINGINTEGRATOR_LOG_NAME
+   1 ATHEXCLEARINGINTEGRATOR_PREFIX
+   1 EUROMIDDLE_DB
+   1 EUROMIDDLE_DB_DATABASE
+   1 EUROMIDDLE_DB_PASSWORD
+   1 EUROMIDDLE_DB_USER
+   1 FORCE
+   1 LD_LIBRARY_PATH
+   1 MAILTO
+   1 PROCESSSHORTNAME
+   1 SFTP_DIR
+   1 SFTP_HOSTNAME
+   1 SYBASE
+   1 VERBOSE
+root@sapn001 # for I in $(grep "export " start_athexclearingintegrator.projet |awk '{print $2}'); do grep $I ../conf/athexclearingintegrator.ini; done|sed "s/.*[{]\(.*\)[}].*/\1/"|sort|uniq -c|egrep -v "ATHEXCLEARINGINTEGRATOR_APP_NAME|ATHEXCLEARINGINTEGRATOR_HOME|ATHEX_CLEARINGINTEGRATOR_INI_NAME|ATHEXCLEARINGINTEGRATOR_LOG_NAME|ATHEXCLEARINGINTEGRATOR_PREFIX|EUROMIDDLE_DB|EUROMIDDLE_DB_DATABASE|EUROMIDDLE_DB_PASSWORD|EUROMIDDLE_DB_USER|FORCE|LD_LIBRARY_PATH|MAILTO|PROCESSSHORTNAME|SFTP_DIR|SFTP_HOSTNAME|SYBASE|VERBOSE"
+(Ne dois rien sortir....)
+**********************************************************************************************
+
+#echo "\$(md5sum commande) toto titi" > test
+#cat test
+$(md5sum commande) toto titi
+
+#eval echo $(cat test)
+d850cd3d2f26a3812c1dfbbfc76cba6f commande toto titi
+
+Lire un fichier a l'envers avec awk :
+awk '{line[++count]=$0} END {for(i=count;i>0;i--) print line[i]}' /etc/passwd
+avec sed
+# reverse order of lines (emulates "tac")
+ # bug/feature in HHsed v1.5q causes blank lines to be deleted
+ sed '1!G;h;$!d'               # method 1
+ sed -n '1!G;h;$p'             # method 2
+
+PLEIN DE SUPERS EXMPLES SED SUR http://sed.sourceforge.net/sed1line.txt
+
+crontab:
+minute (0-59),hour (0-23),day of the month (1-31),month of the year (1-12),day of the week (0-6 with 0=Sunday).
+
+ntpq -c pe
+donne des infos sur le fonctionnement ntp de la machine
+demarrage sur Linux : service ntpd start
+ntpdate -d IP_ADDR pour checker les serveur donne par la cde "ntpq -c pe"
+
+-----------------------------------------------------------------------------------
+YP: Sur solaris, la config indiquant le(s) serveur(s) du domainels - nis est dans le rep: /var/yp/binding/cheuvreux
+-----------------------------------------------------------------------------------
+root@panis001 # cat /var/yp/binding/cheuvreux/ypservers
+localhost ->(Pas de ligne "localhost" pour les clients)
+panis001
+panis004
+panis003
+panis006
+
+
+
+
+-----------------------------------------------------------------------------------
+makedbm - make a dbm file, or get a text  file  from  a  dbm
+-----------------------------------------------------------------------------------
+pour generer ou lire des map nis sous Linux   /usr/lib/yp/makedbm -u dbname
+pour generer ou lire des map nis sous Solaris /usr/sbin/makedbm
+Pour les deux en même temps:PATH=$PATH:/usr/lib/yp ; makedbm -u /var/yp/cheuvreux/ypservers|grep YP_LAST_MODIFIED
+
+-----------------------------------------------------------------------------------
+logger son tty : script -a nom_fic (Faire exit pour sortir)
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+Virer les ^M (controlM) dans un fichier texte : dos2unix (unix2dos inversement)
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+sur le serveur NFS (panfs001 qui est un netapp) : exportfs -> donne la liste des fs exportés
+-----------------------------------------------------------------------------------
+exportfs -f PATH pour flusher les infos de montages (Qui peuvent merder suite à des modifs)
+
+-----------------------------------------------------------------------------------
+Sur switch fiber chanel Qlogic (pamfcc01) : show topology
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+Pour gerer les acces ssh sur tous le site : root@sapn001:/files/distribute_ssh_keys/etc/README
+-----------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------
+gzip -dc fic.tar.gz|tar xvf -
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+Liste des machines vivantes :
+-----------------------------------------------------------------------------------
+sapn001:/files/ftp_server/pub/aa/result
+ls /files/ftp_server/pub/aa/result|grep ".*[a-Za-z][a-Za-z]*[0-9]\{3\}.*"|sed "s/.*\.\([a-Za-z][a-Za-z]*[0-9]\{3\}\).*/\1/"|sort -u
+
+
+-----------------------------------------------------------------------------------
+changer la date du dernier fsck Sur les machine sun sous Linux
+-----------------------------------------------------------------------------------
+Demarrer en single : Avec les menus de GRUB
+Pour modifier la date du dernier chekup des FS (Ou les regles de verif auto) : tune2fs
+(tous les 30 montages ou 180 jours)
+
+
+-----------------------------------------------------------------------------------
+Problème d'acces du shell a des fichiers commencant par "-"
+-----------------------------------------------------------------------------------
+Renomer : mv -- -FIC FIC
+
+
+-----------------------------------------------------------------------------------
+VI: Virer des lignes
+-----------------------------------------------------------------------------------
+:%g/^$/d   pour effacer toutes les lignes vides
+:%g/^OK/d  pour effacer toutes les lignes commancant par OK
+
+-----------------------------------------------------------------------------------
+options utile des grep standarts de sun :
+-----------------------------------------------------------------------------------
+grep -w ; egrep "exp1|exp2|exp3|etc"
+
+
+-----------------------------------------------------------------------------------
+Convertion de hexa en decimal
+-----------------------------------------------------------------------------------
+echo "ibase=16;FF;obase=10;" | bc
+255
+
+
+-----------------------------------------------------------------------------------
+CONVERTIR un netmask hexa en decimal :
+-----------------------------------------------------------------------------------
+NETMASK=ffffff80
+DECIM=$(for HEX in $(echo $NETMASK|tr [:lower:] [:upper:]|sed "s/\(..\)\(..\)\(..\)\(..\)/\1 \2 \3 \4/");do echo "ibase=16;$HEX;obase=10;"|bc|tr '\012' '.';done)
+DECIM=$(echo $DECIM|sed "s/.$//")
+
+-----------------------------------------------------------------------------------
+changement de hostname sur une linux:
+-----------------------------------------------------------------------------------
+[troot@passh001-bis etc]# find .|xargs grep passh001-bis
+./mail/submit.cf:##### built by root@passh001-bis on Tue Oct 21 21:06:37 CEST 2008
+./mail/local-host-names:passh001-bis
+./mail/local-host-names:passh001-bis.caic.com
+./mail/local-host-names:passh001-bis.cheuvreux
+./squid/squid.conf:visible_hostname passh001-bis.caic.com
+./sysconfig/network:HOSTNAME=passh001-bis
+./hosts:127.0.0.1   passh001-bis localhost.localdomain localhost
+
+et donc en résumé :
+/etc/mail/submit.cf
+/etc/mail/local-host-names
+/etc/mail/local-host-names
+/etc/mail/local-host-names
+/etc/squid/squid.conf
+/etc/sysconfig/network
+/etc/hostsps
+
+Faire
+service network restart
+Pour prise en compte des changements sans redemarrage
+
+
+-----------------------------------------------------------------------------------
+FICHIERS CACHES SAUF . et ..
+-----------------------------------------------------------------------------------
+ls -ad .[!.]*
+.Xauthority          .env                 .history_dev_pts_37  .history_dev_pts_66  .logout.old          .mozilla             .sh_history
+.amandahosts         .history_dev_pts_1   .history_dev_pts_47  .historynot          .lsof_sapn001        .mysql_history       .ssh
+
+
+-----------------------------------------------------------------------------------
+Pour chowner automatiquement les home dir de tous les user de /home
+-----------------------------------------------------------------------------------
+cd /home
+for I in *; do chown -R $(id -u $I):$(id -g $I) $I; done
+
+
+-----------------------------------------------------------------------------------
+PLEIN D'INFOS SUR paexp005:/files/papor par notre ami Pascal Porteau
+-----------------------------------------------------------------------------------
+
+
+Pour les demandes administrative, adresser mail IT
+
+-----------------------------------------------------------------------------------
+SYBASE : Asynchronus IO
+-----------------------------------------------------------------------------------
+[root@pasyb019 ~]# sysctl -a|grep aio (Lecture dynamique)
+fs.aio-max-nr = 131072
+fs.aio-nr = 71694
+
+[root@pasyb019 ~]# sysctl -a|grep file-max
+fs.file-max = 25230352
+
+fichier de config : /etc/sysctl.conf
+fs.aio-max-nr = 131072 (aio-max-nr allows you to change the maximum value /proc/sys/fs/aio-nr can grow to)
+fs.aio-nr = 81936      (aio-nr shows the current system-wide number of asynchronous io requests.)
+-----------------------------------------
+SYBASE : Script de demarrage de sysbase :
+-----------------------------------------
+bksyb019:/etc/init.d/Sybase.BSIRIUS (sh)
+#echo 131072 >/proc/sys/fs/aio-max-nr    # pas necessaire ici : cf /etc/sysctl.conf
+ulimit -n 2048
+
+Modif dynamique :
+(sh:) ulimit -n 2048   ou   (csh:) limit [-h] descriptors 2048
+
+Pour inscrire ca en dur au demarrage pour tous les shell et par user/group : editer /etc/security/limit.conf (Linux)
+<domain>      <type>  <item>         <value>
+sybase          hard    nofile          8192
+@sybase         soft    nofile          1024
+
+
+-----------------------------------------------------------------------------------
+Backuper les paramètre noyau
+-----------------------------------------------------------------------------------
+sysclt -A > /u01/app/oracle/backup/keep_parms.bkp 
+
+
+
+-----------------------------------------------------------------------------------
+Editer une librairie :
+-----------------------------------------------------------------------------------
+nm libnsl-2.3.4.so|more
+(Une librairie a un header avec ses prototypes qui explicite ses entrée et ses sorite)
+
+-----------------------------------------------------------------------------------
+qwerty -> azerty (keyboard clavier) :
+-----------------------------------------------------------------------------------
+loadkeys fr (Passe le clavier en fr)
+
+MRTG : utilitaire qui realise des graphes a partir des infos snmp des routeurs
+et des graphes de toutes sortes : http://www.linux-sottises.net/mrtg.php
+
+Ne garder que les dix derniers "trucs" d'un rep en une ligne : ls -rt1 /DIR/toto.*|tail +10|xargs rm -r
+
+Linux : chkconfig --list|grep ftp
+
+-----------------------------------------------------------------------------------
+UFSDUMP
+-----------------------------------------------------------------------------------
+ufsdump 0f /disk01/slash.dump /
+FTP de machine à machine de même type vers DIRDEST
+cd /
+ufsrestore -i /DIRDEST/slash.dump
+add ...
+add ...
+extract
+yes
+yes
+1 (Selection du n° de fs)
+quit
+---------------
+Solaris récent : Pour reconstruire les fichiers speciaux de /dev linke dans /devices : /usr/sbin/devfsadm -C (Cleanup)
+
+
+-----------------------------------------------------------------------------------
+shell script : tr -d '\r'
+
+-----------------------------------------------------------------------------------
+reseau : ethernet : interface : Linux : bond :
+/etc/sysconfig/network
+cat /proc/net/bonding/bond
+/etc/modprob.conf
+
+script : tester un format de date : EXEMPLE
+date +%F|tr -d -|egrep "[0-9][0-9][0-9][0-9](0[0-9]|1[0-2])(0[0-9]|[12][0-9]|3[01])"
+
+
+-----------------------------------------------------------------------------------
+Moyen automatique de detecter les fichiers de configuration reseau sur une machine unix :
+-----------------------------------------------------------------------------------
+GREP=$(ifconfig -a|grep Bcast|sed "s/:/ /g"|awk '{print $3"|"$7}')
+GREP="$GREP|$(netstat -rn|awk '{print $2}'|grep -v 0.0.0.0|grep ".*\..*\..*\..*"|awk '{print $1}')"
+find /etc -type f|xargs egrep -n "$GREP"|sed "s/#.*//"|grep -v "^[ |\t]*$"
+
+--------------------A--EDITER------------------------------------------------------
+./sysconfig/network-scripts/ifcfg-eth0:NETMASK=255.255.255.224
+./sysconfig/network-scripts/ifcfg-eth0:IPADDR=192.168.213.54
+./hosts:192.168.213.54  pasyb038
+./rc.d/init.d/start_firewall:PASYB038="192.168.213.54"
+./sysconfig/network:GATEWAY=192.168.213.49
+------------------Puis, Sur RedHat: service network restart------------------------
+autre :
+/etc/hosts:6:10.136.98.112   sapn001-bis
+/etc/sysconfig/network:4:GATEWAY=10.136.98.126
+/etc/sysconfig/network-scripts/ifcfg-eth0:6:IPADDR=10.136.98.112
+/etc/sysconfig/network-scripts/ifcfg-eth0:7:NETMASK=255.255.255.224
+-----------------------------------------------------------------------------------
+
+
+Fonction permettant de rapdement savoir qui est autorise a se connecter sur une machine
+---------------------------------------------------------------------------------------
+autor()
+{
+ssh $1 "sed \"s/.*\( .*@.*\)$/\1/\" .ssh/authorized_keys2"
+}
+
+debugging de connexion ssh : ssh -v -l samal padev050
+
+$ eval `ssh-agent`; ssh-add
+Enter passphrase
+
+Tarer une appli sans ses cvs et sans autres fichiers tar :
+----------------------------------------------------------
+cd /files/appli_name
+tar cvf tar.tar $(find . -type f|egrep -iv "cvs|.*\.tar$")
+tar cvf /tmp/tar.tar $(find . -type f|egrep "^\./arc/[0][4][0][5]|^\./[^a]")
+tar cvf /tmp/tar.tar $(find . -type f| egrep "^\./arc/....[0][4][0][56]|^\./[^a]"|grep -v "\./log/error")
+
+Possibilite de ne pas specifier "-type f" en utilisant le GNU tar : tar --no-recursion -cvf archive
+EXEMPLE SYMPA :
+[root@sapn001 reuterdatascope]# tar --no-recursion -cvf newtar.tar $(tar tf sauvegarde_reuterdatascope1.9.tar)
+./
+./etc/
+./etc/reuterdatascope.awk
+./etc/split_infile_for_fmt.awk
+./etc/check_file.ksh
+./etc/download_file.ksh
+./etc/functions.ksh
+./etc/gen_reuterdatascope.ksh
+./etc/get_reuterdatascope.ksh
+./etc/init_reuterdatascope
+./etc/load_reuterdatascope.ksh
+./etc/start_reuterdatascope
+
+extraire toutes les variables d'un script
+------------------------------------------
+grep "[^ ]=[^ ]" start_euromiddlespanishcompilation.old|cut -f1 -d=|awk '{print $NF}'|sort -u
+
+------------------------------------------
+NIS/NFS
+------------------------------------------
+NIS=panis001 & NFS=panfs001
+
+[root@sapn001 ~]#  ypcat hosts|grep panfs.01
+10.136.49.84    panfs001
+145.248.14.90   panfs101
+
+
+Pour voir les export d'une machine :
+[root@bkslc001 root]# showmount -e bkjps001
+
+Lors d'une demande de montage automount, nis (Dont les map sources sont panis001:/etc/auto.*) renvoient les infos du serveur NFS et de l'export correspondant.
+Le serveur NFS netapp (panfs001) regarde dans le ./etc/exports (A cote du home qui est exporte) le netgroup auquel appartient le client demandant le montage.
+Le client monte l'export avec les droits qu'il a dans les netgroup. 
+
+Pour savoir quel serveur sert un point de montage NIS Automount :
+root@panis001 # /
+
+Pour savoir a quel(s) netgroup(s) appartient une machine/ou la machine executante :
+ypcat -k netgroup|/usr/xpg4/bin/grep -w $(hostname)|awk '{print $1}'
+
+Pour savoir quelles machine sont dans un netgroup : (Pas sur a 100%)
+ypmatch $(ypmatch $(ypmatch GEinfo_pa netgroup) netgroup) netgroup|sed "s/[^a-z0-9-]/ /g"|tr -s " " '\012'|grep "........*"
+SINON : LIB="/files/misc/lib" ; . $LIB/lib_netgroup ; extract_netgroup info_pa  station (info_pa de GEinfo_pa par exemple)
+
+Lister les machines inscrites dans les netgroup :
+ypcat netgroup|tr -s " " '\012'|grep "^("|sed "s/[(]\([-0-9a-z_]\{5,12\}\),.*/\1/"|grep "[a-z]"|sort -u
+
+
+
+
+
+Pb sendmail en dmz:
++++++++++++++++++++
+vi /etc/mail/service.switch  -> virer le dns et les nis
+service sendmail restart
+sendmail -q si nécessaire
+log dans /var/log/maillog
+voir la queue disparaitre : ls /var/spool/mqueue|wc -l
+
+Gestion CVS:
+++++++++++++
+cd REP
+root@sapn001 # ls
+CVS REP FIC ...
+cvs diff -u .
+cvs commit .
+## On se retrouve dans un rapport sous vi, qu'on valide avec :wq
+cvs add INSTALL etc/reuterdatascope_funds.fmt etc/reuterdatascope_warrants.fmt
+cvs commit .
+## On se retrouve dans un rapport sous vi, qu'on valide avec :wq
+cvs diff -u .
+++++++++++++
+
+RHN SATELLITE
+++++++++++++++
+https://parhs001/rhn/
+n'afficher que les ligne non vide et non commentees : egrep -v "^ *[#]|^$" ./rhn/satellite-httpd/conf/httpd.conf
+
+
+getent -> cherche a resoudre comme le ferait une appli (Tous les service de resolutions disponibles peuvent etre sollicites)
+ypmatch -> resoud uniquement avec les nis.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[troot@sapn001 INSTALL]# getent passwd lagra
+lagra:wYG476NelH58s:5016:4993:Laurent Graignic,paexp034,,:/home/exppa/lagra:/bin/ksh
+[troot@sapn001 INSTALL]# ypmatch lagra passwd
+lagra:wYG476NelH58s:5016:4993:Laurent Graignic,paexp034,,:/home/exppa/lagra:/bin/ksh
+[troot@sapn001 INSTALL]#
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Mise a l'heure semi-automatique si il n'y a pas de package ntp:
+while true; do date|grep "..:..:00" && date +%m%d%H%M%y|awk '{print "ssh padev818 \"date "$1"\""}'|sh && break;sleep 1;done
+sinon:
+root@padev818:~# ntpdate pantp001
+ou
+rdate pantp001
+
+
+ILO CONSOLE : la console de pavmw001 est pavmwc01
+carte ilo des machines HP :  exemple
+++++++++++++++++++++++++++++++++++++
+[root@sapn001 etc]# ypcat hosts|grep ambkp001
+10.136.35.9     ambkp001
+[root@sapn001 etc]# ypcat hosts|grep ambkpc
+10.136.35.76    ambkpc01
+
+Super guide linux et IT open source : http://reseau.erasme.org/static/serveurs_linux/
+
+Dans IE : https://ambkpc01/
+log=admincaic
+pass=caicadmin
+On peut se connecter a toutes les ilos d'un blade à partir de celui-ci :
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+https://pabldc38.caic.com/ --> donne acces à :
+[root@panis001 ~]# grep pasyn.* /etc/hosts|grep bld
+10.136.102.33  pasyn001 bld38-01
+10.136.102.34  pasyn002 bld38-02
+10.136.102.35  pasyn003 bld38-03
+10.136.102.36  pasyn004 bld38-04
+
+
+
+
+JAVA : 
+scrip d'install Version 1.6 et binaire sur pasap012
+chemin du binaire : /usr/java/jre1.6.0_13/bin/java
+
+
+isql -U user -S server -P pass -i script.sql
+
+Pour savoir quoi vider en cas de file system sature
++++++++++++++++++++++++++++++++++++++++++++++++++++
+find / -mount -ls -type f|awk '{print $7,$11}'|sort -n|tail |awk '{print $2}'|xargs ls -lrt
+ou
+find / -mount -ls -type f|egrep -v "\.jar$|\.bin$|\.so|\.ln$|\.a$|\.Z$|\.ttf"|awk '{print $7,$11}'|sort -n|tail |awk '{print $2}'|xargs ls -lrt
+
+Blade center
+++++++++++++
+EX: [troot@sapn001 lolo]# ypcat hosts |grep pabldc|grep 22
+10.136.97.245   pabldc22 swc-pas06m608 swc-pas06m608-bis
+10.136.97.245   pabldc22 swc-pas06m608 swc-pas06m608-bis
+10.136.97.245   pabldc22 swc-pas06m608 swc-pas06m608-bis
+-> Se connecter en https avec mozzilia (admincaic+password) choisir sa lame etc... 
+F12 pour aller dans le setup
+
+Pour passer des infos de NIS en local, il faut supprimer le cash avec "nscd -i passwd, group, hosts" (Invalidate)
+/etc/hosts
+/etc/passwd
+/etc/group
+
+info redhat systeme :
+echo $(uname -pr) $(more /etc/redhat-release)|sed -e "s/Red /R/" -e "s/Hat /H/" -e "s/Enterprise /E/" -e "s/Linux /L/" -e "s/Server/S/" -e "s/i686/i686_32bits/" -e "s/x86_64/x86_64bits/"|awk '{print $4,$5" - "$2" - kernel "$1}'
+
+Transformer une liste verticale en liste horizontale séparé par des "|"
+ls|awk  -v ORS="|" '{print}'|sed "s/|$//"
+
+
+Pour lister le contenu d'un RPM non installé:
+---------------------------------------------
+rpm -q --list -p iozone-3-326.i386.rpm
+
+Pour lister le contenu d'un rpm installé :
+------------------------------------------
+[troot@pabkp012 ~]# rpm -qa|grep fibre
+fibreutils-2.4-1
+[troot@pabkp012 ~]# rpm -ql fibreutils-2.4-1
+	/etc/.hp_fibreutils
+	/opt/hp/hp_fibreutils/ScsiInfo.h
+	/opt/hp/hp_fibreutils/adapter_info
+	/opt/hp/hp_fibreutils/hp_rescan
+	.........
+Installer un package
+rpm -i nom_package.rpm
+
+Mise a jour package:
+rpm -U nom_package.rpm
+
+Désintaller package:
+rpm -e nom_package.rpm
+
+Rechercher package contenant un mot:
+rpm -qa | grep mot_recherché
+
+A quel package appartient le fichier:
+rpm -qf nom_fichier
+
+Plus d'infos sur un package:
+rpm -qpi nom_package.rpm
+
+Les fichiers du package:
+rpm -qpl nom_package.rpm (Si pas installé)
+rpm -ql nom_package.rpm|nom_package
+
+Intégrité du package:
+rpm -V nom_package.rpm
+
+Integrite des fichiers du package de /etc/motd
+[root@sapn001 ~]# rpm -Vf /etc/motd
+S.5...GT  c /etc/securetty  --> S pour Size
+
+
+Avoir l'etat du selinux:(Etat =0|1|permissive)
+[root@sapn001 boot]# getenforce
+Permissive
+
+Desactiver SElinux jusqu'au prochain reboot : 
+[root@panis001-bis ~]# setenforce 0
+Pour une desactivation dans la durée, éditer /etc/sysconfig/selinux et mettre SELINUX=disabled
+
+messages afficher le /var/log/messages
+++++++++++++++++++++++++++++++++++++++
+dmesg
+
+
+avoir la gateway ; l'IP, le netmask, le nom et l'ID des VLAN sur une ligne :
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[root@pasyn004 ~]# ypcat -k ip_sensibles|grep pasyn00.
+10.136.102.36 pasyn004 10.136.102.32 255.255.255.224 10.136.102.62 10.136.99.8 10.136.70.73 i 349 DATACENTER_04I311 -
+55.19.11.75 pasyn005 55.19.11.0 255.255.255.128 55.19.11.1 0.0.0.0 0.0.0.0 o 90 DMZ_TIERS_ATOS -
+10.136.102.35 pasyn003 10.136.102.32 255.255.255.224 10.136.102.62 10.136.99.8 10.136.70.73 i 349 DATACENTER_04I311 -
+55.19.11.76 pasyn006 55.19.11.0 255.255.255.128 55.19.11.1 0.0.0.0 0.0.0.0 o 90 DMZ_TIERS_ATOS -
+55.19.11.77 pasyn007 55.19.11.0 255.255.255.128 55.19.11.1 0.0.0.0 0.0.0.0 o 90 DMZ_TIERS_ATOS -
+55.19.11.78 pasyn008 55.19.11.0 255.255.255.128 55.19.11.1 0.0.0.0 0.0.0.0 o 90 DMZ_TIERS_ATOS -
+55.19.11.79 pasyn009 55.19.11.0 255.255.255.128 55.19.11.1 0.0.0.0 0.0.0.0 o 90 DMZ_TIERS_ATOS -
+10.136.102.34 pasyn002 10.136.102.32 255.255.255.224 10.136.102.62 10.136.99.8 10.136.70.73 i 349 DATACENTER_04I311 -
+10.136.102.33 pasyn001 10.136.102.32 255.255.255.224 10.136.102.62 10.136.99.8 10.136.70.73 i 349 DATACENTER_04I311 -
+
+OU
+
+http://panis001.caic.com/cgi-bin/ip_sensibles.cgi?pasyn00.  -> bIEN JOLI DANS UN TABLEAU
+
+EXEMPLE Une nouvelle machine : pasyn001
++++++++++++++++++++++++++++++++++++++++
+[root@panis001 ~]# grep pasyn001 /etc/hosts
+10.136.102.33  pasyn001 bld38-01
+##55.19.11.71   pasyn001        # Nouvelle Plateforme Titres
+
+ypcat -k ip_sensibles|grep 55.19.11
+55.19.11.34 pamqx001 55.19.11.0 255.255.255.128 55.19.11.1 0.0.0.0 0.0.0.0 o 90 DMZ_TIERS_ATOS -
+55.19.11.35 pasna015 55.19.11.0 255.255.255.128 55.19.11.1 0.0.0.0 0.0.0.0 o 90 DMZ_TIERS_ATOS -
+55.19.11.36 pamqm001 55.19.11.0 255.255.255.128 55.19.11.1 0.0.0.0 0.0.0.0 o 90 DMZ_TIERS_ATOS -
+..........ETC
+
+Ca permet d'avoir les parametre reseau pourle VLAN

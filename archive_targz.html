@@ -1,0 +1,25 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Script à lancer sur un compte utilisateur pour avoir un compte rendu des
+fichiers susceptibles d</title>
+</head>
+
+<body bgcolor="#000000">
+
+        <p style="margin-top: 0; margin-bottom: 0" align="center"><b><u><font color="#00FF00" face="Courier New" size="4">Petit
+        script permettant de voir ce que contiennent des archive tar.gz</font></u></b></p>
+        <p style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+        <p style="margin-top: 0; margin-bottom: 0"><font color="#9694B4" face="Courier New">#!/bin/ksh</font></p>
+        <p style="margin-top: 0; margin-bottom: 0"><font color="#9694B4" face="Courier New">for VAR in &quot;$@&quot;</font></p>
+        <p style="margin-top: 0; margin-bottom: 0"><font color="#9694B4" face="Courier New">do</font></p>
+        <p style="margin-top: 0; margin-bottom: 0"><font color="#9694B4" face="Courier New">cat $VAR|gunzip 2&gt; /dev/null
+        |tar tf - 2&gt;/dev/null</font></p>
+        <p style="margin-top: 0; margin-bottom: 0"><font color="#9694B4" face="Courier New">done</font>
+
+</body>
+
+</html>

@@ -1,0 +1,216 @@
+#!/bin/sh
+#set -x
+# usage : install.lagra.sh [D|K]
+# D : Abonnemnt au cannal par defaut en ignorant le rattachement a un clone
+# K : Autorise les mises a jour impliquant la modification du kernel
+# code de sortie : 	0 -> OK
+#			1 -> Unknown system type
+#			2 -> Erreur lors de la registration
+# Sur le client : wget http://parhs002:/pub/auto_register.sh ; chmod 700 ./auto_register.sh ; ./auto_register.sh K; rm -f ./auto_register.sh
+
+
+RELEASE=$(sed "s/.*release \(.\).*/\1/" /etc/redhat-release)
+echo $RELEASE|grep -q "[0-9]" || { echo "/etc/redhat-release ne contient pas la version de release" ; exit 1 ; }
+CHANNEL=unknown
+
+#Si la release est superieure ou egale a 5, la commande yum remplace la commande up2date.
+#Si "K" n'est pas donne en argument, on doit s'assurer que yum respectera par defaut la restriction exculde=kernel*
+[ $RELEASE -ge 5 ] && {
+  if echo "$*"|grep -q K 
+  then
+	echo "Retrait de \"exclude=kernel*\" de yum.conf"
+	sed "s/exclude=kernel\*//g" /etc/yum.conf > /etc/yum.conf.tmp
+	cat /etc/yum.conf.tmp > /etc/yum.conf ; rm /etc/yum.conf.tmp
+  else
+	grep -q exclude=kernel /etc/yum.conf || echo "exclude=kernel*" |tee -a /etc/yum.conf|awk '{print "Ajout de "$0" dans yum.conf"}'
+  fi
+}
+
+# Pour eviter un conflit de dependance recurrent de 5.1(64bits) vers 5.4
+[ "$RELEASE" = "5" ] && grep -q exclude=firefox /etc/yum.conf || echo "exclude=firefox*" |tee -a /etc/yum.conf
+
+# Creation de /etc/sysconfig/rhn/up2date
+echo "$*"|grep -q K || { EXCLUDE="exclude=kernel*" ; echo "COMMENT : \"$EXCLUDE\" est dans /etc/sysconfig/rhn/up2date" ; }
+cat << EOF > /etc/sysconfig/rhn/up2date
+# Automatically generated Red Hat Update Agent config file, do not edit.
+# Format: 1.0
+useNoSSLForPackages[comment]=Use the noSSLServerURL for package, package list, and header fetching
+useNoSSLForPackages=0
+
+storageDir[comment]=Where to store packages and other data when they are retrieved
+storageDir=/var/spool/up2date
+
+exclude[comment]=List of packages to exlude from being installed or updated
+$EXCLUDE
+
+pkgSkipList[comment]=A list of package names, optionally including wildcards, to skip
+pkgSkipList=
+
+retrieveOnly[comment]=Retrieve packages only
+retrieveOnly=0
+
+noSSLServerURL[comment]=Remote server URL without SSL
+noSSLServerURL=http://xmlrpc.rhn.redhat.com/XMLRPC
+
+networkSetup[comment]=None
+networkSetup=1
+
+networkRetries[comment]=Number of attempts to make at network connections before giving up
+networkRetries=5
+
+pkgsToInstallNotUpdate[comment]=A list of provides names or package names of packages to install not update
+pkgsToInstallNotUpdate=kernel;kernel-modules;kernel-devel;
+
+enableProxy[comment]=Use a HTTP Proxy
+enableProxy=0
+
+noBootLoader[comment]=To disable modification of the boot loader (lilo, silo, etc)
+noBootLoader=0
+
+proxyPassword[comment]=The password to use for an authenticated proxy
+proxyPassword=
+
+updateUp2date[comment]=Allow up2date to update itself when possible
+updateUp2date=1
+
+keepAfterInstall[comment]=Keep packages on disk after installation
+keepAfterInstall=0
+
+useGPG[comment]=Use GPG to verify package integrity
+useGPG=1
+
+headerCacheSize[comment]=The maximum number of rpm headers to cache in ram
+headerCacheSize=40
+
+forceInstall[comment]=Force package installation, ignoring package, file and config file skip list
+forceInstall=0
+
+systemIdPath[comment]=Location of system id
+systemIdPath=/etc/sysconfig/rhn/systemid
+
+retrieveSource[comment]=Retrieve source RPM along with binary package
+retrieveSource=0
+
+enableRollbacks[comment]=Determine if up2date should create rollback rpms
+enableRollbacks=1
+
+gpgKeyRing[comment]=The location of the gpg keyring to use for package checking
+gpgKeyRing=/etc/sysconfig/rhn/up2date-keyring.gpg
+
+adminAddress[comment]=List of e-mail addresses for update agent to communicate with when run in batch mode
+adminAddress=root@localhost;
+
+serverURL[comment]=Remote server URL
+serverURL=https://parhs002.caic.com/XMLRPC
+
+fileSkipList[comment]=A list of file names, optionally including wildcards, to skip
+fileSkipList=;
+
+versionOverride[comment]=Override the automatically determined system version
+versionOverride=
+
+sslCACert[comment]=The CA cert used to verify the ssl server
+sslCACert=/usr/share/rhn/RHN-ORG-TRUSTED-SSL-CERT
+
+noReplaceConfig[comment]=When selected, no packages that would change configuration data are automatically installed
+noReplaceConfig=1
+
+enableProxyAuth[comment]=To use an authenticated proxy or not
+enableProxyAuth=0
+
+disallowConfChanges[comment]=Config options that can not be overwritten by a config update action
+disallowConfChanges=noReboot;sslCACert;useNoSSLForPackages;noSSLServerURL;serverURL;disallowConfChanges;
+
+headerFetchCount[comment]=The maximimum number of rpm headers to fetch at once
+headerFetchCount=10
+
+proxyUser[comment]=The username for an authenticated proxy
+proxyUser=
+
+removeSkipList[comment]=A list of package names, optionally including wildcards that up2date will not remove
+removeSkipList=;
+
+debug[comment]=Whether or not debugging is enabled
+debug=0
+
+httpProxy[comment]=HTTP proxy in host:port format, e.g. squid.redhat.com:3128
+httpProxy=
+
+noReboot[comment]=Disable the reboot actions
+noReboot=0
+EOF
+#fi
+rpm -ivh http://parhs002.caic.com/pub/rhn-org-trusted-ssl-cert-1.0-1.noarch.rpm
+
+# ABONNEMENT AU CHANNEL
+# Si (-d) l'abonnment au channel redhat par defaut est requis:
+if echo $*|grep -q D
+then
+  # Abonnement, puis abonnement forcé si necessaire. (Permet d'avoir un retour d'info sur la generation d'un profil en doublon sur le satellite)
+  /usr/sbin/rhnreg_ks --email=IT.ArchiUnix@smtpnotes.caic.com --username=rhn-admin --password=XXXXXXXXXX
+  [ $? -ne 0 ] && /usr/sbin/rhnreg_ks --force --email=IT.ArchiUnix@smtpnotes.caic.com --username=rhn-admin --password=XXXXXXXXXX
+  RC=$?
+else
+  # Determination de la plateforme (32 ou 64 bits)
+  SYST=$(uname -m|sed -e "s/i686/32/" -e "s/x86_64/64/")
+
+  # Determination du CLONE de channel a utiliser
+  CHANNEL=$RELEASE$SYST
+
+  # Determination de la clé associée a ce CLONE
+  case $CHANNEL in 
+  332)
+	ACTIVATION_KEY="1-c24e5ae7e228b552e6f03bc02e392fe1" ; ;;
+  364)
+	ACTIVATION_KEY="1-c5f1713158df8f6174c20c9f5979db6e" ; ;;
+  432)
+	ACTIVATION_KEY="1-f1adbc8bb1d0ff4a241350ff8415d8d8" ; ;;
+  464)
+	ACTIVATION_KEY="1-081b50d9750d75612038ab4a637f240d" ; ;;
+  532)
+	ACTIVATION_KEY="1-7050daeee8795a1fabe004f4e2401998" ; ;;
+  564)
+	ACTIVATION_KEY="1-b084e476d26eb78fba48d84b2ac97b41" ; ;;
+  *)
+	echo "Script found channel :\"$CHANNEL\": unknown system type" ; CHANNEL=unknown ; exit 1 ; ;;
+  esac
+
+# Abonnement, puis abonnement forcé si necessaire. (Permet d'avoir un retour d'info sur la generation d'un profil en doublon sur le satellite)
+/usr/sbin/rhnreg_ks --activationkey $ACTIVATION_KEY --email=IT.ArchiUnix@smtpnotes.caic.com
+[ $? -ne 0 ] && /usr/sbin/rhnreg_ks --activationkey $ACTIVATION_KEY --email=IT.ArchiUnix@smtpnotes.caic.com --force
+RC=$?
+fi
+
+# Renvoi d'info sur l'issue de l'enregistrement
+if [ $RELEASE -gt 4 ]
+then 
+	yum repolist
+else 
+	up2date --show-channel
+fi
+
+if [ $RC -eq 0 ]
+then
+        echo "System $(hostname)seems to be Registered"
+else
+        echo "Please check on the Satellite that $(hostname) is realy registred" 
+fi
+echo "Importation de la cle GPG (/usr/share/rhn/RPM-GPG-KEY)"
+sleep 4
+rpm --import /usr/share/rhn/RPM-GPG-KEY
+
+[ "$CHANNEL" != "unknown" ] && {
+  wget http://parhs002.caic.com/pub/adds/adds_to_install
+  echo "ADDs To Install:"
+  grep -v ^# adds_to_install|grep $CHANNEL > adds_to_install_on$CHANNEL ; rm adds_to_install
+  while read DOWLD
+  do
+	echo Downloading ${DOWLD}:
+	wget http://parhs002:/pub/$DOWLD
+	mkdir -p $(dirname $DOWLD) 2>/dev/null
+	mv $(basename $DOWLD) $(dirname $DOWLD)
+  done < adds_to_install_on$CHANNEL
+  grep "\..sh$" adds_to_install_on$CHANNEL|xargs chmod +x
+  echo "Les fichiers suivants ont ete downloades pour une installation manuelle ulterieure" 
+  xargs ls -l < adds_to_install_on$CHANNEL
+}

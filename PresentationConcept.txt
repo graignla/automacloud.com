@@ -1,0 +1,313 @@
+Présentation d'un projet visant a fournir une solution extensible, modulaire, administrable et 
+exploitable pour remplacer à terme les outils app_simm et appsimm_hd. 
+
+Une partie du concept et de la mise en oeuvre sont présenté ci-dessous. 
+
+Chaque appli, spécifique hd ou pas, qu'elle soit SAP, Oracle, GPFS, 
+supervision, controlM, outil commercial ou non, peut entrer dans le cadre de 
+ce concept. 
+
+- Le nombre et le type des applications n'est pas écrit en dur et reste facilement ajustable. 
+
+- La solution est basée sur des modules (6 par application) contrôlés par des job (1 par application) 
+ Ces 6 type modules sont : 
+   test 
+   exist 
+   check 
+   start 
+   stop 
+   kill 
+
+- Ils sont rangés dans une arborescence simple: 
+
+      ls MODULES/* 
+       MODULES/check: 
+       A  B  C  D  E  F  G  H  I  J  K  L 
+
+       MODULES/exist: 
+       A  B  C  D  E  F  G  H  I  J  K  L 
+
+       MODULES/kill: 
+       A  B  C  D  E  F  G  H  I  J  K  L 
+
+       MODULES/start: 
+       A  B  C  D  E  F  G  H  I  J  K  L 
+
+       MODULES/stop: 
+       A  B  C  D  E  F  G  H  I  J  K  L 
+
+       MODULES/test: 
+       A  B  C  D  E  F  G  H  I  J  K  L 
+
+
+- L'existence des applis est appréciée grâce aux modules "exist" du répertoire MODULES/exist 
+
+- L'ensemble des applis détectées constitue une configuration qui est reconnue grâce au 
+ fichier de configuration "platform.conf" qui la lie a des paramètres spécifiques (Voir job_template) 
+ et notamment un schéma de dépendance au start. 
+
+EXEMPLE DU FICHIER DE CONFIGURATION GENERALE "platform.conf" 
+
+       #ATTENTION: FIELD_DESRIPTION est un commentaire actif, ne modifier qu'en connaissance de cause !! 
+       #FIELD_DESRIPTION=JOB_NAME;T_Max_Start;T_Max_Stop;T_Max_Check;T_Max_Exist;DEP_1;DEP_0 
+
+       # Comme les modules "exist" ne peuvent être liés à une configuration 
+       # (Celle-ci n'étant pas encore déterminée au moment ou l'on en teste 
+       # l'existance) 
+       # Il est conseillé, pour une appli donnée, de mettre tous les champs 
+       # "T_Max_Exist" a la même valeur pour toutes les plateformes 
+       # Si des valeurs différentes existent, la valeur la plus élevée sera celle 
+       # utilisée. 
+
+
+       # Plateforme HD de prod 
+       <ABCDEFG> 
+       A;15;25;6;15;B|C;A 
+       B;15;25;6;15;D;B 
+       C;5;10;2;5;D;C 
+       D;10;15;10;15;E|F|G;D 
+       E;3;1;2;2;;E 
+       F;11;13;5;8;;F 
+       G;5;7;3;5;;G 
+       </ABCDEFG> 
+
+
+       # Plateforme Stand Alone de DEV 
+       <ABCDEFGHIJKL> 
+       A;15;25;6;15;C|D;A 
+       B;15;25;6;15;D;B 
+       C;5;10;2;5;D;C 
+       D;10;15;10;15;E|F|G;D 
+       E;3;1;2;2;; 
+       F;11;13;5;8;; 
+       G;5;7;3;5;; 
+       H;1;1;1;1;A; 
+       I;1;1;1;1;A; 
+       J;1;1;1;1;A; 
+       K;1;1;1;1;A; 
+       L;1;1;1;1;A; 
+       </ABCDEFGHIJKL> 
+
+Une représentation plus claire des dépendances issues de ce fichier pour une configuration d'appli donnée 
+sera extraite et placée dans les fichiers "start.info" et "stop.info" dont exemple ci dessous: 
+
+ EXEMPLE d'un schéma de dépendance au start (start.info) pour la configuration d'applis détectées "A B C D E F G" 
+(correspondant à <ABCDEFG>): 
+ A B 
+ A C 
+ B D 
+ C D 
+ D E 
+ D F 
+ D G 
+
+ Du coup le schéma de dépendance au stop (stop.info) est: 
+ B A 
+ C A 
+ D B 
+ D C 
+ E D 
+ F D 
+ G D 
+
+
+ NOTE : Par ailleurs, si cette détection correspond bien une configuration connue, elle constitue 
+ également une vérification de prérequis. 
+
+- Une fois le schéma de dépendance au start défini, il faut déterminer l'état de chacune des 
+ applis concernées. Ceci est réalisé avec les modules "check" des applis détectées. 
+
+- A partir de ces états, la situation peut être définie a NORMALE ou ANORMALE. 
+
+       NORMAL : Toutes les dépendances des applis démarrées sont démarrée 
+       ANORMAL: Les dépendances des applis démarrées ne sont pas toute démarrées 
+
+               Si la situation est ANORMALE, il faut la ramener à une situation NORMALE 
+                  avant d'entreprendre d'autres actions. 
+
+                  La situation NORMALE primitive est celle ou toutes applis sont arrêtées 
+                  La situation NORMALE relative sera celle obtenue en killant les applis 
+                   orphelines par phases successives jusqu'à ce qu'il n'y en ai plus. 
+                  Pour obtenir une situation NORMALE arbitraire, il faut fournir la CONSIGNE 
+                   correspondante. 
+                  Une CONSIGNE est un ensemble d'applis qui doivent être demarrées après et 
+                   ainsi que les applis dont elles dépendent. 
+                  Pour satisfaire à la CONSIGNE suite a une situation ANORMALE, il faudra 
+                   d'abord passer par: 
+
+                  Soit la situation NORMALE primitive (Plus sur mais plus long) 
+                  Soit la situation NORMALE relative  (Plus rapide mais moins sur) 
+
+       Une fois la situation d'état devenue NORMALE (toutes les dépendances des applis démarrées 
+        sont aussi démarrées). 
+
+- Pour passer d'une situation NORMALE a une AUTRE situation NORMALE (Correspondant a la 
+  consigne), les modules de start ou de stop devront être actionnés de façon optimisée. 
+  Cette gestion optimisée sera realisée par le biais de JOB ainsi structurés: 
+
+DÉTAIL DU FICHIER TEMPLATE de JOB 
+
+       DEFINITION :    | Details   | Type de choix multiples   <-- Ne pas editer ce fichier --> 
+       +++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+       JOB_NAME        #Nom de ce fichier (Valeur fixe et automatiquement renseignée) 
+       FILE            #Executable file to be managed (Valeur fixe et automatiquement renseignée) 
+       PID             #Processus ID de l'executable #[NONE|[0-9][0-9]*] 
+       DEP_1           #Dependance a 1: Autres jobs (Valeur fixe et automatiquement renseignée) 
+       DEP_0           #Dependance a 0: Autres jobs (Valeur fixe et automatiquement renseignée) 
+       CONSIGNE        #Consigne de marche/arret (Variable) #[STOP|START|NONE] 
+       ETAT            #Etat indicatif (Variable) #[STARTED|STOPED|KILLED|UNDIFINED] 
+       TEST            #Simulation (Variable) #[true|false] 
+       T_Max_Start     #Temps Max du start (Valeur fixe et automatiquement renseignée) #[NONE|[0-9][0-9]*|-] 
+       T_Max_Stop      #Temps Max du stop (Valeur fixe et automatiquement renseignée) #[NONE|[0-9][0-9]*] 
+       T_Max_Check     #Temps d'un Check (Valeur fixe et automatiquement renseignée) #[NONE|[0-9][0-9]*] 
+       T_Max_Exist     #Temps d'un Exist (Valeur fixe et automatiquement renseignée) #[NONE|[0-9][0-9]*] 
+
+                               EXEMPLE: 
+       +++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+       JOB_NAME A 
+       PID 12345 
+       FILE /admin/exemple/moduleSAP/saposcole 
+       DEP_1 B;C 
+       DEP_0 A 
+       CONSIGNE START 
+       ETAT UNDIFINED 
+       TEST true 
+       T_Max_Start 60 
+       T_Max_Stop 30 
+       T_Max_Check 10 
+       T_Max_Exist 20 
+
+                               TEMPLATE: 
+       +++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+       JOB_NAME NONE 
+       FILE NONE        PID NONE 
+       DEP_1 NONE 
+       DEP_0 NONE 
+       CONSIGNE NONE 
+       ETAT NONE 
+       TEST NONE 
+       T_Max_Start NONE 
+       T_Max_Stop NONE 
+       T_Max_Check NONE 
+       T_Max_Exist NONE 
+
+
+Ceci est le fichier "job_template" directement utilisé par l'applicatif. 
+Il est corrélé au fichier paltform.conf au niveau des champs utilisés. 
+
+  Ces JOB, 1 par appli, sont crées automatiquement et placés dans un répertoire "JOBS": 
+
+       JOBS/A 
+       JOBS/B 
+       JOBS/C 
+       JOBS/D 
+       JOBS/E 
+       JOBS/F 
+       JOBS/G 
+
+  La façon précise dont peuvent être gérés ces jobs reste a établir mais ils possèdent 
+   la structure permettant cette gestion. 
+
+   Note supplémentaire concernant les modules: 
+   Dans l'arborescence des modules, d'autres fichiers, temporaire et de log, viendront 
+   peupler automatiquement leurs répertoires : 
+
+       MODULES/check/B_logs 
+       MODULES/check/B_temp 
+
+      Le fichier de log ci-dessus "MODULES/check/B_logs" journalisera par défaut l'activité du module B avec 
+      les événements de base suivants: 
+
+         $20120719_152630_check_B : Lancement 
+         $20120719_152635_check_B : Fin execution 
+         $20120719_180210_check_B : Lancement 
+         $20120719_180213_check_B : Aborted by signal 2 (Ctrl-C) 
+         $20120719_180213_check_B : Fin execution 
+         $20120719_180259_check_B : Lancement 
+         $20120719_180300_check_B : Lancement 
+         $20120719_180300_check_B : Already runing with PID 6215, Aborting. 
+         $20120719_180304_check_B : Fin execution 
+
+
+  Les modules sont crées automatiquement a partir du fichier "platform.conf" et sont fait pour être complété par 
+  les référents techniques de chaque application. 
+
+  Il fournissent sous forme de "canvas" avec entête prédéfinie un cadre standard pour l'écriture des modules: 
+
+DETAIL D'UN MODULE PAR DEFAUT 
++++++++++++++++++++++++++++++ 
+      #!/bin/ksh 
+      #set -x 
+      ##################################################################################### 
+      ####### DEBUT DE L'ENTETE ####### DEBUT DE L'ENTETE ####### DEBUT DE L'ENTETE ####### 
+      ##################################################################################### 
+      #########################     NE PAS MODIFIER L'ENTETE     ########################## 
+      ##################################################################################### 
+      HERE=$(cd $(dirname $0) ; pwd) 
+      # Emplacement de ce fichier 
+
+      FULL_PATH=$HERE/$(basename $0) 
+      # Nom absolu de ce fichier 
+
+      MODUL_REF=$(echo $FULL_PATH|awk -F"/" '{print $(NF -1)"_"$NF}') 
+      # Nom court de référence 
+
+      Date()          # fonction "date" personnalisee. 
+      { 
+      echo $(date +%Y%m%d_%H%M%S) 
+      } 
+
+      Ref()           # Référence d'identité et de temps pour indexer les logs 
+      { 
+      echo $(Date)_${MODUL_REF} 
+      } 
+
+      TEMP=$HERE/$(basename $0)_temp ; mkdir -p $TEMP 
+      # Mise a dispo d'un emplacement temporaire specicifique 
+
+      LOG=$HERE/$(basename $0)_logs 
+      # Mise a dispo d'un fichier de log specifique 
+      echo "$(Ref) : Lancement" >> $LOG 
+      # Verification de lancement unique 
+      PID=$(grep "^[0-9][0-9]*$" $TEMP/PID 2>/dev/null);PID=${PID:-NONE} 
+      kill -0 $PID 2>/dev/null && { 
+      echo $(Date)_${MODUL_REF} : Already runing with PID $PID, Aborting.|tee -a $LOG 
+      exit 4 
+      } 
+
+      echo $$ > $TEMP/PID 
+      # Inscription du PID dans un fichier 
+
+      trap 'echo NONE > $TEMP/PID ; echo "$(Ref) : Fin execution" >> $LOG' EXIT 
+      trap 'echo NONE > $TEMP/PID ; echo "$(Ref) : Aborted by signal 2 (Ctrl-C)" >> $LOG' 2 
+      # Mise a jour du fichier de PID en cas de sortie du script 
+
+      # Vérification de l'entête de ce fichier 
+      # La seule modification permise est le changement ligne 2 de: "#set -x" en 
+      # "set -x" 
+      awk 'NR < 46' $0 |openssl dgst -md5|egrep -q "ee9f207c39bdea714a2f0a7f0ede562b|fcd0d204c7f7d4d3b46d3571c09606b9" || { 
+        echo "$(Ref) : Entete non standart ; exit 3" | tee -a $LOG 
+        exit 3 
+      } 
+      ##################################################################################### 
+      ######### FIN DE L'ENTETE ######## FIN DE L'ENTETE ######## FIN DE L'ENTETE ######### 
+      ##################################################################################### 
+      sleep 5 
+      echo $FULL_PATH est un module Par defaut ; exit 2 
+      # A commenter en cas de modification 
+
+  Dans le cas de 30 applis dans le schéma de dépendance, avec les 5 modules kill start stop exist check par 
+  appli, on obtiendrait 150 modules dont les 59 première lignes sont déjà écrites. Ceci évite l'écriture 
+  de 8850 lignes que les référents aurait eu à faire en s'accordant les uns avec les autres. (Avec toutes les 
+  difficultés que cela peut engendrer). 
+
+  Les répertoires temporaires doivent servir a assurer l'échange de données entre les différents modules, 
+  D'une même appli ou pas. 
+
+  Par exemple : le module "exist" de l'appli "AS" va ranger dans son répertoire temporaire les informations dont 
+  aura besoin le module "check" (Toujours des AS) qui stockera de l'information utile aux modules "stop" et "kill" 
+  de la même appli. 
+
+
+
+FIN PROVISOIRE DE LA PRÉSENTATION 

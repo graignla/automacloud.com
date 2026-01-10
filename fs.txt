@@ -1,0 +1,5 @@
+Pour savoir quoi vider en cas de file system sature
++++++++++++++++++++++++++++++++++++++++++++++++++++
+find / -mount -ls -type f|awk '{print $7,$11}'|sort -n|tail |awk '{print $2}'|xargs ls -lrt
+ou
+find / -mount -ls -type f|egrep -v "\.jar$|\.bin$|\.so|\.ln$|\.a$|\.Z$|\.ttf"|awk '{print $7,$11}'|sort -n|tail |awk '{print $2}'|xargs ls -lrt

@@ -1,0 +1,149 @@
+#!/bin/ksh
+#set -x
+usage()
+{
+echo "${MYSELF_NAME} [-d] (start|stop)_file|binary_file)
+        -d (Debbug): Lance le (start|stop) en \"set -x\"
+	-help ou -h : Affiche l'aide"
+}
+
+MYSELF=$0
+MYSELF_NAME=$(basename ${MYSELF})
+#Verification argument
+set -- `getopt dh $*`
+for i in $* 
+do
+    case $i in
+    -d) DBG=1	shift ;;
+    -help|-h)  usage ; echo "$MYSELF_NAME : Test un start ou un stop sans lancer le binaire.
+	-Verifie la coherence des variables avec le .ini.
+	-Donne la version du binaire et verifie ses librairies.
+	-Verifie la presence des chemins ou des fichiers lies a l'execution du start ou du stop." ; exit ;;
+    --)		shift ; break ;;
+    esac
+done
+echo
+[ $# -lt 1 ] && { usage ; exit ; }
+#Verification type et Affichage de la version de binaire
+[ -x $1 ] || { echo "$1 isn't an executable file ...Aborting" ; exit ; }
+
+ARG_NAME=$(basename $1)
+APP_HOME=$(cd $(dirname $1)/..;pwd)
+APP_NAME=$(echo $ARG_NAME|sed -e "s/_hc$//" -e "s/^start_//" -e "s/stop_//")
+INI=$APP_HOME/conf/$APP_NAME.ini ; test -f $INI||{ echo "Verifier $APP_NAME.ini";exit ; }
+START=$APP_HOME/etc/start_$APP_NAME
+TEMP_DIR=/tmp/$MYSELF_NAME.$$
+
+egrep "nohup| &$" $START >/dev/null 2>&1 || { echo "Version de start non prise en charge: Risque de lancement intempestif du binaire... Abort" ; exit ; }
+
+if file $1|grep "ELF 32-bit LSB executable" >/dev/null 
+then
+	CACV=$(strings $APP_HOME/bin*/$BIN_NAME|grep CACV || { echo "Binaire non CACV... Abort" ; exit ; }) 
+	echo $CACV
+	BIN_NAME=$(basename $1)
+	BIN_END=$(echo $BIN_NAME|sed "s/[^_][^_]*_\(hc\)$/\1/")
+	MODE=HC ; [ "$BIN_END" != "hc" ] && MODE=PROD
+else
+	echo "Start_file is given, Type a mode :
+Homologation ->H      Production ->P"
+        read REP
+        case $REP in
+        P)
+                MODE=PROD
+		BIN_NAME=${APP_NAME} ; ;;
+        H)
+                MODE=HC
+		BIN_NAME=${APP_NAME}_hc ; ;;
+        *)
+                echo "$REP non reconnu, use H or P" ; exit ;;
+        esac
+fi
+[ -f $APP_HOME/bin*/$BIN_NAME ] || { echo "$APP_HOME/bin*/$BIN_NAME n'esiste pas.. Abort" ; exit ; }
+[ -x $APP_HOME/bin*/$BIN_NAME ] || { echo "$APP_HOME/bin*/$BIN_NAME doit être autorise en execution.. Abort" ; exit ; }
+su - middle -c "mkdir $TEMP_DIR" 2>/dev/null
+ADD_PARM=
+REP=none
+echo "Parametres additionnels ? [none]:"
+read REP
+[ "$REP" = "none" ] || ADD_PARM=$REP
+
+PIDFILE=PIDFILE
+#Pour Creer un faux start de test temporaire (Avec ou sans "set -x" pour l'option debug)
+cat << EOF > $TEMP_DIR/make_start
+#!/bin/ksh
+sed -e "s=\(nohup\) \([^ ]*\)\(.*\)=ldd \2 > /tmp/ldd=" -e "s=\(^[^ ][^ ]*\) &$=ldd \1 > /tmp/ldd=" -e "s/\.pid/.pid_test/" $START > $TEMP_DIR/start_$APP_NAME
+echo rm \$"PIDFILE" >> $TEMP_DIR/start_$APP_NAME
+echo "env > $TEMP_DIR/env.apres" >> $TEMP_DIR/start_$APP_NAME
+EOF
+
+chmod a+x $TEMP_DIR/make_start
+$TEMP_DIR/make_start
+[ "$DBG" != "" ] && {
+sed "2i\set -x" $TEMP_DIR/start_$APP_NAME > $TEMP_DIR/start_$APP_NAME.tmp ; mv $TEMP_DIR/start_$APP_NAME.tmp $TEMP_DIR/start_$APP_NAME
+}
+chmod a+x $TEMP_DIR/start_$APP_NAME
+
+su - middle -c "env > $TEMP_DIR/env.avant" 2>/dev/null
+egrep "[ \t]*[^ ]*\$PROG_NAME.*" $TEMP_DIR/start_$APP_NAME && { echo "Lancement dangereux... Abort" ; exit ; }
+clear
+echo "$CACV
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo ">>> Debut d'execution du start..."
+if [ "$DBG" != "" ]
+then
+	su - middle -c "$TEMP_DIR/start_$APP_NAME -m $MODE $ADD_PARM" 
+else
+	su - middle -c "$TEMP_DIR/start_$APP_NAME -m $MODE $ADD_PARM" 2>&1 |grep "^[^+]"|tail
+fi
+[ -f $TEMP_DIR/env.apres ] || { echo "l'execution du start est incomplete... Abort" ; rm -rf $TEMP_DIR ; exit ; }
+echo "
+>>> Test des librairies du binaire..."
+if [ ! -s /tmp/ldd ]
+then
+	echo "Test des librairy du binaire non effectue"
+else
+	grep "not found" /tmp/ldd 2>/dev/null || echo " -> OK"
+fi
+
+
+#Determination des variables definies dans le start
+cat $TEMP_DIR/env.* | sort | uniq -c | awk '$1 == 1 {print $2}' | cut -f1 -d= | sort -u | egrep "[a-zA-Z]" > $TEMP_DIR/var.enplus
+
+#Variables definies dans le start et utilise dans le .ini
+grep "=" $APP_HOME/conf/*.ini | grep "{" | cut -f2 -d"{" | cut -f1 -d"}"|sort -u > $TEMP_DIR/dans.ini
+cat $TEMP_DIR/dans.ini $TEMP_DIR/var.enplus | sort | uniq -c | awk '$1 == 2 {print $2}' > $TEMP_DIR/var.enplus.dans.ini
+
+#Verification des chemins mis en variable
+awk '{print "^"$0"="}' $TEMP_DIR/var.enplus > $TEMP_DIR/var.enplus.regex
+echo "
+>>> Verification des chemins mis en variable..."
+egrep -f $TEMP_DIR/var.enplus.regex $TEMP_DIR/env.apres|tee $TEMP_DIR/val.var.enplus|sed "s/^.*=//"|grep "^/[^:][^:]*$"|xargs ls -d 2>&1|grep "^ls:"|sed "s/^ls://"
+
+#Listing des variables du .ini
+echo
+echo "Variables definies dans start_$APP_NAME :"
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+awk '{print "^"$0"="}' $TEMP_DIR/var.enplus.dans.ini  > $TEMP_DIR/var.enplus.dans.ini.regex
+egrep -f $TEMP_DIR/var.enplus.dans.ini.regex $TEMP_DIR/env.apres > $TEMP_DIR/val.var.enplus.dans.ini
+cat $TEMP_DIR/val.var.enplus $TEMP_DIR/val.var.enplus.dans.ini|sort|uniq -c|sed "s/[ \t][ \t]*1//"|sed "s/[ \t][ \t]*2/#-INI-# /"|sort|egrep -v "[^ ] [^ ]"
+
+#Verification que toutes les variables du .ini sont bien definies dans le start
+diff $TEMP_DIR/dans.ini $TEMP_DIR/var.enplus.dans.ini|awk 'NR > 1 {print "!!! Non definie -> "$2}'> $TEMP_DIR/error
+if [ ! -s $TEMP_DIR/error ]
+then
+	echo
+	echo "OK+++++++++++++OK++++++++++++++++++OK+++++++++++++++++OK+++++++++++++++++++++OK"
+	echo "Variables de $APP_NAME.ini definies dans start_$APP_NAME"
+	echo "OK+++++++++++++OK++++++++++++++++++OK+++++++++++++++++OK+++++++++++++++++++++OK"
+
+else
+	echo
+	echo "ATTENTION: Variable(s) a verifier :"
+	echo "-----------------------------------"
+	cat $TEMP_DIR/error
+fi
+
+#Supression fichier "ldd" et du repertoire temporaire
+rm -rf $TEMP_DIR 
+rm /tmp/ldd 2>/dev/null
+

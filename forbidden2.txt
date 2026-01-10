@@ -1,0 +1,77 @@
+# #!/bin/ksh
+# corriger /etc/netmasks
+#  
+# 192.1.1.0        255.255.255.0
+# 150.150.2.0    255.255.255.0
+#  
+# modifier /etc/networks
+# MDS_FRONT    150.150.2.0
+# MDS_BACK    192.1.1.0
+# mdhnet        150.150.2.0
+#  
+# ajouter les packages
+# SUNWtoo    (truss)
+# SUNWipc    (ipcs)
+#  
+# ajouter une route statique sur les machines RDF
+#  
+# en Solaris8 c' est un script rc3.d/S10staticroute
+# /etc/rc3.d/S10staticroutes:route add -net 192.168.0 192.1.1.221
+# en Solaris 10
+# route -p add net 192.168.0 192.1.1.221
+# 
+# ajouter dans /etc/hosts
+# 192.168.0.11    rdf1
+# 192.168.0.12    rdf2
+# 192.168.0.13    rdf3
+# 192.168.0.14    rdf4
+
+test -d /cdrom/sol_10_807_x86/Solaris_10/Product || mount -r -fhsfs /dev/dsk/c0t0d0p0 /cdrom || {
+	echo "INSTALLATION DES PACKAGES IMPOSSIBLE- CDROM INACESSIBLE"
+	exit 1
+	}
+cat > /etc/netmasks << EOF
+192.1.1.0	255.255.255.0
+150.150.2.0	255.255.255.0
+EOF
+
+cat > /etc/networks << EOF
+MDS_FRONT	150.150.2.0
+MDS_BACK	192.1.1.0
+mdhnet	150.150.2.0
+EOF
+
+pkgadd -d /cdrom/sol_10_807_x86/Solaris_10/Product SUNWtoo SUNWipc
+
+cat > /etc/rc3.d/S10staticroutes << EOF
+#!/bin/sh
+exec 2>&1 /dev/sysmsg
+# Adding route 192.168.0 par 192.1.1.221
+
+case "$1" in
+'start')
+	route -p add net 192.168.0 192.1.1.221
+;;
+'stop')
+	echo "$0 stop"
+;;
+*)
+	echo "Usage : $0 start/stop"
+	exit 1
+;;
+esac
+exit 0
+EOF
+
+cat > /etc/hostss << EOF
+192.168.0.11 rdf1
+192.168.0.12 rdf2
+192.168.0.13 rdf3
+192.168.0.14 rdf4
+EOF
+
+grep "192.168.0.11 rdf1" /etc/hosts || cat /etc/hostss >> /etc/hosts
+rm /etc/hostss 
+
+echo "$0:Termine, reboot dans 3 second"
+sync ; reboot

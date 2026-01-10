@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laurent Graignic - Expert VMware ARIA (vRO/vRA) DevOps</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --text: #e2e8f0;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1a2e 100%);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            top: -250px;
+            right: -250px;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+            bottom: -200px;
+            left: -200px;
+            animation: pulse 6s ease-in-out infinite 1s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.15; }
+            50% { transform: scale(1.2); opacity: 0.25; }
+        }
+
+        /* Header */
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero .highlight {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-secondary {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Section Styles */
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+        }
+
+        .skill-card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: rgba(37, 99, 235, 0.2);
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid var(--primary);
+        }
+
+        /* Experience Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--primary), var(--accent));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            padding-left: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.5rem;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 3px solid var(--dark);
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .timeline-content {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .timeline-content:hover {
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px rgba(37, 99, 235, 0.2);
+        }
+
+        .timeline-date {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-company {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-role {
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        .timeline-techs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .contact-item {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .contact-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .contact-item h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-item a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-item a:hover {
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <nav>
+            <div class="logo">LG</div>
+            <ul class="nav-links">
+                <li><a href="#competences">Compétences</a></li>
+                <li><a href="#experience">Expérience</a></li>
+                <li><a href="#formations">Formations</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Laurent Graignic</h1>
+        <p class="subtitle">Expert <span class="highlight">VMware ARIA (vRO/vRA)</span> • DevOps • Admin UNIX</p>
+        <div class="hero-stats">
+            <div class="stat">
+                <span class="stat-number">10+</span>
+                <span class="stat-label">ans en DevOps</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">20+</span>
+                <span class="stat-label">ans en UNIX</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">Expert</span>
+                <span class="stat-label">Cloud Computing</span>
+            </div>
+        </div>
+        <div class="cta-buttons">
+            <a href="#contact" class="btn btn-primary">Me Contacter</a>
+            <a href="#experience" class="btn btn-secondary">Voir Projets</a>
+        </div>
+    </section>
+
+    <section id="competences">
+        <h2 class="section-title">Compétences Principales</h2>
+        <div class="skills-grid">
+            <div class="skill-card">
+                <h3>🚀 Cloud & Virtualisation</h3>
+                <p>Expert en orchestration et automatisation de cloud privé VMware</p>
+                <div class="skill-tags">
+                    <span class="tag">vRO/vRA 8.x</span>
+                    <span class="tag">ARIA</span>
+                    <span class="tag">NSX</span>
+                    <span class="tag">vSphere</span>
+                    <span class="tag">vCloud Director</span>
+                    <span class="tag">Terraform</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>💻 Développement & Scripts</h3>
+                <p>Maîtrise complète des langages de scripting et automatisation</p>
+                <div class="skill-tags">
+                    <span class="tag">JavaScript (Expert)</span>
+                    <span class="tag">Bash (Expert)</span>
+                    <span class="tag">PowerShell</span>
+                    <span class="tag">Python</span>
+                    <span class="tag">JSON/XML</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🔧 DevOps & Outils</h3>
+                <p>Stack DevOps moderne pour l'automatisation et la CI/CD</p>
+                <div class="skill-tags">
+                    <span class="tag">Ansible</span>
+                    <span class="tag">Git/GitLab CI/CD</span>
+                    <span class="tag">Kubernetes</span>
+                    <span class="tag">Terraform</span>
+                    <span class="tag">Nagios</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🖥️ Systèmes & Infrastructure</h3>
+                <p>Administration système multi-plateformes avec 20+ ans d'expérience</p>
+                <div class="skill-tags">
+                    <span class="tag">Linux/UNIX</span>
+                    <span class="tag">RedHat</span>
+                    <span class="tag">AIX</span>
+                    <span class="tag">Solaris</span>
+                    <span class="tag">Windows Server</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>💾 Stockage & Réseau</h3>
+                <p>Expertise en solutions de stockage et architecture réseau</p>
+                <div class="skill-tags">
+                    <span class="tag">NetApp</span>
+                    <span class="tag">SAN/NAS</span>
+                    <span class="tag">VLAN</span>
+                    <span class="tag">TCP/IP</span>
+                    <span class="tag">DNS</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🤖 IA & Innovation</h3>
+                <p>Intégration de l'intelligence artificielle dans les processus DevOps</p>
+                <div class="skill-tags">
+                    <span class="tag">AI Integration</span>
+                    <span class="tag">ChatGPT</span>
+                    <span class="tag">Automation</span>
+                    <span class="tag">Innovation</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <h2 class="section-title">Expériences Clés</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">Août 2025 – Septembre 2025</div>
+                    <div class="timeline-company">ESRI / ACCURE</div>
+                    <div class="timeline-role">Ingénieur VMware Aria vRA/vRO 8 - Expertise Préliminaire</div>
+                    <p>Réalisation d'un POC pour le provisionnement à la demande dans vRA d'un environnement de base complet (2 réseaux et 3 VM Windows). Présentation réussie du POC au DSI.</p>
+                    <div class="timeline-techs">
+                        <span class="tag">vRA 8.18.1</span>
+                        <span class="tag">vSphere 6.7</span>
+                        <span class="tag">NSX</span>
+                        <span class="tag">Veeam</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">Janvier 2024 – Février 2025</div>
+                    <div class="timeline-company">KYNDRYL / TEKSYSTEMS</div>
+                    <div class="timeline-role">Ingénieur VMware Aria vRA/vRO 8 - Projet KPC</div>
+                    <p>Mise en place from scratch de KPC (KYNDRYL PRIVATE CLOUD) - Cloud multi-tenants ISO fonctionnalités AZURE. Expertise et développement ARIA au sein d'une équipe de 20 personnes.</p>
+                    <ul>
+                        <li>Développement NSX automation : création de custom resources (Routing zone, Network Security Group)</li>
+                        <li>Implémentation gestion multi-tenants sur un seul vRO</li>
+                        <li>Dev features start/stop/restart VM et change CPU/RAM</li>
+                        <li>Rédaction du Quick Start Guide client</li>
+                    </ul>
+                    <div class="timeline-techs">
+                        <span class="tag">vRA 8.12</span>
+                        <span class="tag">vRO 8.12</span>
+                        <span class="tag">NSX</span>
+                        <span class="tag">API REST</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">Septembre 2023 – Décembre 2023</div>
+                    <div class="timeline-company">EDF / OBS</div>
+                    <div class="timeline-role">Ingénieur VMware Aria vRA/vRO 8</div>
+                    <p>Équipe MyCloud - Développement Day2, refonte workflows d'avertissement VDI, automatisation des tests de recette.</p>
+                    <div class="timeline-techs">
+                        <span class="tag">vRA 8.12</span>
+                        <span class="tag">Citrix</span>
+                        <span class="tag">VDI</span>
+                        <span class="tag">Jira</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">Juillet 2022 – Août 2023</div>
+                    <div class="timeline-company">COMMISSION EUROPÉENNE / NTT</div>
+                    <div class="timeline-role">Ingénieur Cloud Computing DevOps vRA/vRO 8</div>
+                    <p>Migration vRO7 vers vRO8, adaptation de tous les workflows, mise en place actions de présentation BluePrint, manipulation custom resources et dynamic types.</p>
+                    <div class="timeline-techs">
+                        <span class="tag">vSphere 7</span>
+                        <span class="tag">vRA 8</span>
+                        <span class="tag">NSX-T</span>
+                        <span class="tag">vSAN</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">Novembre 2019 – Juin 2022</div>
+                    <div class="timeline-company">RATP – DSIT / PROPULSEIT</div>
+                    <div class="timeline-role">Consultant Cloud Computing VMware vRO/vRA</div>
+                    <p>Infrastructure de 5300 VMs - Acquisition et exploitation de l'API IPAM (Efficient IP), développement XAAS, Day2, workflows de migration LAN, tests de bout en bout avec IA.</p>
+                    <div class="timeline-techs">
+                        <span class="tag">vRO 7.3</span>
+                        <span class="tag">vRA 7.3</span>
+                        <span class="tag">Efficient IP</span>
+                        <span class="tag">Ansible</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">Mars 2016 – Janvier 2019</div>
+                    <div class="timeline-company">BNP PARIBAS / BP2I / BSM</div>
+                    <div class="timeline-role">Designer vRO pour le Cloud BP2I</div>
+                    <p>Projet FAAS (File as a Service) - Design workflow central de management des shares NetApp. Solution retenue en tant que "Solution groupe BNP". Intégration avec IBM ICO/ICD.</p>
+                    <div class="timeline-techs">
+                        <span class="tag">vRO 7.2</span>
+                        <span class="tag">NetApp</span>
+                        <span class="tag">WFA</span>
+                        <span class="tag">IBM ICO/ICD</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="formations">
+        <h2 class="section-title">Formations Récentes</h2>
+        <div class="skills-grid">
+            <div class="skill-card">
+                <h3>2025 - Terraform</h3>
+                <p>Formation de 2 jours sur l'infrastructure as code avec Terraform</p>
+            </div>
+            <div class="skill-card">
+                <h3>2025 - Git et GitLab CI/CD</h3>
+                <p>Formation complète d'une semaine sur Git et pipelines CI/CD GitLab</p>
+            </div>
+            <div class="skill-card">
+                <h3>2025 - Ansible & Kubernetes</h3>
+                <p>Auto-formation intensive via IA (ChatGPT) - 2 semaines</p>
+            </div>
+            <div class="skill-card">
+                <h3>2023 - VMware NSX v4.0</h3>
+                <p>Install, Configure, Manage - Formation d'une semaine</p>
+            </div>
+            <div class="skill-card">
+                <h3>2022 - vRealize Automation 8</h3>
+                <p>Installation, Configuration, Administration - Formation d'une semaine</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2 class="section-title">Me Contacter</h2>
+        <div class="contact-grid">
+            <div class="contact-item">
+                <div class="contact-icon">📍</div>
+                <h3>Localisation</h3>
+                <p>Paris 11ème (75011)</p>
+            </div>
+            <div class="contact-item">
+                <div class="contact-icon">📱</div>
+                <h3>Téléphone</h3>
+                <a href="tel:0667321260">06 67 32 12 60</a>
+            </div>
+            <div class="contact-item">
+                <div class="contact-icon">✉️</div>
+                <h3>Email</h3>
+                <a href="mailto:graignla@hotmail.fr">graignla@hotmail.fr</a>
+            </div>
+            <div class="contact-item">
+                <div class="contact-icon">💼</div>
+                <h3>LinkedIn</h3>
+                <a href="https://www.linkedin.com/in/graignic-laurent-9b135b10/" target="_blank">Profil LinkedIn</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Laurent Graignic - Expert VMware ARIA (vRO/vRA) • DevOps • Cloud Computing</p>
+        <p style="margin-top: 0.5rem; color: var(--text-dim); font-size: 0.9rem;">
+            10 ans d'expérience DevOps • 20 ans d'expérience UNIX
+        </p>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and timeline items
+        document.querySelectorAll('.skill-card, .timeline-item, .contact-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

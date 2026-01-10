@@ -1,0 +1,542 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="lgra0056@lsurf.fr">
+   <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+   <title>commandes</title></head>
+<body>
+<p align="center"><i><font color="#008000" face="Comic Sans MS">JEUX DE
+COMMANDES FRÉQUEMMENT UTILISÉES.</font></i>
+</p><p>
+<font size="-1">DISPLAY xhost + emma --&gt; en local, autorise emma
+a envoyer son display</font>
+<br><font size="-1">DISPLAY(csh) setenv DISPLAY marylin:0 --&gt; a faire sur
+machine distante pour l'exportation de son affichage</font>
+<br><font size="-1">DISPLAY(ksh)&nbsp;&nbsp; export DISPLAY=marylin:0 --&gt;
+a faire sur machine distante pour l'exportation de son affichage</font>
+<br><font size="-1">DISPLAY (Catherine) --&gt;&nbsp;&nbsp; setenv DISPLAY&nbsp;
+esther:0</font>
+<br><font size="-1">DISPLAY sur john pour utiliser vi -&gt; TERM=ansi;export
+TERM ou, plus simple lancer csh</font>
+<br><font size="-1">sicprint&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /net/bin/sicprintEpsonHL&amp;
+--&gt; lance SICprint pour l'impression grand format (depuis emma)</font>
+<br><font size="-1">sicprint&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Voir les
+log de sicprint : \cat /home/logiciel/log/sic/logEpson|\grep -e epson01
+-e multi|\tail</font>
+<br><font size="-1">sicprint&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /net/bin/sicprintHP&amp;
+--&gt; lance SICprint pour l'impression grand format (depuis emma)</font>
+<br><font size="-1">image iso /usr/freeware/bin/mkisofs -J -l -R -o /var/tmp/image.iso
+-v -V&nbsp; $LOGNAME"no_job" [fichiers...] &amp;&amp; chmod 666 /var/tmp/image.iso</font>
+<br><font size="-1">iso script ~graignla/bin/burn no_job fichiers OU repertoire</font><font size="-1"></font>
+</p>
+<p><font size="-1">renault:serveur ftp design&nbsp;&nbsp; rsh john ; cat
+passwd|grep -i username --&gt; dit si un user non enregistre dans NIS est
+autorise en tp inter design.</font>
+<br><font size="-1">renault:serveur ftp pour ceux du design : en cas de pb,
+modifier la config de netscape : advanced/proxies passer de auto a direct
+et revenir pour internet</font>
+<br><font size="-1">renault:serveur ftp pour atteindre les fichiers : rsh
+john ; cd /export/home/disk4/ftp/BALDDI</font>
+<br><font size="-1">renault:serveur ftp pb de telechargement (permission
+denied) --&gt; pas d'espace ds les noms de fichiers</font>
+<br><font size="-1">renault:intranet 8002 pour atteindre le repertoire des
+page web cd /home/admin/websys/Apriori et aussi /export/home/disk1/web/websys/Apriori
+???</font>
+<br><font size="-1">renault:tcsh -&gt; pour cet environnement modifier passwd
+et faire sudo su - user ; cp /staff/dist/SOLARIS/tcsh.tcshrc ~user/.tcshrc</font>
+<br><font size="-1">renault:cellule repertoire d'echange pour la cellule
+: /home/bd/bdcatia/CELLULE qui&nbsp; apartient a s0875</font><font size="-1"></font>
+</p><p><font size="-1">NIS:edition des map: utiliser le script perl /staff/bin/updateyp
+pour locker les map pendant leur edition.</font>
+<br><font size="-1">NIS:bind:message de type "can't bind to NIS server for
+domain, Reason:&nbsp; can't communicate with ypbind. -&gt; (root): nsadmin
+restart !!!</font>
+<br><font size="-1">NIS:nfs:nettoyage des montages existants: umount /--/--/mount_point
+; autofs</font>
+<br><font size="-1">NIS:map:liste: pypcat -x --&gt; donne la liste des map NIS</font>
+<br><font size="-1">NIS:ypwhich --&gt; donne le serveur NIS le plus rapide a
+repondre ypwhich -m donne les map et leur master</font>
+<br><font size="-1">NIS:passwd:modif mot de passe : /serveur/bin/mkpasswd
+mot_de_pass, puis copier chaine criptee ds gary:/staff/yp/passwd et lancer
+/var/yp/ypmake</font>
+<br><font size="-1">NIS:sources:sources des maps NIS sont sur gary dans /staff/yp
+(protocols; passwd; networks; services; hosts; rpc; aliases; ethers)</font>
+<br><font size="-1">NIS:Apres toute modification de source il faut reconstruire
+les map avec la commande /var/yp/ypmake</font>
+<br><font size="-1">NIS:domainname --&gt; donne le nom du domaine nis de la
+machine</font>
+<br><font size="-1">NIS:demons:deamons:Les deamons "automount" ou "autofs"
+vont voir le fichier locale /etc/auto_master qui renvoie vers la map auto.master.</font>
+<br><font size="-1">NIS&nbsp; sur les client et seveurs NIS existe /ns qui
+est un filesysteme virtuel et dynamique.Sur serveur, il contient les map
+nis compilee</font>
+<br><font size="-1">&nbsp; permettant l'acces rapide a ces donnees. Sur serveur,
+ypinit -s permet la recopie du master en local (necessite pearl)</font>
+<br><font size="-1">NFS:unexport:virer un export en doublon avec un export
+de /etc/exports:exportfs -i -u (l'export indesirable -i ne reli pas /etc/exports,
+-u unexport)</font>
+<br><font size="-1">LDAP&nbsp;&nbsp; /home/logiciel/netscape/bin/ldap_arca.pl
+adr_Email -&gt; test l'adresse en webmail</font>
+<br><font size="-1">LDAP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+/home/logiciel/netscape/bin/ldap_search.pl adr_Email -&gt; test l'adresse
+en notmail</font>
+<br><font size="-1">&nbsp;</font>
+<br><font size="-1">&nbsp;</font>
+<br><font size="-1">CDROM&nbsp; pour que ca marche, il faut que le demon
+mediad tourne donc "chkconfig mediad on" attention au serveur dist et a
+son fichier "config.tab"</font>
+<br><font size="-1">padding&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fichier
+de bourrage : mkfile 3m padding --&gt; fait un fichier de 3 MO</font><font size="-1"></font>
+</p><p><font size="-1">general:recherche -&gt; which Commande --&gt; indique la 1ere
+commande correspondante du path avec son chemin</font>
+<br><font size="-1">general:recherche -&gt; le chemin d'une commande -&gt; whereis
+commande, ou whereis -P commande (cherche aussi dans le $PATH) util aussi
+pour le gestion du man</font>
+<br><font size="-1">general:recherche -&gt; find -&gt; pour exclure d'une recherche
+un fichier nomme qlquesoit le shell : find . -name ".map" -prune -o -print</font>
+<br><font size="-1">general:recherche -&gt; ls -pad .*&nbsp; ---&gt; pour ne voir
+que les point qq-chose en format condense et reconnaissance des repertoires</font>
+<br><font size="-1">general:recherche -&gt; Pour trouver tous les proprietaires
+de fichier a partir de . -&gt; find . -exec ls -l {} \;|tr -s " "|cut -f3
+-d" "|sort -u</font>
+<br><font size="-1">general:recherche -&gt; find . -name "*.sgi" | &amp; grep
+"^./" --&gt; recherche les .sgi depuis ici sans mettre de message d'erreur.</font>
+<br><font size="-1">general:recherche le path reel d'un fic -&gt; /usr/lib/desktop/realpath
+path</font>
+<br><font size="-1">general:rechercher une appli dont on ne connait pas bien
+le nom -&gt; find `echo $PATH|tr -s ":" " "` -iname "*acr*"</font>
+<br><font size="-1">general:rechercher:stat occupation filsystem FS: sur
+un filesysteme local quel user a combien de Kb de donnees -&gt; quot point_de_montage;&nbsp;
+quot -a (tous les FS locaux); quot -v (taille fic vieux de 30, 60, 90 jours)</font>
+<br><font size="-1">general:rechercher:sans distinction MAJ/minuscule -&gt;
+EX: find . -local -type f -print | xargs grep -i kassie</font>
+<br><font size="-1">general:Info sur les fichiers ou les images&nbsp; "file
+nom_du_fichier"</font>
+<br><font size="-1">general:plannification de travaux:at: at 13:00 &lt;enter&gt;
+echo connard &gt; /dev/console &lt;enter&gt; &lt;CTRL D&gt;</font>
+<br><font size="-1">general:information detaillee sur les fichiers "stat
+nom_de_fichier"</font>
+<br><font size="-1">general:demontage force d'un FS ou pour ejecter un device
+buzy : fuser -kcu point_de_montage -&gt; kill tous les proces attaches.</font>
+<br><font size="-1">general:awk NF=nbre of field du record courant ; NR=Numero
+du record courant ; FS=Input Field Sep ; RS=Input Record Sep ; OFS=Output
+Field Sep ; ORS=Output Record Sep ; FILENAME=Nom di fic traite.</font>
+<br><font size="-1">general:awk exemple ds /staff/etc</font>
+<br><font size="-1">general:ASCII:code:correspondance entre code ascii ASCII
+et numero -&gt; man ascii</font>
+<br><font size="-1">general:who:super who: /usr/bsd/w info de type : User
+tty from login@ idle JCPU PCPU what</font>
+<br><font size="-1">general:transfert -&gt; owner date et permission -&gt; /serveur/dp/bin/rsync
+-avz --exclude=.snapshot local_path remote_path --rsync-path=/serveur/dp/bin/rsync</font>
+<br><font size="-1">general:transferts -&gt; d'arborescences completes avec
+conservation owner,mode,date -&gt; cd rep_source-1 puis, tar cBf - rep|(cd
+dest;tar xBf -)</font>
+<br><font size="-1">general:transferts -&gt; tar cvBf - . | ( rsh machine_destination
+"cd repertoire_destination ; tar xvBf -" ) essayer tar cf pour tester la
+creation</font>
+<br><font size="-1">general:transferts:exclure un chemin-&gt;/usr/freeware/bin/tar
+cvf - . --exclude ./.snapshot/* | ( cd destination_dir &amp;&amp; /usr/freeware/bin/tar
+xvf - )</font>
+<br><font size="-1">general:transfert de compte : transferer cpte avec tar,
+updater group NT ds Hyena, modif map group, passwd, auto.home...etc ypmake.</font>
+<br><font size="-1">general:transfert:cp -Rp peut aussi etre une solution
+qui ne suit pas les liens et conserve les dates.</font>
+<br><font size="-1">general nfs demon client : /usr/etc/nfsd</font>
+<br><font size="-1">general freeware convertion de format de fichier image
+-&gt; /usr/freeware/bin/convert --&gt; conversion au format sgi</font>
+<br><font size="-1">general autorisation remote acces dans ~/.rhosts et pour
+toute une machine:/etc/host.equiv</font><font size="-1"></font>
+</p><p><font size="-1">scriptshell $$=pid du shell qui fait la presente substitution,
+utile pour donner une extention unique de fichier temporaire</font>
+<br><font size="-1">scriptshell $!=pid du dernier job en bg lance depuis
+le terminal</font>
+<br><font size="-1">scriptshell&nbsp;&nbsp;&nbsp;&nbsp; "$@"="$1" "$2" "$3"
+...&nbsp;&nbsp; "$*"="$1 $2 $3 ...$#"</font>
+<br><font size="-1">scriptshell pour passer en argument d'1 sous script des
+noms de fichier avec espace provenant d'1 variables: ksh -c "script $VAR"</font>
+<br><font size="-1">scriptshell&nbsp;&nbsp;&nbsp;&nbsp; pour traiter des
+options dans une commande, voir getopt</font>
+<br><font size="-1">scriptshell pour passer un grand nombre d'argument a
+une commande EX: find /hw -print | xargs ls -ld</font>
+<br><font size="-1">scriptshell pour nomer un fichier temporaire de facon
+unique : &gt;nom_de_fic.$$ (no de PID du shell courant)</font>
+<br><font size="-1">scriptshell date pour creer un format pratique de date
+--&gt; DATE=`date '+%m%d_%H~%M'`</font><font size="-1"></font>
+</p><p><font size="-1">visualisation Voir les images /serveur/bin/fcheck ou&nbsp;
+imgworks ou imgview (par ex imgview `ls|tail -5|tr -s '\012' " ; "`) pour
+voir les 5 dernieres</font>
+<br><font size="-1">edition d'une image : /usr/freeware/bin/gimp (equivalant
+photoshop)</font><font size="-1"></font>
+</p><p><font size="-1">imprimante la variable LPDEST pouvant etre declaree ds
+.cshrc force la destination par defaut (System V)</font>
+<br><font size="-1">imprimante ls /var/spool/lp/request/* --&gt; affiche le
+rep de tous les spooler (ttes les imprimantes)</font>
+<br><font size="-1">imprimante lpq -Pprinter -&gt; interroge l'imprimante et
+renvoi son etat ainsi que ses requetes</font>
+<br><font size="-1">imprimante&nbsp;&nbsp;&nbsp;&nbsp; lpstat -p | grep -v
+idle --&gt; liste des imprimante non prete</font>
+<br><font size="-1">imprimante lpstat -a --&gt; donne ls liste des imprimantes
+installees</font>
+<br><font size="-1">imprimante relance du spooler : lpc [stop|start] nom_imprimante</font>
+<br><font size="-1">imprimante les fichiers en attente d'impression sont
+ds /var/spool/epson01/df*</font>
+<br><font size="-1">DAT</font>
+<br><font size="-1">&nbsp;hinv --&gt; (Hardware-Inventory) : donne la config
+materielavec chemin hard pour nom de fichiers speciaux.</font>
+<br><font size="-1">&nbsp;"mt rewind" --&gt; pour rembobiner la bande "mt erase"
+--&gt; pour effacer jusqu'a EOT "mt unload" -&gt; pour ejecter</font>
+<br><font size="-1">&nbsp;mt blksize -&gt; pour detrminer la taille des blocks</font>
+<br><font size="-1">&nbsp;tar tvf /dev/rmt/tps1d3 --&gt; lister les fichiers
+tar de la bande</font>
+<br><font size="-1">&nbsp;tar xvf[b] /dev/rmt/tps1d3 [N]&nbsp;&nbsp; (b --&gt;
+pour pouvoir preciser taille block de Nx512) --&gt; extraire les fichiers
+de la bande</font>
+<br><font size="-1">&nbsp;tar cvf /dev/rmt/tps1d3 fic1 rep2 rep3 --&gt; creer
+une archive des repertoires rep2 et rep3 et du fichier fic1</font>
+<br><font size="-1">&nbsp;du -sk RENDERpix/&nbsp; ---&gt; taille du repertoire
+"RENDERpix/" (en blocks de 1&nbsp; mega)</font><font size="-1"></font>
+</p><p><font size="-1">SIGNAUX kill -l --&gt; liste les signaux kill</font>
+<br><font size="-1">&nbsp; stty -a --&gt; liste des signaux de racourcis clavier</font>
+<br><font size="-1">&nbsp; ----------------------------------</font>
+<br><font size="-1">&nbsp; sudo su - login</font>
+<br><font size="-1">xlock&nbsp; killall xlock en tant que root&nbsp; --&gt;
+debloque une station boguee par l'economiseur d'ecran</font>
+<br><font size="-1">xlock&nbsp; deblocage par le user : rsh my_host -n sudo
+/serveur/bin/killxlock</font><font size="-1"></font>
+</p><p><font size="-1">communication xconfirm -t message</font>
+<br><font size="-1">communication /image/imatool/bin/hey&nbsp; --&gt; petit
+script deportant l'affichage d'un xterm sur la machine de son choix</font>
+<br><font size="-1"></font>&nbsp;<font size="-1"></font>
+</p><p><font size="-1">DLTXXXX le lecteur reconnait le support (4000 ou 7000
+voir mt status) et les cdes tar peuvent se faire simplement avec tps2d1</font>
+<br><font size="-1">DLT4000 mt -f /dev/rmt/tps2d1nrv.4000 rewind --&gt; rembobine
+la bande du device</font>
+<br><font size="-1">DLT4000 tar tvf /dev/rmt/tps2d1nrv.4000 --&gt; liste ce
+qu'il y a sur la DLT (accesible depuis gari ds le robot position basse)</font>
+<br><font size="-1">DLT4000 tar cvf /dev/rmt/tps2d1nrv.4000 . --&gt; cree une
+archive du repertoire courant (fonctionne en multi volume)</font><font size="-1"></font>
+</p><p><font size="-1">SERIAL_NUMBER sysinfo -vv --&gt; donne une serie de mot hexa
+de 2 digits. correspondant au S/N de la machine.</font><font size="-1"></font>
+</p><p><font size="-1">ftp pour transferer plusieursfichiers d'un coup et sans
+confirmation: prompt ; mget</font>
+<br><font size="-1">ftp Pour acceder en ftp a un serveur non anonyme depuis
+un navigateur -&gt; ftp://user:password@URL, ftp://user@URL -&gt; netscape demande
+mot de passe</font>
+<br><font size="-1">probleme d'affichage de sicprint : fenetres blanche --&gt;
+renomer le .desktop-machine en .desktop-machine.old et se relogger.</font><font size="-1"></font>
+</p><p><font size="-1">config services&nbsp; chkconfig --&gt; affiche en colonnes
+les statuts on/off des services demarrables sur la machine.(vu ds /etc/config)</font><font size="-1"></font>
+</p><p><font size="-1">Mise en forme tr -s " " ---&gt; transforme toute serie de
+blancs en un espace.(pratique pour les cut)</font><font size="-1"></font>
+</p><p><font size="-1">gdg : Message -&gt; "dspserv ne fonctionne pas" "/etc/init.d/gdg_mux
+stop" puis "/etc/init.d/gdg_mux start"</font>
+<br><font size="-1">gdg : pb d'acces d'un user sur une piece&nbsp; 1) determiner
+qui est le resp du projet -&gt; demande au plan de forme</font>
+<br><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2) etre autorise en acces:
+voir avec P. Jolivet ou Henri Hotuqui</font>
+<br><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3) modifier l'acces: voir
+avec P. Jolivet ou Henri Hotuqui</font>
+<br><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4) support gdg en cas
+de pb: Pierre Jolivet ou cellule d'echange</font><font size="-1"></font>
+</p><p><font size="-1">depannage fichier de&nbsp; LOG : /var/adm/SYSLOG</font><font size="-1"></font>
+</p><p><font size="-1">euclide BD pour trouver quelle machine sert une bd&nbsp;
+-&gt;Ex:&nbsp; whereisbd creosctr (infos sur les bd nomees *creosctr*)</font>
+<br><font size="-1">euclide BD connaitre le nom de la BD ds le chemin voir
+apres le ":" ds result de "whereisbd".</font>
+<br><font size="-1">euclide BD connaitre le chemin des BD accessibles design-&gt;
+envbd|grep nom_de_variable_vue ds le result de whereisbd avant le ":".</font>
+<br><font size="-1">euclide BD Pour intervenir sur les BD, se mettre dabord
+root sur dustin pour voir le proprio de la BD, devenir lui et lancer les
+cdes suivantes</font>
+<br><font size="-1">euclide BD diagnostiquer pb d'acces -&gt; "cao progdb euclid
+321b" (= menudefond/gestion bd/procdb) ; "pr &lt;projet&gt;,&lt;sous-projet&gt;"
+-&gt; prompt de connexion</font>
+<br><font size="-1">euclide BD etendre une BD -&gt; "cao extenddb euclid 321b"
+puis 2), 2), 0)</font>
+<br><font size="-1">euclide BD creer une bd -&gt; :"cao initdb euclid 321b"
+et puis "cao centdb euclid 321b"</font>
+<br><font size="-1">euclide BD le groupe bdeuclid est accessible au design,
+le groupe bdeuclidext est accessible a ts renault.Pour reduire l'acces
+a 1 user: chmod X00 ..</font>
+<br><font size="-1">euclide impression: dans ~print/euclid/euclid/PLO320</font>
+<br><font size="-1">euclide impression: utilitaire de configuration /net/bin/MappingQmsDTSIDDI.sh
+(par la) accessible en menu de fond.</font>
+<br><font size="-1">catia impression -&gt; pour individualiser les menus d'impression
+:modifier le rep ~/.PLO avec les fichiers de def de /home/logiciel/print/euclid/PLO320</font><font size="-1"></font>
+</p><p><font size="-1">Autorisation remote acces dans /.rhosts</font>
+<br><font size="-1">X:customisation / personnalisaion supllementaire standard
+X: ~.Xdefaults</font>
+<br><font size="-1">Scgi:customisation / personnalisation supllementaire
+sgi: ~.Sgiresources</font>
+<br><font size="-1">X redemarrage du serveur X /usr/gfx/stopgfx ; /usr/gfx/startgfx</font>
+<br><font size="-1">Xsgi Xwindows&nbsp; /etc/init.d/xdm stop&nbsp; /etc/init.d/xdm
+start --&gt; redemarre le serveur xdm qd il y a des probleme d'affichage/clavier/souris</font>
+<br><font size="-1">Menu de fond d'ecran&nbsp;&nbsp; /tmp/4Dwmrc.graignla:0&nbsp;
+--&gt; fichier de conf des commandes lance ds les menu graphique.</font>
+<br><font size="-1">Menu de fond perso click droit dans ~/.menuwm</font>
+<br><font size="-1">X xwininfo --&gt; pour avoir des info sur la config X lies
+a une fenetre en clickant dessus avec la souris.</font>
+<br><font size="-1">X pour passer de 8 a 24 plans en 6.5.10 rajouter a la
+cde du fic /var/X11/xdm/Xservers l'option "-depth 24"</font>
+<br><font size="-1">X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; En 6.5.3 un icone au
+login permet de choisir entre /var/X11/xdm/Xservers (8 plans) et /var/X11/xdm/Xservers.24plans</font>
+<br><font size="-1">X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xkill --&gt; pour killer
+ts les process lies a une fenetre avec la souris en clickant dessus.</font>
+<br><font size="-1">X tellwm restart -&gt; pour rafraichir le client x (pas
+dangereux)</font>
+<br><font size="-1">X connaitre le resolution en cours:/usr/gfx/gfxinfo</font>
+<br><font size="-1">X reglage de la resolution a distance-&gt; rlogin host -l
+root ; setenv DISPLAY :0 ; /usr/gfx/setmon -x 1280x1024_75</font>
+<br><font size="-1">X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (UNIX en gen.)&nbsp;
+/var/X11/xdm/Xsession.dt est le fichier de demarrage de cession X.</font>
+<br><font size="-1">X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xkill --&gt; pour killer
+ts les process lies a une fenetre avec la souris en clickant dessus.</font>
+<br><font size="-1">X Pour relancer 4Dwm sans rien peter</font>
+<br><font size="-1">&nbsp;rlogin station -l root ; psg 4Dwm -&gt;PID ; grep
+configFile: /var/X11/xdm/Xsession.dt -&gt;model de la cde a faire plus tard
+;</font>
+<br><font size="-1">&nbsp;kill PID ; su - user ; setenv DISPLAY :0 ;</font>
+<br><font size="-1">&nbsp;puis /usr/bin/X11/4Dwm -xrm "4Dwm*configFile: /tmp/4Dwmrc.user:0"
+-xrm "*SG_UseBackgrounds: True" -launch &amp;</font>
+<br><font size="-1">X Pour mettre une image perso en fond d'ecran -&gt; vi .sgisession
+; xv -root -maxpect -rm 5 -smooth -quit image.jpg</font>
+<br><font size="-1">X affichage gamma -&gt; sudo gamma : donne le gamma courant
+-&gt; sudo gamma 1.5 : fixe le gamma a 1.5</font>
+<br><font size="-1">4dwm:desktop:pour avoir le menu de groupe sur le bouton
+central de la souris et virer les icones du bureau-&gt; touch ~/.desktop-marylin/nodesktop
+et relogg</font>
+<br><font size="-1">X environnement: /usr/lib/X11/xdm/Xlogin lu au login
+execute en ksh sous root</font>
+<br><font size="-1">&nbsp;</font>
+<br><font size="-1">netscape : modeles de fichiers de parametres par defaut
+sur gary:/export/home/filer_users/_Modele_users/message/netscape/</font>
+<br><font size="-1">netscape : tous les mail locaux sont ds le dossier ./nsmail</font>
+<br><font size="-1">netscape : fichier prefjs model pour NT -&gt; /export/home/filer_users/_Modele_users/message/netscape/Prenom.Nom
+(a personnaliser et renomer)</font>
+<br><font size="-1">netscape : specialiste DTSI : guillaume.romero-renexter@renault.com
+- Tel: 57203</font>
+<br><font size="-1">netscape : plantage a l'introduction du mot de passe
+--&gt; sudo su - user ; mv ns_imap ns_imap.old</font>
+<br><font size="-1">netscape : les donnees de configuration du logiciel sont
+: PC -&gt; /message/netscape&nbsp; UNIX -&gt; .netscape</font>
+<br><font size="-1">netscape : autre possibilite de debuggage "mv .netscape
+.netscape.old" puis "cp -f .netscape.old/bookmarks.html .netscape.old/abook.nab
+.netscape"</font>
+<br><font size="-1">netscape : pour passer en webmail mv .netscape/umr.profile
+.netscape/umr.profile.old puis relance de netscape.</font>
+<br><font size="-1">netscape:flash:plugin: s'assurer de la generation du
+lien ~/.mailcap au lancement de netscape de l'acces a sa source</font>
+<br><font size="-1">netscape:extensions de fichiers:reconnaissance:s'assurer
+de la generation du lien ~/.mime.types au lancement de netscape.</font><font size="-1"></font>
+</p><p><font size="-1">samba dustin : /usr/samba/lib/smb.conf, pour redemarrer
+le service /etc/init.d/samba stop;...start, /usr/samba/bin/smbstatus</font><font size="-1"></font>
+</p><p><font size="-1">filer humphrey -&gt; repertoire de connexion des users sur
+humphrey -&gt; /export/home/filer_users/users</font>
+<br><font size="-1">filer humphrey -&gt; mettre un quota sur un user :sur gary
+vi /humphrey/vol0/etc</font>
+<br><font size="-1">filer:quotas:rsh humphrey quota report | egrep "^tree|^user"
+| awk '{printf("%6.2f%%%s\n",$5*100/$6,$9)}' | sort -n</font>
+<br><font size="-1">filer:quotas:rsh alec quota report | egrep "^tree|^user"
+| awk '{printf("%6.2f%%%s\n",$5*100/$6,$9)}' | sort -n</font>
+<br><font size="-1">filer:etat des disques:rsh humphrey sysconfig -v</font>
+<br><font size="-1">filer:pour des transferts entre alec et humphrey, on
+peut sur emma faire cp /vol/vol2/users (users d'alec miroir) ~techno-users</font><font size="-1"></font>
+</p><p><font size="-1">zone public1602 : /home/modelage/visu/public1602 (accessible
+groupe modelage)</font>
+<br><font size="-1">zone commune designer : /home/designer/designer (est
+un montage nfs)</font>
+<br><font size="-1">zone bureautique commune (humphrey) depuis unix :root
+-&gt;gary:/export/home/frler_root/partage/Bureautique</font>
+<br><font size="-1">photographe possede un acces a des repertoires utilisateur
+pour pousser des fichiers ds gary:/export/home/filer_root/partage/Bureautique/</font><font size="-1"></font>
+</p><p><font size="-1">restauration unix et serveur NT: depuis TiNa -&gt; /home/admin/admin/bin/tina
+TCR&amp; (technocentre et Barcelone)</font><font size="-1"></font>
+</p><p><font size="-1">installation station IRIX&nbsp;&nbsp;&nbsp; winterm -hold
+-geometry 130x40+0+0 -e cat ~graignla/procedures/sgi_sys_install.txt</font>
+<br><font size="-1">supression d'une station: virer lignes ds netgroup.member,
+netgroup.groupname, faire un majmap_netgroup et /var/yp/ypmake. supr. ds
+dist (WSADDR + rep)</font>
+<br><font size="-1">visualisation de la liste des netgroup -&gt; ypcat -k netgroup
+| awk '{ print $1 }'</font>
+<br><font size="-1">&nbsp;&nbsp; faire une suppression d'adresse IP ds l'intranet
+qui enverra une demande de supression DNS.</font><font size="-1"></font>
+</p><p><font size="-1">mp3 lecteur et fichiers -&gt; /serveur/dp/bin/mxaudio /home/devel/partiels_ugo/audio/mp3</font>
+<br><font size="-1">mp3 lire un son en ligne de commande: /usr/sbin/sfplay
+fic.mp3</font><font size="-1"></font>
+</p><p><font size="-1">profiles errants: Ils sont centralises sur le "filer"
+accessibles sur unix sur gary:/export/home/filer_root/partage/profiles
+(.snapshot a ts les etages)</font>
+<br><font size="-1">dist source incomparable pour voir la specificite de
+caque machine gary:/staff/dist utilise par update_ws</font>
+<br><font size="-1">dist /staff/dist/WSADDR est un fic de conf du serveur
+dist qui contient le nom de toutes les machines du design.</font>
+<br><font size="-1">dist pour voir quelle machine sont "lockes" il faut faire
+cd /staff/dist ; find . -name .update.lock</font><font size="-1"></font>
+</p><p><font size="-1">version precise uname -R</font>
+<br><font size="-1">application : les applications locales ont leur variables
+d'environnement definies ds /usr/lib/X11/app-defaults .qd une appli passe
+sur serveur, son fichier de config doit etre detruit ds ce repertoire.</font>
+<br><font size="-1">humphrey (cdes network appliance) cifs session login|bios_hostname
+--&gt; permet de savoir si le login est connecte ou qui est connecte sur le
+hostname</font>
+<br><font size="-1">humphrey quotas -&gt; telnet humphrey puis "quota report",
+edition des valeur&nbsp; Q</font>
+<br><font size="-1"></font>&nbsp;<font size="-1"></font>
+</p><p><font size="-1">config reseau sgi : /etc/hosts, /etc/config/netif.option
+(hostname), /etc/config/static-route.options, /etc/host.equiv (netgroup),
+/etc/resolv.conf</font>
+<br><font size="-1">processus pour bien voir les processus utilisateur ps
+-ef | grep -v root</font>
+<br><font size="-1">decompression pour des fichiers ayant l'extension ".Z"
+--&gt; uncompress file.Z</font>
+<br><font size="-1">sticky bit chmod 01XXX, XXX etant les droit habituels.
+sur un rep: aucun type d'acces sur ce qui n'appartient pas au proces qui
+tente d'acceder</font>
+<br><font size="-1">set gid-bit uniquement possible en mode relatif -&gt; chmod
+g+s file, sur un rep: tout ce qui tombe ds le rep appartient au groupe
+du rep</font>
+<br><font size="-1">sticki gidi user-&gt;??s:set-uid=1 &amp; X=1 ; ??S:set-uid=1
+&amp; X=0&nbsp;&nbsp; group-&gt;??s:set-gid=1 &amp; X=1 ; ??S:set-gid=1 &amp;
+X=0&nbsp;&nbsp;&nbsp; other-&gt;??t:sticky=1 &amp; X=1 ; ??T:sticky=1 &amp;
+X=0</font>
+<br><font size="-1">a2ps&nbsp; a2ps --help. ex pour imp un script de 91lign(./bin/burn):
+/serveur/dp/bin/a2ps -1 -p -l100 bin/burn|lp (1sheet,portrait,100lignes/sheet)</font>
+<br><font size="-1">informations sur les images imginfo imgsize fcheck -cv</font>
+<br><font size="-1">sudo pour editer sudoers -&gt; /home/logiciel/freeware/bin/visudo
+; fichier sudoers:/home/logiciel/freeware/etc/sudoers (gary) et ..kirk:/export/net/etc
+??</font>
+<br><font size="-1">hardware connaitre device du disque de demarrage (/dev/root)
+-&gt; nvram</font>
+<br><font size="-1">hardware pour voir le HW graph -&gt; find /hw -print | xargs
+ls -ld</font>
+<br><font size="-1">hardware pour recreer le HW graph -&gt; ioconfig -f /hw</font>
+<br><font size="-1">hardware pour recreer les fichier speciaux et leur liens
+-&gt;&nbsp; cd /dev ; ./MAKEDEV [floppy|tape|...]</font>
+<br><font size="-1">hardware pour verifier la presence d'un driver scsi -&gt;
+vi /var/sysgen/master.d/scsi&nbsp; ou-&gt;&nbsp; grep marque_device /var/sysgen/master.d/scsi\</font>
+<br><font size="-1">hardware pour tester le controleur scsi 1 -&gt; scsiha -p
+1</font>
+<br><font size="-1">hardware pour verifier fonctionnement du DAT -&gt; mt status</font>
+<br><font size="-1">recompilation du noyeau avec les params par defaut #root&gt;
+connecter le(s) hardware puia cp /unix /unix.copie;autoconfig -vf;sync;reboot</font><font size="-1"></font>
+</p><p><font size="-1">volume logique xlv_mrg puis &gt;show all --&gt; donne les info
+sur les volumes logiques du systeme</font>
+<br><font size="-1">CATIA V5 lancement: /net/bin/lance_V5R7sp1 (schmitt seul
+user design de cette version)</font>
+<br><font size="-1">network appliance : acces http de alec -&gt; http://alec.ava.tcr.renault.fr/na_admin</font>
+<br><font size="-1">network appliance : acces http de humphrey -&gt; http://humphrey.ava.tcr.renault.fr/na_admin</font>
+<br><font size="-1">flex FLEX rsh dustin -n "cd /serveur/Flex/licences;lmstat
+-a -c aw-kate.dat -c aw-kirk.dat -c aw-gary.dat -c aw-steve.dat" ou -A</font>
+<br><font size="-1">test reseau aller sur la station #root&gt; su - user (pour
+monter son nfs) time mkfile 10m toto. Faire de meme sur une autre station
+et comparer</font>
+<br><font size="-1">test reseau detection pb de montage df|grep handle&nbsp;&nbsp;
+-&gt; ne doit rien retourner sinon, lenteur justifiee par tentatives infructueuses
+de montage</font>
+<br><font size="-1">selfix&nbsp; taper selfix dans un shell. en general le
+mot de passe est identique au login.</font>
+<br><font size="-1">barcelone zone commune : steve:/export/home/disk1/public&nbsp;&nbsp;&nbsp;&nbsp;
+nfs 71081648 11143920 59937728&nbsp; 16&nbsp; /home/logiciel/publicbar</font>
+<br><font size="-1">envronnement pour afficher un prompt sympa en ksh:PS1="${LOGNAME}@`tput
+bold``tput rev``hostname``tput rmso`&gt;&gt;"; export PS1</font>
+<br><font size="-1">envronnement&nbsp;&nbsp; pour afficher un prompt sympa
+en csh:set prompt = "`whoami`@`hostname` `tput bold`\!`tput rmso`&gt; "</font>
+<br><font size="-1">SGI:memoire:utilisation:gestion de la memoire gmemusage&amp;
+-&gt; vision graphique en tps reel de la memoire</font>
+<br><font size="-1">SGI:memoire:swap physique:-&gt; utilise un file system (/dev/swap)
+ou/et un fichier</font>
+<br><font size="-1">SGI:memoire:extension swap physique:-&gt; swap -a /dev/dsk/dks0d4s1
+(cas d'une partition raw) ; swap -a -p 5 /usr/swap1 (qui un fic cree avec
+mkfile)</font>
+<br><font size="-1">SGI:memoire:swap virtuelle: -&gt; parametre du fic /etc/config/vswap.options
+activable par "chkconfig vswap on/off" qui fait croire aux appli la swapp
+necessaire</font>
+<br><font size="-1">utilitaire communication --&gt;/image/imatool/bin/hey</font>
+<br><font size="-1">script de communication pour envoyer message a tout le
+design,&nbsp; voir ds le etc/all.login</font>
+<br><font size="-1">utilitaire d'acces aux consoles des serveurs : /home/admin/admin/bin/console.pl
+- infos ds netscape/localmail/infotech</font>
+<br><font size="-1">SGI mire de login:correspond au processus:clogin et signifie
+que personne n'est logge en 4Dwm</font>
+<br><font size="-1">SGI:4dwm pour lancer le " gestionnaire de fichier":taper
+la commande "dirview" ou "fm" qui semblent equivalantes.</font>
+<br><font size="-1">SGI:4dwm pour choisir des editeurs les plus courants
+par default ds l'interface graphique: Toolchest/Desktop/Customize/Utlilities</font>
+<br><font size="-1">SGI:/etc/passwd:pour verouiller un compte:-&gt; Placer :
+"nologin;" dans le champs mot de passe</font>
+<br><font size="-1">SGI:4dwm:derniere machine loggee:\ls -ladrt .desktop-*
+| tail -1 | awk '{ print $9 }' | cut -f2 -d"-"</font>
+<br><font size="-1">Archivage temporaire des cpte supprimes (avant archivage
+sur bande) : gary:/export/home/data4</font>
+<br><font size="-1">---------------------------------------------------------------------------------------------------------------------------------------------------------</font>
+<br><font size="-1">http://mongo.ava.tcr.renault.fr:8021/cgi-bin/lum.cgi
+-&gt; liscence lum service&nbsp; voir div mecaflux</font>
+<br><font size="2">gravage:tour de gravage:voir sur la station de JLF sur
+/opt/traceur</font>
+</p><blockquote>
+<p><font color="#000080" size="2">Mirrored disk operations require the
+installation of the optional HP MirrorDisk/UX software, which is not
+included in the standard HP-UX operating system.<br>
+SYNOPSIS (lvextend cannot be performed if the volume group is activated in shared mode.)<br>
+/usr/sbin/lvextend [-A autobackup] {-l le_number | -L lv_size | -m mirror_copies} lv_path [pv_path ... | pvg_name ...]<br>
+<br>
+The -m option is only meaningful if the optional HP MirrorDisk/UX software has been installed on the system.<br>
+-m mirror_copies&nbsp;<br>
+Set the number of mirror copies allocated for each logical extent. A
+mirror copy contains the same data as the original. mirror_copies can
+have the value 1 or 2. It must be greater than the current value.<br>
+<br>
+Data in the new copies is synchronized. The synchronization process can
+be time consuming, depending on hardware characteristics and the amount
+of data.<br>
+<br>
+One, and only one, -l, -L, or -m option must be specified.&nbsp;<br>
+Allocate two mirrors (that is, two copies of the original) for each logical extent of a logical volume:&nbsp;<br>
+lvextend -m 2 /dev/vg01/lvol5&nbsp;<br>
+**********************************************<br>
+Mirror a logical volume onto a particular physical volume.&nbsp;<br>
+<br>
+lvextend -m 1 /dev/vg00/lvol3 /dev/dsk/c0t3d0&nbsp;<br>
+IOSTAT<br>
+VMSTAT -d<br>
+top --&gt; aio_reap -&gt; si trop long (%) mettre en place du striping.<br>
+<br>
+/usr/sbin/vgchange -a availability [-l] [-p] [-q quorum] [-s] [-P resync_daemon_count] [vg_name...]<br>
+-q quorum Set the quorum enforcement for each specified volume group.
+quorum can have one of the following values: y Enforce the quorum
+requirement. This is the default. n Ignore the quorum requirement.<br>
+<br>
+The -q n option can be used to activate the volume group when the disk
+quorum is not maintained because too many disks were lost. Since it
+ensures the integrity of the LVM configuration information, it is
+normally not advisable to override the quorum.&nbsp;<br>
+-------------------------------------------------------------------------<br>
+mkboot, rmboot - install, update or remove boot programs from disk<br>
+<br>
+INITIALISATION du SYSTEME<br>
+<br>
+Mode PDC --&gt; Prompte: Boot_admin&gt; boot pri isl<br>
+Mode ISL --&gt; Prompte: ISL&gt;hp-ux -lq (désactivation du quorum)<br>
+		      ISL&gt;hp-ux -lm (démarrer avec structure LVM corrompues)</font></p></blockquote><p><font color="#000080" size="2"><span style="color: black;">lister les membres du groupe NT PTX-DAT-PackagingPublicRO (Dans Departemental Groups/Distribution/Groups/FRS/nt@france.effix.fr)<br>********************************************************************************************************************************<br>dsget
+group "CN=PTX-DAT-PackagingPublicRO,OU=Departemental
+Groups,OU=Distribution,OU=Groups,OU=RFS,DC=nt,DC=france,DC=effix,DC=fr"
+-members &gt; fichier<br>lister les membres d'un groupe dans imea.ime.reuters.com <br>dsget
+group "CN=RFS-DAT-RO-PackagingPublic,OU=Departmental
+Groups,OU=Distribution,OU=Groups,OU=RFS,DC=emea,DC=ime,DC=reuters,DC=com"
+-members &gt; fichier<br>FTP : put fichier sur unix, puis<br>cut -f2 -d"=" fichier|cut -f1 -d, &gt; fichier.extract<br>more fichier*.extract &gt; ListeUserByMember<br><br>Suite coupure electrique : firewall en carafe : ecran clavier connecte + fsck -F ufs /dev/md/rdisk/d/....<br>synchronisation temps ??<br><br>unix : find . -name '[A-Z]*' -print -&gt;(filtrage avec meta caracteres)<br><br>NIS : sur NISSRV01 (Utiliser updatenis pour mettre a jour manuellement le NIS)<br><br>FS : fsck -y (test et repare tous les FS avec yes a toutes les validations)<br><br>telephone : interception d'un appel : *01<br><br>FS : manually (fsck -F ufs /dev/rdsk/c1t0d0s3). Exit the shell when<br><br>Machine SUN Multidomaines<br>-------------------------<br>grep 11290 hosts<br>150.151.145.201&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ptxv11290-a&nbsp; # SUN M5000 domain 0 zone 1<br>150.151.145.202&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ptxv11290-b&nbsp; # SUN M5000 domain 0 zone 2<br>150.151.145.203&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ptxv11290-c&nbsp; # SUN M5000 domain 1 zone 1<br>150.151.145.204&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ptxv11290-d&nbsp; # SUN M5000 domain 1 zone 2<br>150.151.192.202 ptxsm5000-sc<br>150.151.97.156 ptxs11290-a # SUN M5000 domain 0<br>150.151.97.157 ptxs11290-b # SUN M5000 domain 1<br><br>https://ptxsm5000-sc (Compte support/*******)<br>&nbsp;&nbsp;&nbsp; Dans operation : Mettre les domaines "power on"<br>Et comme c'est pas configure en auto-boot :<br>telnet ptxsm5000-sc (Compte support/*******)<br>&nbsp;&nbsp;&nbsp; #console -d[0/1]<br>&nbsp;&nbsp;&nbsp; #boot<br>consolesc : resetrsc permet de rebooter la carte ALOM<br>consolesc : sortir de certaines console : "~." sinon "#."<br><br>INFOS : Proprietaire et equipe utilisant un materiel : visible dans base immo.<br><br>NIS : repliquer et mettre a jour les map NIS : /opt/home/global/updatenis<br><br>logiciels commerciaux pour les pc avec acces limite : \\pcfileserv1\Distrib\Limited\<br>Outils system pour les admin : \\nt\adm\Unsaved<br><br>ACTIVE DIRECTORY : Les users sont dans : <br>active directory management<br>&nbsp;&nbsp;&nbsp; active directory users and computers [ptxemea01.emea.ime.reuters.com]<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; emea.ime.reuters.com<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RFS<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Locations<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; PTX<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Users<br><br>WINDOWS XP PRO : Fichier d'install sur \\nt\adm\Unsaved\Wxp\Professionnal\Disk1\I386<br><br>awk 'NR == 5 , NR == 10 {print NR" : " $0 }' fichier Imprime de la ligne 5 à la ligne 10 , chaque ligne précédée par son numéro <br>EXEMPLE afficher la 405eme des 14 plus gros fichier du repertoire courant:<br>$ for I in $(wc -l * | sort -k1 -n|tail -14|awk '{print $2}'|grep -v total)<br>&gt; do<br>&gt; echo $I:<br>&gt; awk 'NR == 405 {print}' $I<br>&gt; done<br><br>Parametrage reseau netsight : http://ptxsnetsight01:8080<br>EMEA\laurent.graignic<br>AD-PASSWORD<br><br><br>echo "5 principaux connectes :" &gt; /tmp/iiii<br>last|head -100|awk '{print $1}'|sort|uniq -c|sort -nr|head -5|awk '{print $1"% "$2}' &gt;&gt; /tmp/iiii<br>echo "**************************" &gt;&gt; /tmp/iiii<br>echo "$(ps -ef|grep ".*d "|wc -l|awk '{print $1}') demons en service" &gt;&gt; /tmp/iiii<br>echo "**************************" &gt;&gt; /tmp/iiii<br>echo "$(ps -ef|grep -v root|grep -v pts/|wc -l|awk '{print $1}') tache de fond utilisteur" &gt;&gt; /tmp/iiii<br>echo "**************************" &gt;&gt; /tmp/iiii<br>uptime &gt;&gt; /tmp/iiii<br>clear<br>cat /tmp/iiii<br>rm /tmp/iiii<br><br>NOTES : Base Mailgroups : Dans Notes : Ctrl O ; serveur effxmail01/EFFIX/fr ; ds rep. "support"<br><br>Sur ptxinfs01 liste de tous les home avec : ls -1 ptx*/vol[0-9]/home<br>ls -l */*/*|grep annbanas<br><br>Recherche dans map hosts : egrep "^[^#].*ptxs[0-1A-Za-z]*01" hosts<br><br>KSH<br>****<br>set -o vi<br>PS1="`tput rev`${LOGNAME}@`tput rmso``tput bold``hostname`:\${PWD}`tput rmso`#"; export PS1<br>clear<br>&nbsp;<br>ou<br>PS1="$(id|cut -f1 -d\)|cut -f2 -d\()@$(hostname):\${PWD}#"<br><br><br>gestion parc machine par "Thierry martin" http://kplusweb/wiki/doku.php<br><br>FAX REUTERS = 01 47 62 64 66<br><br>NIS
+: ptxinis04:(/usr/local/home/support, /usr/local/rsync,
+/usr/spool/cron, /var/yp) duplique (Par rsync avec date gardee) sur
+ptxidns01:/appli/support/Pologne/Backups<br><br>NIS/NFS : homedir : Verifier la presence de tous les homedir sur support@ptxidns01:<br>for I in $(grep POL passwd|cut -f6 -d:)<br>do<br>test -d $I || grep $I passwd<br>continue<br>done<br><br>account
+: POL : On ne cree que les comptes unix pour la pologne (Voir les
+compte comportant (POL) dans passwd) cette mention induit la creation
+automatique du homedir sur les nas polonais<br><br>FILER<br>----- <br>EMC2 : gestion separée CIFS et NFS<br>NETTAP : gestion cifs ET nfs a partir de droits unix concertis en ACLs.<br>Voir les shares depuis son PC : Poste de travail/Manage - clic droit "manage another computer" - choisir son nas<br><br>toute
+demande d'accès à un share doit être validée par le propriétaire du
+share (r ou rw) et par le manager du bénéficiaire (r ou rw)<br>Il y a un groupe AD pour le share-read et un autre pour le même share-read-write.&nbsp; <br>Voir dans RFSDirectory la constitution des équipes.<br><br>root@ptxinfs01:/nas/ptxsnas07#ls $PWD/*|/usr/xpg4/bin/grep -e "kgr<br>&gt; :"<br><br>RECHERCHE (Reseau) LIMITEE EN DEPTH 2 (dir ou fic) : ls -lad $PWD/*/*|/usr/xpg4/bin/grep -e "^[d-].*/kgr[^/]\{1,\}$"<br>Meilleur soluc dans le cas d'un mappage : ypcat -k auto_kgr<br><br>(Solaris) NAME : dmesg - collect system diagnostic messages to form error log<br><br><br>**************************PROBEME IMPRESSION SOLARIS**************************<br>rm /usr/spool/lp/SCHEDLOCK<br>root@ptxs10879:/var/spool/lp# ps -e | grep lpsched|awk '{print $1}'|xargs kill -9<br>root@ptxs10879:/var/spool/lp# /usr/lib/lpsched<br>root@ptxs10879:/var/spool/lp#lpstat -p laserrmssup&nbsp; -l<br>printer laserrmssup unknown state. enabled since Sep 12 16:23 2008. available.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Remote Name: laserrmssup<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Remote Server: ptxp2a01<br>JetDirect lpd: no jobs queued on the port Auto<br>root@ptxs10879:/var/spool/lp#lpadmin -p laserrmssup -u allow:all<br>root@ptxs10879:/var/spool/lp# lpadmin -p laserrmssup -T PS<br>root@ptxs10879:/var/spool/lp# su - ksup30<br>ksup30@ptxs10879&nbsp; ~&nbsp; lpr /etc/hosts<br>ksup30@ptxs10879&nbsp; ~&nbsp; echo $?<br>0<br>ksup30@ptxs10879&nbsp; ~<br>**************************PROBEME IMPRESSION SOLARIS**************************<br>METHODE : Creer une nouvelle imprimante qui fonctione a la place de celle aui ne fonctionne pas<br>JEUX DE COMMANDES UTILISABLE :<br><br>lpstat -a&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; (liste des imprimantes)<br>lpstat -p laserrmssup&nbsp; -l&nbsp;&nbsp;&nbsp; (detail sur l'imprimante)<br>cat /etc/printers.conf&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; (Visualisation du fichier de conf)<br>lpadmin -p toto -s ptxp9c01 &nbsp;&nbsp;&nbsp; (creation d'1 imprimante toto sur systeme ptxp9c01)<br>lpadmin -d toto&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; (definition de cette imprimante par defaut)<br>cat /etc/printers.conf&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; (Visualisation des modif dans le fichier de conf)<br>ls | lp&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; (Test de la nouvelle imprimante)<br>lpadmin -x toto&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; (Supression de ptxp9c01)<br>******************************************************************************<br><br>ksh : Utilser un script en pipe (Génial)<br>exec
+0&lt;$1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+# redirect i/o<br>while read LINE<br>do<br>&nbsp;&nbsp; print $LINE<br>done<br><br>Génére les arguments de la commande chmod a partir des droits dans l'entrée standart :<br>#echo -r-sr-xr-x|sed -f sed<br>u=,g=,o=,u+rsx,g+rx,o+rx<br>#cat sed<br>s/^.//<br>s/^\(...\)/u+\1/<br>s/^\(.....\)\(...\)/\1,g+\2/<br>s/^\(...........\)\(...\)/\1,o+\2/<br>s/-//g<br>s/s/sx/g<br>s/\(.*\)\(,.*,.*\)t/\1t\2x/<br>s/\(.*\)\(,.*,.*\)T/\1t\2/<br>s/\(u.*\)/u=,g=,o=,\1/<br><br>llchmod()<br>{<br>exec 0&lt;$1<br>while read LINE<br>do<br>&nbsp;&nbsp; echo $LINE|sed "<br>s/^.//<br>s/^\(...\)/u+\1/<br>s/^\(.....\)\(...\)/\1,g+\2/<br>s/^\(...........\)\(...\)/\1,o+\2/<br>s/-//g<br>s/s/sx/g<br>s/\(.*\)\(,.*,.*\)t/\1t\2x/<br>s/\(.*\)\(,.*,.*\)T/\1t\2/<br>s/\(u.*\)/u=,g=,o=,\1/<br>s/,[ugo]+\([^r^w^x^t^s]\)/\1/g<br>s/,[ugo]+$//"<br>done<br>}<br><br><br>Inclure dedans la recup du user group et du nom de fichier et les mettre en argument de chown<br><br>cd cdrom : Faire une image iso sous unix depuis un cd<br>demonter le cd<br>(if peut etre egale a /dev/rdsk/cod0t0s0)<br>dd if=/dev/cdrom of=image.iso bs=1024<br>ou<br>cat /dev/cdrom &gt; image.iso<br>Solaris : cdrom : le demon qui monte et demonte est : vold (/etc/init.d./volmgt stop/start)<br><br><br>Solaris : reconstruire les fichiers spéciaux 2 Solutions :<br>- boot -r (Reconstruire les sp.files) apres un init 0<br>- devfsadm<br>Solaris : redemarrer soft : init 6<br><br>NAS:creation des home dir:/nas/ptxsnas03/vol4/home<br><br>solaris : script d'instalation:/usr/sbin/install-solaris -&gt; permet les parametrage de base.<br>Changer le nom en modifiant des fichier de conf : <br>/etc/hosts<br>/etc/nodename<br>/etc/hostname.&lt;interface&gt;<br>/etc/inet/hosts<br>/etc/net/ticlts/hosts<br>/etc/net/ticots/hosts<br>/etc/net/ticotsord/hosts<br><br><br><br>Reservation IP dans hosts :<br>*************************** <br>grep
+"^#.*[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\} -&gt;
+[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}" hosts|sed
+"s/^#[^0-9]*//"|sort -n -k1<br>Voir knolege "ajout de range IP" ou "DHCP"<br><br>Pour reconfigurer une sun comme a l'installe : /usr/sbin/sys-unconfig<br><br>Solaris : svcs : liste les service et leur etat<br>&nbsp;&nbsp;&nbsp; : svcs -xv : La derniere merde survenue<br>Installation de pakage : cd /cdrom/sol_10_807_x86/Solaris_10/Product ; pkgadd -d . SUNWssh*<br>pkgrm package1 package2 package3 ...etc (respecter les dépendance)<br>pkginfo|grep ssh (pam kbr ssh are required)<br>ou&nbsp;&nbsp;&nbsp; cd /cdrom/sol_10_807_x86/Solaris_10/Product<br>&nbsp;&nbsp;&nbsp; pkginfo * 2&gt;&amp;1|grep -v ERROR|grep -i ssh (ou kbr ou pam ...)<br><br>Pour savoir de quel package provient une commande, exemple :<br>(l'info n'est dispo que si le binaire est effectivement installé)<br>************************************************************<br># pkgchk -lp /usr/bin/truss<br>Pathname: /usr/bin/truss<br>Type: linked file<br>Source of link: ../../usr/lib/isaexec<br>Referenced by the following packages:<br>SUNWtoo<br>Current status: installed<br>&nbsp;&nbsp;&nbsp; ou<br>faire un grep whoami /var/sadm/install/contents<br><br>Activer desavtiver un service<br>***************************** <br>svcadm disable ssh<br>svcadm refresh ssh<br>svcadm enable ssh<br><br>Pour savoir tout ce qui merde :<br>svcs|grep maintenance|awk -F"/" '{print $NF}'|cut -f1 -d:|xargs svcs -l<br><br>Activ Directory :<br>atteindre un domaine trusté :<br>clic droit sur "Ativ Directory Users and Computer" - Puis "Connect to Domain..."<br>changer le préfix as required.<br><br>Truss usage <br>&nbsp;&nbsp;&nbsp; truss&nbsp; -a&nbsp; -e&nbsp; -f&nbsp; -rall&nbsp; -wall&nbsp; -p&nbsp; <br>&nbsp;&nbsp;&nbsp; truss&nbsp; -a&nbsp; -e&nbsp; -f&nbsp; -rall&nbsp; -wall&nbsp; <br><br>&nbsp;&nbsp;&nbsp; -a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Show arguments passed to the exec system calls<br>&nbsp;&nbsp;&nbsp; -e&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Show environment variables passed to the exec system calls<br>&nbsp;&nbsp;&nbsp; -f&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Show forked processes <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(they will have a different pid: in column 1)<br>&nbsp;&nbsp;&nbsp; -rall&nbsp;&nbsp;&nbsp;&nbsp; Show all read data (default is 32 bytes)<br>&nbsp;&nbsp;&nbsp; -wall&nbsp;&nbsp;&nbsp;&nbsp; Show all written data (default is 32 bytes)<br>&nbsp;&nbsp;&nbsp; -p&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hook to an existing process (must be owner or root)<br>&nbsp;&nbsp;&nbsp; &lt;program&gt; Specify a program to run<br>Truss examples <br>&nbsp; # truss -rall -wall -f -p &lt;PID&gt;<br>&nbsp; # truss -rall -wall lsnrctl start<br>&nbsp; # truss -aef lsnrctl dbsnmp_start<br><br>Statistique sur les groupe :<br>grep "^[^# ].*" group|awk -F"," '{print NF":"$0}'|cut -f1,2,4 -d:|sort -nr|more<br><br>Recherche chaine de caratere dans arborescence : find .|awk '{print "grep string","\""$0"\""}'|sh<br><br>Lotus Notes : Pour interrompre le sablier : CTRL-PAUSE</span></font>
+</p>
+</body></html>

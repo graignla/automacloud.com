@@ -1,0 +1,431 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="lgra0056@lsurf.fr">
+   <meta name="GENERATOR" content="Mozilla/4.7 [fr] (Win98; I) [Netscape]">
+   <title>commandes</title>
+</head>
+<body>
+DISPLAY xhost + emma --> en local, autorise emma a envoyer son
+display
+<br>DISPLAY(csh) setenv DISPLAY marylin:0 --> a faire sur machine distante
+pour l'exportation de son affichage
+<br>DISPLAY(ksh)&nbsp;&nbsp; export DISPLAY=marylin:0 --> a faire sur machine
+distante pour l'exportation de son affichage
+<br>DISPLAY (Catherine) -->&nbsp;&nbsp; setenv DISPLAY&nbsp; esther:0
+<br>DISPLAY sur john pour utiliser vi -> TERM=ansi;export TERM ou, plus
+simple lancer csh
+<br>sicprint&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /net/bin/sicprintEpsonHL&amp;
+--> lance SICprint pour l'impression grand format (depuis emma)
+<br>sicprint&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Voir les log de sicprint
+: \cat /home/logiciel/log/sic/logEpson|\grep -e epson01 -e multi|\tail
+<br>sicprint&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /net/bin/sicprintHP&amp;
+--> lance SICprint pour l'impression grand format (depuis emma)
+<br>image iso /usr/freeware/bin/mkisofs -J -l -R -o /var/tmp/image.iso
+-v -V&nbsp; $LOGNAME"no_job" [fichiers...] &amp;&amp; chmod 666 /var/tmp/image.iso
+<br>iso script ~graignla/bin/burn no_job fichiers OU repertoire
+<p>renault:serveur ftp design&nbsp;&nbsp; rsh john ; cat passwd|grep -i
+username --> dit si un user non enregistre dans NIS est autorise en tp
+inter design.
+<br>renault:serveur ftp pour ceux du design : en cas de pb, modifier la
+config de netscape : advanced/proxies passer de auto a direct et revenir
+pour internet
+<br>renault:serveur ftp pour atteindre les fichiers : rsh john ; cd /export/home/disk4/ftp/BALDDI
+<br>renault:serveur ftp pb de telechargement (permission denied) --> pas
+d'espace ds les noms de fichiers
+<br>renault:intranet 8002 pour atteindre le repertoire des page web cd
+/home/admin/websys/Apriori et aussi /export/home/disk1/web/websys/Apriori
+???
+<br>renault:tcsh -> pour cet environnement modifier passwd et faire sudo
+su - user ; cp /staff/dist/SOLARIS/tcsh.tcshrc ~user/.tcshrc
+<br>renault:cellule repertoire d'echange pour la cellule : /home/bd/bdcatia/CELLULE
+qui&nbsp; apartient a s0875
+<p>NIS:edition des map: utiliser le script perl /staff/bin/updateyp pour
+locker les map pendant leur edition.
+<br>NIS:bind:message de type "can't bind to NIS server for domain, Reason:&nbsp;
+can't communicate with ypbind. -> (root): nsadmin restart !!!
+<br>NIS:nfs:nettoyage des montages existants: umount /--/--/mount_point
+; autofs
+<br>NIS:map:liste: pypcat -x --> donne la liste des map NIS
+<br>NIS:ypwhich --> donne le serveur NIS le plus rapide a repondre ypwhich
+-m donne les map et leur master
+<br>NIS:passwd:modif mot de passe : /serveur/bin/mkpasswd mot_de_pass,
+puis copier chaine criptee ds gary:/staff/yp/passwd et lancer /var/yp/ypmake
+<br>NIS:sources:sources des maps NIS sont sur gary dans /staff/yp (protocols;
+passwd; networks; services; hosts; rpc; aliases; ethers)
+<br>NIS:Apres toute modification de source il faut reconstruire les map
+avec la commande /var/yp/ypmake
+<br>NIS:domainname --> donne le nom du domaine nis de la machine
+<br>NIS:demons:deamons:Les deamons "automount" ou "autofs" vont voir le
+fichier locale /etc/auto_master qui renvoie vers la map auto.master.
+<br>NIS&nbsp; sur les client et seveurs NIS existe /ns qui est un filesysteme
+virtuel et dynamique.Sur serveur, il contient les map nis compilee
+<br>&nbsp; permettant l'acces rapide a ces donnees. Sur serveur, ypinit
+-s permet la recopie du master en local (necessite pearl)
+<br>NFS:unexport:virer un export en doublon avec un export de /etc/exports:exportfs
+-i -u (l'export indesirable -i ne reli pas /etc/exports, -u unexport)
+<br>LDAP&nbsp;&nbsp; /home/logiciel/netscape/bin/ldap_arca.pl adr_Email
+-> test l'adresse en webmail
+<br>LDAP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /home/logiciel/netscape/bin/ldap_search.pl
+adr_Email -> test l'adresse en notmail
+<br>&nbsp;
+<br>&nbsp;
+<br>CDROM&nbsp; pour que ca marche, il faut que le demon mediad tourne
+donc "chkconfig mediad on" attention au serveur dist et a son fichier "config.tab"
+<br>padding&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fichier de bourrage
+: mkfile 3m padding --> fait un fichier de 3 MO
+<p>general:recherche -> which Commande --> indique la 1ere commande correspondante
+du path avec son chemin
+<br>general:recherche -> le chemin d'une commande -> whereis commande,
+ou whereis -P commande (cherche aussi dans le $PATH) util aussi pour le
+gestion du man
+<br>general:recherche -> find -> pour exclure d'une recherche un fichier
+nomme qlquesoit le shell : find . -name ".map" -prune -o -print
+<br>general:recherche -> ls -pad .*&nbsp; ---> pour ne voir que les point
+qq-chose en format condense et reconnaissance des repertoires
+<br>general:recherche -> Pour trouver tous les proprietaires de fichier
+a partir de . -> find . -exec ls -l {} \;|tr -s " "|cut -f3 -d" "|sort
+-u
+<br>general:recherche -> find . -name "*.sgi" | &amp; grep "^./" --> recherche
+les .sgi depuis ici sans mettre de message d'erreur.
+<br>general:recherche le path reel d'un fic -> /usr/lib/desktop/realpath
+path
+<br>general:rechercher une appli dont on ne connait pas bien le nom ->
+find `echo $PATH|tr -s ":" " "` -iname "*acr*"
+<br>general:rechercher:stat occupation filsystem FS: sur un filesysteme
+local quel user a combien de Kb de donnees -> quot point_de_montage;&nbsp;
+quot -a (tous les FS locaux); quot -v (taille fic vieux de 30, 60, 90 jours)
+<br>general:rechercher:sans distinction MAJ/minuscule -> EX: find . -local
+-type f -print | xargs grep -i kassie
+<br>general:Info sur les fichiers ou les images&nbsp; "file nom_du_fichier"
+<br>general:plannification de travaux:at: at 13:00 &lt;enter> echo connard
+> /dev/console &lt;enter> &lt;CTRL D>
+<br>general:information detaillee sur les fichiers "stat nom_de_fichier"
+<br>general:demontage force d'un FS ou pour ejecter un device buzy : fuser
+-kcu point_de_montage -> kill tous les proces attaches.
+<br>general:awk NF=nbre of field du record courant ; NR=Numero du record
+courant ; FS=Input Field Sep ; RS=Input Record Sep ; OFS=Output Field Sep
+; ORS=Output Record Sep ; FILENAME=Nom di fic traite.
+<br>general:awk exemple ds /staff/etc
+<br>general:ASCII:code:correspondance entre code ascii ASCII et numero
+-> man ascii
+<br>general:who:super who: /usr/bsd/w info de type : User tty from login@
+idle JCPU PCPU what
+<br>general:transfert -> owner date et permission -> /serveur/dp/bin/rsync
+-avz --exclude=.snapshot local_path remote_path --rsync-path=/serveur/dp/bin/rsync
+<br>general:transferts -> d'arborescences completes avec conservation owner,mode,date
+-> cd rep_source-1 puis, tar cBf - rep|(cd dest;tar xBf -)
+<br>general:transferts -> tar cvBf - . | ( rsh machine_destination "cd
+repertoire_destination ; tar xvBf -" ) essayer tar cf pour tester la creation
+<br>general:transferts:exclure un chemin->/usr/freeware/bin/tar cvf - .
+--exclude ./.snapshot/* | ( cd destination_dir &amp;&amp; /usr/freeware/bin/tar
+xvf - )
+<br>general:transfert de compte : transferer cpte avec tar, updater group
+NT ds Hyena, modif map group, passwd, auto.home...etc ypmake.
+<br>general:transfert:cp -Rp peut aussi etre une solution qui ne suit pas
+les liens et conserve les dates.
+<br>general nfs demon client : /usr/etc/nfsd
+<br>general freeware convertion de format de fichier image -> /usr/freeware/bin/convert
+--> conversion au format sgi
+<br>general autorisation remote acces dans ~/.rhosts et pour toute une
+machine:/etc/host.equiv
+<p>scriptshell $$=pid du shell qui fait la presente substitution, utile
+pour donner une extention unique de fichier temporaire
+<br>scriptshell $!=pid du dernier job en bg lance depuis le terminal
+<br>scriptshell&nbsp;&nbsp;&nbsp;&nbsp; "$@"="$1" "$2" "$3" ...&nbsp;&nbsp;
+"$*"="$1 $2 $3 ...$#"
+<br>scriptshell pour passer en argument d'1 sous script des noms de fichier
+avec espace provenant d'1 variables: ksh -c "script $VAR"
+<br>scriptshell&nbsp;&nbsp;&nbsp;&nbsp; pour traiter des options dans une
+commande, voir getopt
+<br>scriptshell pour passer un grand nombre d'argument a une commande EX:
+find /hw -print | xargs ls -ld
+<br>scriptshell pour nomer un fichier temporaire de facon unique : >nom_de_fic.$$
+(no de PID du shell courant)
+<br>scriptshell date pour creer un format pratique de date --> DATE=`date
+'+%m%d_%H~%M'`
+<p>visualisation Voir les images /serveur/bin/fcheck ou&nbsp; imgworks
+ou imgview (par ex imgview `ls|tail -5|tr -s '\012' " ; "`) pour voir les
+5 dernieres
+<br>edition d'une image : /usr/freeware/bin/gimp (equivalant photoshop)
+<p>imprimante la variable LPDEST pouvant etre declaree ds .cshrc force
+la destination par defaut (System V)
+<br>imprimante ls /var/spool/lp/request/* --> affiche le rep de tous les
+spooler (ttes les imprimantes)
+<br>imprimante lpq -Pprinter -> interroge l'imprimante et renvoi son etat
+ainsi que ses requetes
+<br>imprimante&nbsp;&nbsp;&nbsp;&nbsp; lpstat -p | grep -v idle --> liste
+des imprimante non prete
+<br>imprimante lpstat -a --> donne ls liste des imprimantes installees
+<br>imprimante relance du spooler : lpc [stop|start] nom_imprimante
+<br>imprimante les fichiers en attente d'impression sont ds /var/spool/epson01/df*
+<br>DAT
+<br>&nbsp;hinv --> (Hardware-Inventory) : donne la config materielavec
+chemin hard pour nom de fichiers speciaux.
+<br>&nbsp;"mt rewind" --> pour rembobiner la bande "mt erase" --> pour
+effacer jusqu'a EOT "mt unload" -> pour ejecter
+<br>&nbsp;mt blksize -> pour detrminer la taille des blocks
+<br>&nbsp;tar tvf /dev/rmt/tps1d3 --> lister les fichiers tar de la bande
+<br>&nbsp;tar xvf[b] /dev/rmt/tps1d3 [N]&nbsp;&nbsp; (b --> pour pouvoir
+preciser taille block de Nx512) --> extraire les fichiers de la bande
+<br>&nbsp;tar cvf /dev/rmt/tps1d3 fic1 rep2 rep3 --> creer une archive
+des repertoires rep2 et rep3 et du fichier fic1
+<br>&nbsp;du -sk RENDERpix/&nbsp; ---> taille du repertoire "RENDERpix/"
+(en blocks de 1&nbsp; mega)
+<p>SIGNAUX kill -l --> liste les signaux kill
+<br>&nbsp; stty -a --> liste des signaux de racourcis clavier
+<br>&nbsp; ----------------------------------
+<br>&nbsp; sudo su - login
+<br>xlock&nbsp; killall xlock en tant que root&nbsp; --> debloque une station
+boguee par l'economiseur d'ecran
+<br>xlock&nbsp; deblocage par le user : rsh my_host -n sudo /serveur/bin/killxlock
+<p>communication xconfirm -t message
+<br>communication /image/imatool/bin/hey&nbsp; --> petit script deportant
+l'affichage d'un xterm sur la machine de son choix
+<br>&nbsp;
+<p>DLTXXXX le lecteur reconnait le support (4000 ou 7000 voir mt status)
+et les cdes tar peuvent se faire simplement avec tps2d1
+<br>DLT4000 mt -f /dev/rmt/tps2d1nrv.4000 rewind --> rembobine la bande
+du device
+<br>DLT4000 tar tvf /dev/rmt/tps2d1nrv.4000 --> liste ce qu'il y a sur
+la DLT (accesible depuis gari ds le robot position basse)
+<br>DLT4000 tar cvf /dev/rmt/tps2d1nrv.4000 . --> cree une archive du repertoire
+courant (fonctionne en multi volume)
+<p>SERIAL_NUMBER sysinfo -vv --> donne une serie de mot hexa de 2 digits.
+correspondant au S/N de la machine.
+<p>ftp pour transferer plusieursfichiers d'un coup et sans confirmation:
+prompt ; mget
+<br>ftp Pour acceder en ftp a un serveur non anonyme depuis un navigateur
+-> ftp://user:password@URL, ftp://user@URL -> netscape demande mot de passe
+<br>probleme d'affichage de sicprint : fenetres blanche --> renomer le
+.desktop-machine en .desktop-machine.old et se relogger.
+<p>config services&nbsp; chkconfig --> affiche en colonnes les statuts
+on/off des services demarrables sur la machine.(vu ds /etc/config)
+<p>Mise en forme tr -s " " ---> transforme toute serie de blancs en un
+espace.(pratique pour les cut)
+<p>gdg : Message -> "dspserv ne fonctionne pas" "/etc/init.d/gdg_mux stop"
+puis "/etc/init.d/gdg_mux start"
+<br>gdg : pb d'acces d'un user sur une piece&nbsp; 1) determiner qui est
+le resp du projet -> demande au plan de forme
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2) etre autorise en acces: voir avec
+P. Jolivet ou Henri Hotuqui
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3) modifier l'acces: voir avec P. Jolivet
+ou Henri Hotuqui
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4) support gdg en cas de pb: Pierre
+Jolivet ou cellule d'echange
+<p>depannage fichier de&nbsp; LOG : /var/adm/SYSLOG
+<p>euclide BD pour trouver quelle machine sert une bd&nbsp; ->Ex:&nbsp;
+whereisbd creosctr (infos sur les bd nomees *creosctr*)
+<br>euclide BD connaitre le nom de la BD ds le chemin voir apres le ":"
+ds result de "whereisbd".
+<br>euclide BD connaitre le chemin des BD accessibles design-> envbd|grep
+nom_de_variable_vue ds le result de whereisbd avant le ":".
+<br>euclide BD Pour intervenir sur les BD, se mettre dabord root sur dustin
+pour voir le proprio de la BD, devenir lui et lancer les cdes suivantes
+<br>euclide BD diagnostiquer pb d'acces -> "cao progdb euclid 321b" (=
+menudefond/gestion bd/procdb) ; "pr &lt;projet>,&lt;sous-projet>" -> prompt
+de connexion
+<br>euclide BD etendre une BD -> "cao extenddb euclid 321b" puis 2), 2),
+0)
+<br>euclide BD creer une bd -> :"cao initdb euclid 321b" et puis "cao centdb
+euclid 321b"
+<br>euclide BD le groupe bdeuclid est accessible au design, le groupe bdeuclidext
+est accessible a ts renault.Pour reduire l'acces a 1 user: chmod X00 ..
+<br>euclide impression: dans ~print/euclid/euclid/PLO320
+<br>euclide impression: utilitaire de configuration /net/bin/MappingQmsDTSIDDI.sh
+(par la) accessible en menu de fond.
+<br>catia impression -> pour individualiser les menus d'impression :modifier
+le rep ~/.PLO avec les fichiers de def de /home/logiciel/print/euclid/PLO320
+<p>Autorisation remote acces dans /.rhosts
+<br>X:customisation / personnalisaion supllementaire standard X: ~.Xdefaults
+<br>Scgi:customisation / personnalisation supllementaire sgi: ~.Sgiresources
+<br>X redemarrage du serveur X /usr/gfx/stopgfx ; /usr/gfx/startgfx
+<br>Xsgi Xwindows&nbsp; /etc/init.d/xdm stop&nbsp; /etc/init.d/xdm start
+--> redemarre le serveur xdm qd il y a des probleme d'affichage/clavier/souris
+<br>Menu de fond d'ecran&nbsp;&nbsp; /tmp/4Dwmrc.graignla:0&nbsp; --> fichier
+de conf des commandes lance ds les menu graphique.
+<br>Menu de fond perso click droit dans ~/.menuwm
+<br>X xwininfo --> pour avoir des info sur la config X lies a une fenetre
+en clickant dessus avec la souris.
+<br>X pour passer de 8 a 24 plans en 6.5.10 rajouter a la cde du fic /var/X11/xdm/Xservers
+l'option "-depth 24"
+<br>X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; En 6.5.3 un icone au login permet de
+choisir entre /var/X11/xdm/Xservers (8 plans) et /var/X11/xdm/Xservers.24plans
+<br>X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xkill --> pour killer ts les process
+lies a une fenetre avec la souris en clickant dessus.
+<br>X tellwm restart -> pour rafraichir le client x (pas dangereux)
+<br>X connaitre le resolution en cours:/usr/gfx/gfxinfo
+<br>X reglage de la resolution a distance-> rlogin host -l root ; setenv
+DISPLAY :0 ; /usr/gfx/setmon -x 1280x1024_75
+<br>X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (UNIX en gen.)&nbsp; /var/X11/xdm/Xsession.dt
+est le fichier de demarrage de cession X.
+<br>X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xkill --> pour killer ts les process
+lies a une fenetre avec la souris en clickant dessus.
+<br>X Pour relancer 4Dwm sans rien peter
+<br>&nbsp;rlogin station -l root ; psg 4Dwm ->PID ; grep configFile: /var/X11/xdm/Xsession.dt
+->model de la cde a faire plus tard ;
+<br>&nbsp;kill PID ; su - user ; setenv DISPLAY :0 ;
+<br>&nbsp;puis /usr/bin/X11/4Dwm -xrm "4Dwm*configFile: /tmp/4Dwmrc.user:0"
+-xrm "*SG_UseBackgrounds: True" -launch &amp;
+<br>X Pour mettre une image perso en fond d'ecran -> vi .sgisession ; xv
+-root -maxpect -rm 5 -smooth -quit image.jpg
+<br>X affichage gamma -> sudo gamma : donne le gamma courant -> sudo gamma
+1.5 : fixe le gamma a 1.5
+<br>4dwm:desktop:pour avoir le menu de groupe sur le bouton central de
+la souris et virer les icones du bureau-> touch ~/.desktop-marylin/nodesktop
+et relogg
+<br>X environnement: /usr/lib/X11/xdm/Xlogin lu au login execute en ksh
+sous root
+<br>&nbsp;
+<br>netscape : modeles de fichiers de parametres par defaut sur gary:/export/home/filer_users/_Modele_users/message/netscape/
+<br>netscape : tous les mail locaux sont ds le dossier ./nsmail
+<br>netscape : fichier prefjs model pour NT -> /export/home/filer_users/_Modele_users/message/netscape/Prenom.Nom
+(a personnaliser et renomer)
+<br>netscape : specialiste DTSI : guillaume.romero-renexter@renault.com
+- Tel: 57203
+<br>netscape : plantage a l'introduction du mot de passe --> sudo su -
+user ; mv ns_imap ns_imap.old
+<br>netscape : les donnees de configuration du logiciel sont : PC -> /message/netscape&nbsp;
+UNIX -> .netscape
+<br>netscape : autre possibilite de debuggage "mv .netscape .netscape.old"
+puis "cp -f .netscape.old/bookmarks.html .netscape.old/abook.nab .netscape"
+<br>netscape : pour passer en webmail mv .netscape/umr.profile .netscape/umr.profile.old
+puis relance de netscape.
+<br>netscape:flash:plugin: s'assurer de la generation du lien ~/.mailcap
+au lancement de netscape de l'acces a sa source
+<br>netscape:extensions de fichiers:reconnaissance:s'assurer de la generation
+du lien ~/.mime.types au lancement de netscape.
+<p>samba dustin : /usr/samba/lib/smb.conf, pour redemarrer le service /etc/init.d/samba
+stop;...start, /usr/samba/bin/smbstatus
+<p>filer humphrey -> repertoire de connexion des users sur humphrey ->
+/export/home/filer_users/users
+<br>filer humphrey -> mettre un quota sur un user :sur gary vi /humphrey/vol0/etc
+<br>filer:quotas:rsh humphrey quota report | egrep "^tree|^user" | awk
+'{printf("%6.2f%%%s\n",$5*100/$6,$9)}' | sort -n
+<br>filer:quotas:rsh alec quota report | egrep "^tree|^user" | awk '{printf("%6.2f%%%s\n",$5*100/$6,$9)}'
+| sort -n
+<br>filer:etat des disques:rsh humphrey sysconfig -v
+<br>filer:pour des transferts entre alec et humphrey, on peut sur emma
+faire cp /vol/vol2/users (users d'alec miroir) ~techno-users
+<p>zone public1602 : /home/modelage/visu/public1602 (accessible groupe
+modelage)
+<br>zone commune designer : /home/designer/designer (est un montage nfs)
+<br>zone bureautique commune (humphrey) depuis unix :root ->gary:/export/home/frler_root/partage/Bureautique
+<br>photographe possede un acces a des repertoires utilisateur pour pousser
+des fichiers ds gary:/export/home/filer_root/partage/Bureautique/
+<p>restauration unix et serveur NT: depuis TiNa -> /home/admin/admin/bin/tina
+TCR&amp; (technocentre et Barcelone)
+<p>installation station IRIX&nbsp;&nbsp;&nbsp; winterm -hold -geometry
+130x40+0+0 -e cat ~graignla/procedures/sgi_sys_install.txt
+<br>supression d'une station: virer lignes ds netgroup.member, netgroup.groupname,
+faire un majmap_netgroup et /var/yp/ypmake. supr. ds dist (WSADDR + rep)
+<br>visualisation de la liste des netgroup -> ypcat -k netgroup | awk '{
+print $1 }'
+<br>&nbsp;&nbsp; faire une suppression d'adresse IP ds l'intranet qui enverra
+une demande de supression DNS.
+<p>mp3 lecteur et fichiers -> /serveur/dp/bin/mxaudio /home/devel/partiels_ugo/audio/mp3
+<br>mp3 lire un son en ligne de commande: /usr/sbin/sfplay fic.mp3
+<p>profiles errants: Ils sont centralises sur le "filer" accessibles sur
+unix sur gary:/export/home/filer_root/partage/profiles (.snapshot a ts
+les etages)
+<br>dist source incomparable pour voir la specificite de caque machine
+gary:/staff/dist utilise par update_ws
+<br>dist /staff/dist/WSADDR est un fic de conf du serveur dist qui contient
+le nom de toutes les machines du design.
+<br>dist pour voir quelle machine sont "lockes" il faut faire cd /staff/dist
+; find . -name .update.lock
+<p>version precise uname -R
+<br>application : les applications locales ont leur variables d'environnement
+definies ds /usr/lib/X11/app-defaults .qd une appli passe sur serveur,
+son fichier de config doit etre detruit ds ce repertoire.
+<br>humphrey (cdes network appliance) cifs session login|bios_hostname
+--> permet de savoir si le login est connecte ou qui est connecte sur le
+hostname
+<br>humphrey quotas -> telnet humphrey puis "quota report", edition des
+valeur&nbsp; Q
+<br>&nbsp;
+<p>config reseau sgi : /etc/hosts, /etc/config/netif.option (hostname),
+/etc/config/static-route.options, /etc/host.equiv (netgroup), /etc/resolv.conf
+<br>processus pour bien voir les processus utilisateur ps -ef | grep -v
+root
+<br>decompression pour des fichiers ayant l'extension ".Z" --> uncompress
+file.Z
+<br>sticky bit chmod 01XXX, XXX etant les droit habituels. sur un rep:
+aucun type d'acces sur ce qui n'appartient pas au proces qui tente d'acceder
+<br>set gid-bit uniquement possible en mode relatif -> chmod g+s file,
+sur un rep: tout ce qui tombe ds le rep appartient au groupe du rep
+<br>sticki gidi user->??s:set-uid=1 &amp; X=1 ; ??S:set-uid=1 &amp; X=0&nbsp;&nbsp;
+group->??s:set-gid=1 &amp; X=1 ; ??S:set-gid=1 &amp; X=0&nbsp;&nbsp;&nbsp;
+other->??t:sticky=1 &amp; X=1 ; ??T:sticky=1 &amp; X=0
+<br>a2ps&nbsp; a2ps --help. ex pour imp un script de 91lign(./bin/burn):
+/serveur/dp/bin/a2ps -1 -p -l100 bin/burn|lp (1sheet,portrait,100lignes/sheet)
+<br>informations sur les images imginfo imgsize fcheck -cv
+<br>sudo pour editer sudoers -> /home/logiciel/freeware/bin/visudo ; fichier
+sudoers:/home/logiciel/freeware/etc/sudoers (gary) et ..kirk:/export/net/etc
+??
+<br>hardware connaitre device du disque de demarrage (/dev/root) -> nvram
+<br>hardware pour voir le HW graph -> find /hw -print | xargs ls -ld
+<br>hardware pour recreer le HW graph -> ioconfig -f /hw
+<br>hardware pour recreer les fichier speciaux et leur liens ->&nbsp; cd
+/dev ; ./MAKEDEV [floppy|tape|...]
+<br>hardware pour verifier la presence d'un driver scsi -> vi /var/sysgen/master.d/scsi&nbsp;
+ou->&nbsp; grep marque_device /var/sysgen/master.d/scsi\
+<br>hardware pour tester le controleur scsi 1 -> scsiha -p 1
+<br>hardware pour verifier fonctionnement du DAT -> mt status
+<br>recompilation du noyeau avec les params par defaut #root> connecter
+le(s) hardware puia cp /unix /unix.copie;autoconfig -vf;sync;reboot
+<p>volume logique xlv_mrg puis >show all --> donne les info sur les volumes
+logiques du systeme
+<br>CATIA V5 lancement: /net/bin/lance_V5R7sp1 (schmitt seul user design
+de cette version)
+<br>network appliance : acces http de alec -> http://alec.ava.tcr.renault.fr/na_admin
+<br>network appliance : acces http de humphrey -> http://humphrey.ava.tcr.renault.fr/na_admin
+<br>flex FLEX rsh dustin -n "cd /serveur/Flex/licences;lmstat -a -c aw-kate.dat
+-c aw-kirk.dat -c aw-gary.dat -c aw-steve.dat" ou -A
+<br>test reseau aller sur la station #root> su - user (pour monter son
+nfs) time mkfile 10m toto. Faire de meme sur une autre station et comparer
+<br>test reseau detection pb de montage df|grep handle&nbsp;&nbsp; -> ne
+doit rien retourner sinon, lenteur justifiee par tentatives infructueuses
+de montage
+<br>selfix&nbsp; taper selfix dans un shell. en general le mot de passe
+est identique au login.
+<br>barcelone zone commune : steve:/export/home/disk1/public&nbsp;&nbsp;&nbsp;&nbsp;
+nfs 71081648 11143920 59937728&nbsp; 16&nbsp; /home/logiciel/publicbar
+<br>envronnement pour afficher un prompt sympa en ksh:PS1="${LOGNAME}@`tput
+bold``tput rev``hostname``tput rmso`>>"; export PS1
+<br>envronnement&nbsp;&nbsp; pour afficher un prompt sympa en csh:set prompt
+= "`whoami`@`hostname` `tput bold`\!`tput rmso`> "
+<br>SGI:memoire:utilisation:gestion de la memoire gmemusage&amp; -> vision
+graphique en tps reel de la memoire
+<br>SGI:memoire:swap physique:-> utilise un file system (/dev/swap) ou/et
+un fichier
+<br>SGI:memoire:extension swap physique:-> swap -a /dev/dsk/dks0d4s1 (cas
+d'une partition raw) ; swap -a -p 5 /usr/swap1 (qui un fic cree avec mkfile)
+<br>SGI:memoire:swap virtuelle: -> parametre du fic /etc/config/vswap.options
+activable par "chkconfig vswap on/off" qui fait croire aux appli la swapp
+necessaire
+<br>utilitaire communication -->/image/imatool/bin/hey
+<br>script de communication pour envoyer message a tout le design,&nbsp;
+voir ds le etc/all.login
+<br>utilitaire d'acces aux consoles des serveurs : /home/admin/admin/bin/console.pl
+- infos ds netscape/localmail/infotech
+<br>SGI mire de login:correspond au processus:clogin et signifie que personne
+n'est logge en 4Dwm
+<br>SGI:4dwm pour lancer le " gestionnaire de fichier":taper la commande
+"dirview" ou "fm" qui semblent equivalantes.
+<br>SGI:4dwm pour choisir des editeurs les plus courants par default ds
+l'interface graphique: Toolchest/Desktop/Customize/Utlilities
+<br>SGI:/etc/passwd:pour verouiller un compte:-> Placer : "nologin;" dans
+le champs mot de passe
+<br>SGI:4dwm:derniere machine loggee:\ls -ladrt .desktop-* | tail -1 |
+awk '{ print $9 }' | cut -f2 -d"-"
+<br>Archivage temporaire des cpte supprimes (avant archivage sur bande)
+: gary:/export/home/data4
+<br>---------------------------------------------------------------------------------------------------------------------------------------------------------
+<br>http://mongo.ava.tcr.renault.fr:8021/cgi-bin/lum.cgi -> liscence lum
+service&nbsp; voir div mecaflux
+<br>gravage:tour de gravage:voir sur la station de JLF sur /opt/traceur
+<br>&nbsp;
+</body>
+</html>

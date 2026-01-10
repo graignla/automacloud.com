@@ -1,0 +1,416 @@
+#!/bin/ksh
+#set -x
+#exec 2> /dev/null
+
+
+#
+#       Atteindre la conf : (Aller a -> -MARK-)
+#
+################### FORMAT DU  FICHIER DE CONFIGURATION GENERAL #####################
+##- CHAMPS_1                      CHAMPS_2                   CHAMPS_3
+##- Categorie/nom_de_machine      Fichier a verifier     valeurMD5 a respecter
+#####################################################################################
+##- NOTE : De ce fichier, la machine va extraire les lignes la concernant
+##- 
+##- La machine va determiner sa categorie (pays+OS+YP_STATUS) ainsi que le ou les noms auxquels elle doit s'assimiler
+##- Elle va ainsi pouvoir extraire du fichier de configuration les lignes la concernant.
+##- Si il y a plusieurs enregistrements pour un meme fichier, l'information retenue sera dans l'ordre :
+##
+##  1) l'enregistrements relatifs au nom complet
+##  2) l'enregistrements relatif au nom generique
+##  3) l'enregistrements relatif a la categorie
+##
+##- Si, pour une machine, plusieurs enregistrements d'une meme categorie concernent le meme fichier,
+##- Toutes les valeurs cibles md5 seront testees et si l'une d'entre elles match, le test sera OK
+##- OPTIONS : -v Affiche le resutat des test OK et KO, avec la regle utilisee et le nom de la machine
+##	    : -V Affichage de -v avec en plus des indications sur les fichier inexistants, des alertes
+##	         sur des redondances de regles se rapportant a un fichier a traiter, ou l'bscence de
+##               verifications a mener. 
+
+##- Emplacement de depot temporaire des fichiers de travail
+WDIR=/tmp/$(basename $0)_dir			# le work directory porte le nom du script
+NET_HOSTNAME=$(uname -n) 			# pour que les fichiers portent le nom de la machine
+mkdir -p $WDIR 2> /dev/null			# creation du work dir
+CONFIG_GEN=$WDIR/config.all
+CONFIG_CATEGORIE=$WDIR/categorie
+CONFIG_SPECIF=$WDIR/specifique
+CONFIG_GENERIQUE=$WDIR/generique
+##- FICHIERS DE RAPPORTS
+RAPPORT_OK=$WDIR/rapport.ok
+RAPPORT_KO=$WDIR/rapport.ko
+MESSAGE=$WDIR/message
+OPT=$1
+rm -f $WDIR/*
+
+##- Conservation de N copies de sauvegardes DIFFERENTES du script a son emplacement d'origine
+##                                          ~~~~~~~~~~~
+N=5
+DATE=$(date +%Y%m%d_%HH%M)
+DIR=`(cd $(dirname $0);pwd)`
+BASE=`basename $0`
+CESCRIPT=$DIR/$BASE
+NBCOPIES=$(find $DIR -name "$BASE.*" -type f|wc -l|awk '{print $1}')
+HEAD=`echo $(expr $N - $NBCOPIES )|sed "s/^[^-].*/-0/"`
+[ $NBCOPIES -lt 1 ] && cp $CESCRIPT $CESCRIPT.$DATE
+ARGS=$(ls -1rt $CESCRIPT $CESCRIPT.*|tail -2|head -1)
+cmp -s $CESCRIPT $ARGS || cp $CESCRIPT $CESCRIPT.$DATE && touch $CESCRIPT
+find $DIR -name "$BASE*" -type f|xargs ls -t 2>/dev/null|tail $HEAD|xargs rm -f 2>/dev/null
+
+
+##- OS de la machine executant le script
+OS=$(uname)
+echo $OS|egrep "Linux|SunOS" > /dev/null || signalementERRSTOP OSINCONNU
+
+##- Le script devant tourner sur Linux ou Solaris,
+#   Variabilisation des commandes "md5sum" "grep" et "egrep" en fonction de l'OS
+
+#  Pour Linux
+#------------
+GREP=grep
+EGREP=egrep
+MD5SUM=/disk01/misc/bin/md5
+AWK=awk
+#  variabilisation de la variable LIST_PAYS 
+##- LIST_PAYS : Constitution de la liste des pays en 2 lettres + "bk" (Site de backup)
+##- Exemple: am|at|du|fr|is|lo|ma|mi|ny|pa|st|vi|zu|bk
+AJOUT_PAYS="bk"
+LIST_PAYS=$(ypcat -k ypservers -h panis001 2>/dev/null|cut -c1,2|sort -u|tr -s '\012' ' ')
+LIST_PAYS=${LIST_PAYS:-am at du fr is lo ma mi ny pa st vi zu}
+LIST_PAYS=$(echo $LIST_PAYS $AJOUT_PAYS | tr -s " " "|")
+
+#  Pour Solaris
+#-------------
+[ "$OS" = "SunOS" ] && {
+	GREP=/usr/xpg4/bin/grep
+	EGREP=/usr/xpg4/bin/egrep
+	AWK=/usr/xpg4/bin/awk
+	LISTE_PAYS="am|at|du|fr|is|lo|ma|mi|ny|pa|st|vi|zu|bk"  # A mettre a jour en cas de nouveau pays
+}
+[ "$1" = "--help" ] && { $AWK 'NR > 5 && NR < 30 {print}' $0 ; exit ;} 
+
+##- FICHIER DE CONFIGURATION GENERAL : Categories du plus general au plus specifique
+## 				       et du moins prioritaire au plus prioritaire 
+##------------------------------------------------------------------------
+##- 1ere section : CATEGORIES
+##- 2eme section : NOMS GENERIQUES
+##- 3eme section : NOMS COMPLETS
+##- Modifier ci-dessous le FICHIER DE CONFIGURATION GENERAL 
+##  (Enregistrements valides sur 3 champs, commentaires possibles
+## 1er champs=De 1 a 13 car alfanum+(-)(_)  ; 2eme champs=/...   ; 3eme champs=(MD5sum)=f070466b622bf16a869ca69dad27ebe9
+ 
+cat << EOF|sed "s/#.*//"|$AWK '{print $1,$2,$3}'|$GREP "^[^ ]\{1,13\} \/[^ ][^ ]* [0-9a-f]\{32\}" > $CONFIG_GEN 
+#####################################################################################
+#                FICHIER DE CONFIGURATION GENERAL                                   #
+#------------------------------------------------------------------------           #
+#- 1ere section : CATEGORIES                                                        #
+#- 2eme section : NOMS GENERIQUES                                                   #
+#- 3eme section : NOMS COMPLETS                                                     #
+
+##################### CATEGORIES #######################
+#                      SECTION 1
+#     Exemple:
+# amLinuxYPSERV /rep_dest/fic_a_verifier
+########################################################
+frLinuxYPSERV /etc/ntp.conf 7b1296a5d441daab254d9ef37dc4d884 # A decommenter
+frLinuxYPBIND /etc/ntp.conf b67e502cab84df90df45be91c9810a4a # A decommenter
+paLinuxYPBIND /etc/ntp.conf 52b1e70f7a93dbaefab1d8cf30a9ad62 # A decommenter
+paLinuxYPBIND /etc/ntp.conf 05f496b0b4c1a08262fba1ab62be78a7 # A decommenter
+paLinuxYPBIND /etc/ntp.conf 8be5674bd875cffe5c17b932ada3e300 # 4 machines dont padev831
+paLinuxYPBIND /etc/modprobe.conf 1ba84afdd1175355db151fb5469e5cb8 # Bon, mais a modifier plus tard
+paLinuxYPBIND /etc/modprobe.conf ae415b999f9fa3bb599c65abe8e34dcd # lagra
+paLinuxYPBIND /etc/modprobe.conf 004e5b0598581eaa1979485ef349b0ef # OK
+paLinuxYPBIND /etc/modprobe.conf ea2d1adaa3e19acd015d0467ab1a791c # OK
+paLinuxYPBIND /etc/modprobe.conf bc1f4e762e319039878ca73df6776565 # OK
+paLinuxAUTRES /etc/modprobe.conf bc1f4e762e319039878ca73df6776565 # 2 machines
+paLinuxYPBIND /etc/modprobe.conf c57020b7edf545f810445afa49cc0b3e # OK
+paLinuxYPBIND /etc/modprobe.conf 7c836a8e9c09cde1188c9229433bed35 # 2 machines
+paLinuxYPBIND /etc/modprobe.conf 9629552beed948ff67af45961af772de
+paLinuxYPBIND /etc/modprobe.conf 779cc2c23a88b3eb2a94e0d500529f1b # 2 machines
+paLinuxYPBIND /etc/modprobe.conf 59c5a1d4add3b3cf45d1b85ae0c54071 # 2 machines
+paLinuxYPBIND /etc/modprobe.conf 559b20d86efb575497c58ac9ae11123c # 2 machines
+paLinuxYPBIND /etc/modprobe.conf 14057c7524c0820ea31f103e17878fa7
+paLinuxYPSERV /etc/modprobe.conf 14057c7524c0820ea31f103e17878fa7
+paLinuxYPSERV /etc/modprobe.conf 9629552beed948ff67af45961af772de
+paLinuxYPSERV /etc/modprobe.conf 13e275016f2b107b0893785e4cfd6a5d # Bon, mais a modifier plus tard
+paLinuxYPBIND /etc/modprobe.conf 13e275016f2b107b0893785e4cfd6a5d # Bon, mais a modifier plus tard
+paLinuxYPSERV /etc/modprobe.conf 58a04aa40a53118d31c5b95cb58e4e6f # Bon, mais a modifier plus tard
+paLinuxYPBIND /etc/modprobe.conf 58a04aa40a53118d31c5b95cb58e4e6f # Bon, mais a modifier plus tard
+paLinuxYPSERV /etc/modprobe.conf 6cf382905fa8ce0eba7fc91db80a3f47 
+paLinuxYPBIND /etc/modprobe.conf 6cf382905fa8ce0eba7fc91db80a3f47
+paLinuxAUTRES /etc/modprobe.conf ae415b999f9fa3bb599c65abe8e34dcd
+paLinuxAUTRES /etc/modprobe.conf 13e275016f2b107b0893785e4cfd6a5d #simple concerne 5 machines
+paLinuxAUTRES /etc/modprobe.conf 1ba84afdd1175355db151fb5469e5cb8 #usb controler a retirer
+paLinuxAUTRES /etc/modprobe.conf e8a3bc2260a9b5922b7c2e74c4ac0417 # correction sur pagln003 et pagln004
+paLinuxAUTRES /etc/modprobe.conf 1dad24d8cedbd78e67334b5e27275708 # correction sur paemg007 pamqs002
+paLinuxAUTRES /etc/modprobe.conf 9629552beed948ff67af45961af772de # correction sur paswx098 paswx099
+paLinuxAUTRES /etc/modprobe.conf 6cf382905fa8ce0eba7fc91db80a3f47 #OK
+paLinuxAUTRES /etc/modprobe.conf 58a04aa40a53118d31c5b95cb58e4e6f #OK usb controleur a virer paemg003 pamqs003
+paLinuxYPBIND /etc/modprobe.conf c5e432f9f6053f9e94b92bb18509a854 #OK mais complex, semble OK pasyb006 et pasyb002
+paLinuxYPBIND /etc/modprobe.conf 4ae3856376559ff318411b1a1954aee6 # 1 machine(s) dontpaexp822
+
+
+#-MARK-
+################# NOMS GENERIQUES DE MACHINES ##########
+#                      SECTION 2
+#     Exemple:
+#  /regexp/ /rep_dest/fic_a_verifier 8bddd9a9527a96d89501eaf8bceba4fe
+########################################################
+/pasyb.*/ /etc/nsswitch.conf cb058a749e7cadf28758cb59d0a08b61 #md5sum de pasyb055
+/..*/ /disk01/middle/.ssh/id_dsa.pub cb058a749e7cadf28758cb59d0a08b61 #test ponctuel
+#-MARK-
+############## NOMS SPECIFIQUES DE MACHINES ############
+#                      SECTION 3 
+#     Exemple:
+# pavmw001 /rep_dest/fic_a_verifier 6a3f9b0a1a006820a7d3140652fae2bc
+########################################################
+frbkp001 /etc/ntp.conf b67e502cab84df90df45be91c9810a4a # exeption a frLinuxYPBIND
+paemg022 /etc/modprobe.conf 14057c7524c0820ea31f103e17878fa7 # 
+parsb041 /etc/modprobe.conf e8a3bc2260a9b5922b7c2e74c4ac0417 # Modifie (bond) Mar 12 18:41
+pahqs003 /etc/modprobe.conf c57020b7edf545f810445afa49cc0b3e #OK usb controleur a virer
+pahmg003 /etc/modprobe.conf caa7f88226b9f2173bfd2275021ca971 #OK usb controleur a virer
+pasyb009 /etc/modprobe.conf 0e95fd86721a7f81a623c96652b384c0 #OK
+pasyb045 /etc/modprobe.conf 0fa526ac9811e391142274f6996e282c #OK usb controleur a virer
+paexp033 /etc/modprobe.conf 22c8d03da9f1f99f396ff0e1a9209de1 #OK mais complex, semble OK
+pasyb003 /etc/modprobe.conf 27ea2a56a4a04b0c456c46aacdbcf031 #OK mais complex, semble OK
+pabkp012 /etc/modprobe.conf 2b3dfdc92db264b788d4298c0457d237 #OK mais complex, semble OK
+paulk004 /etc/modprobe.conf 383543fda5be7be4cb8f40426e31211a #OK usb controleur a virer
+pasyb073 /etc/modprobe.conf 3d76c66267d7d5608e535cb2503360e8 #OK
+pahol001 /etc/modprobe.conf 5d1225d4788a9a422dff1a24e88371f9 #OK
+pasyb092 /etc/modprobe.conf 9397abd4e7101e11603f0d14849568a9 #OK mais complex, semble OK
+pasyb093 /etc/modprobe.conf a71249187ae689d45f42beaad94259a6 #OK mais complex, semble OK
+pacod002 /etc/modprobe.conf ab403ed1f60649fefdef1781d9337402 #OK mais complex, semble OK
+pasyb054 /etc/modprobe.conf c242db581c28d5ced6c10a19d3ad01de #OK usb controleur a virer
+padac001 /etc/modprobe.conf d6ac2e81846799d45fae3522e8046f5d #OK usb controleur a virer
+pasyb046 /etc/modprobe.conf e9553df1124a1415e3d2181c5657d39a #OK mais complex, semble OK pasyb046
+
+
+#-MARK-
+EOF
+                                                                                    #
+#####################################################################################
+sort $CONFIG_GEN|uniq -c|awk '$1 > 1 {print "Definitions des regles : ATTENTION !!"$1" occurences de : "$2,$3,$4}'|sed "s/!!/!!\n/"
+
+
+Nettoyage()
+{
+#set -x
+EXEPT="$1rapport.Test_KO$|rapport.no_exist$|message\..*$"
+find $WDIR -type f |$EGREP -v $EXEPT|xargs rm -f
+find $WDIR -type f -ls|$AWK '$7 == 0 {print $11}'|xargs rm -f
+}
+
+Affichage()
+{
+        for F in $WDIR/*
+        do
+                echo $NET_HOSTNAME : $(echo $F|sed "s@^.*/..*\.\([^/][^/]*\)@\1@")
+                cat $F|sort -u
+                echo
+        done 2> /dev/null
+}
+
+##- Fonction speciales en cas de valeurs imprevues ou de l'option -v
+signalementERRSTOP()
+{
+#set -x
+case $1 in
+	OSINCONNU)
+	echo $NET_HOSTNAME:OSINCONNU >> $MESSAGE.Alerte
+	Nettoyage
+	[ "$OPT" = "-V" ] && Affichage
+	exit 1
+	;;
+	PAYSINCONNU)
+	echo $NET_HOSTNAME:PAYSINCONNU >> $MESSAGE.Alerte
+	Nettoyage
+	[ "$OPT" = "-V" ] && Affichage
+	exit 2
+	;;
+	MD5NOTPRESENT)
+	echo $NET_HOSTNAME:MD5sum NOT PRESENT >> $MESSAGE.Alerte
+	Nettoyage
+	[ "$OPT" = "-V" ] && Affichage
+	exit 3
+	;;
+	RIEN_A_FAIRE)
+	echo "Aucune verification a effectuer sur $NET_HOSTNAME" >> $MESSAGE.Notice
+	Nettoyage
+	[ "$OPT" = "-V" ] && Affichage
+	exit 4
+	;;
+	STATCONF)
+	$AWK '{print $1,$2}' $2|sort|uniq -c|$AWK -v CONF="$2" '$1 > 1 {print "("CONF") : "$1" occurences pour "$2,$3}' >> $MESSAGE.Notice
+	;;
+esac
+}
+
+## VERBOSE : Analyse du fichier de congiguration generale
+#[ "$OPT" = "-V" ] && signalementERRSTOP STATCONF $CONFIG_GEN
+
+
+##- Verif du binaire md5sum ou md5
+[ -x $MD5SUM ] ||  signalementERRSTOP MD5NOTPRESENT
+
+
+##- VARIABLES GENEREES : PAYS NOM-RESEAU CATEGORIE
+#################################################################
+##- NOMENCLATURE DE LA VARIABLE CATEGORIE : PPOOOOOYYYYYY
+##- PP=Pays           (am,at,du,fr,is,lo,ma,mi,ny,pa,st,vi,zu,bk)
+##- OOOO=OS           (Linux,SunOS)
+##- YYYYYY=StatusNIS  (YPBIND,YPSERV,AUTRES)
+
+
+##- PAYS : Le pays de la machine est le pays de son serveur NIS.
+##  Certains serveurs NIS pointent sur eux-meme (localhost) et il faut remplacer cette info par le nom de la machine
+echo "s/^.*localhost.*$/$NET_HOSTNAME/" > $WDIR/pays.sed
+PAYS=$(ypwhich 2> /dev/null |sed -f $WDIR/pays.sed|cut -c1,2)
+PAYS=${PAYS:-$(uname -n|cut -c1,2)} #Pour les machines non NIS
+##- Si on a un pays connu on continue, sinon on termine en signalant l'erreur.
+echo $PAYS|$EGREP -x $LIST_PAYS > /dev/null || signalementERRSTOP PAYSINCONNU
+
+##- YP_STATUS : La machine est elle serveurNIS, clientNIS, ou autre ?
+YP_STATUS=AUTRES
+ypwhich 2>/dev/null >/dev/null && {
+        YP_STATUS=YPBIND
+        if ypcat -h panis001 -k ypservers >/dev/null 2>/dev/null
+	then
+		ypcat -h panis001 -k ypservers|$AWK '{print $1}'|$GREP -x "$NET_HOSTNAME" > /dev/null && YP_STATUS=YPSERV
+	else
+		ps -ef|grep ypserv|grep -v $$ > /dev/null && YP_STATUS=YPSERV
+	fi
+}
+
+##- DEFINITION DE "CATEGORIE" (Categorie a laquelle appartient la machine testee)
+CATEGORIE=$PAYS$OS$YP_STATUS
+[ "$OPT" = "-V" ] && echo "CATEGORIE=$PAYS$OS$YP_STATUS" >> $MESSAGE.Notice
+
+##- Extraction des lignes de categories identiques a celle de la machine
+$EGREP "^$CATEGORIE" $CONFIG_GEN | sort -u > $CONFIG_CATEGORIE
+
+##- Extraction des noms de machines generiques pertinants
+#########################################################
+##-Extraction des premiers champs en /reg_ex/ matchant le nom de la machine
+> $CONFIG_GENERIQUE.1 #(generique.1)
+for REGEX in $($AWK '{print $1}' $CONFIG_GEN|$GREP "^\/[^ ^/][^ ^/]*\/$"|sed "s@/@@g"|sort -u)
+do
+	echo $NET_HOSTNAME|$EGREP "$REGEX" > /dev/null && echo $REGEX >> $CONFIG_GENERIQUE.1
+done
+
+##- extraction des lignes completes correspondantes
+> $CONFIG_GENERIQUE #(generique)
+while read LINE
+do
+	$AWK -v REGEX="/$LINE/" '$1 == REGEX {print}' $CONFIG_GEN >> $CONFIG_GENERIQUE
+done < $CONFIG_GENERIQUE.1
+
+
+##- Extraction des noms de machines SPECIFIQUE.
+$EGREP "^$NET_HOSTNAME[ \t]" $CONFIG_GEN > $CONFIG_SPECIF
+
+#####################################- Extraction finale -###########################################
+>${CONFIG_GEN}.extract.brut
+
+##- Concatenation des donnees brutes concernant la machine
+cat $CONFIG_CATEGORIE $CONFIG_GENERIQUE $CONFIG_SPECIF > ${CONFIG_GEN}.extract.brut
+
+##- POUR CHACUN DES GROUPES "Categorie ; generique ; specifique", dresser la liste des fichiers a verifier sur la machine
+for GROUPE in $CONFIG_CATEGORIE $CONFIG_GENERIQUE $CONFIG_SPECIF
+do
+	##- extraction sans doublon des noms de fichiers a tester
+	$AWK '{print $2}' $GROUPE | sort -u > $GROUPE.fic.tocheck
+
+	##- creation fichier vide a remplir $GROUPE.no_exist
+	>$GROUPE.no_exist
+	>$GROUPE.fic_exist
+	
+	##- Et parmis eux, les quels existent sur la machine
+	while read FIC2CHECK
+	do
+	        if [ -f $FIC2CHECK ]
+	        then
+	                $AWK -v FILE="$FIC2CHECK" '$2 == FILE {print}' $GROUPE  >> $GROUPE.fic_exist
+	        else
+	                echo "$FIC2CHECK"  >> $GROUPE.no_exist
+	        fi
+	done < $GROUPE.fic.tocheck
+done
+
+##- Concatenation des listes des fichiers *.no_exist pour en faire un filtre.
+cat $WDIR/*.no_exist > $WDIR/no_exist_filtre
+##- supression des sous fichiers
+rm -f $WDIR/*.no_exist
+
+##- Si ce fichier n'est pas vide, constituer le rapport no_exist
+[ -s $WDIR/no_exist_filtre ] && {
+# Constititution du rapport
+$GREP -f $WDIR/no_exist_filtre ${CONFIG_GEN}.extract.brut > $WDIR/rapport.no_exist
+}
+####################################################################
+# Pour la realisation de to_do
+# ****************************
+# initialiser filtre
+# initialiser to_do
+
+# pour chaque groupe dans l'ordre : specifique ; generique ; categorie
+# si le groupe n'est pas vide
+#	si le filtre n'est pas vide 	:ajouter le groupe filtr& a to_do
+#	si le filtre est vide 		:ajouter le groupe a to_do
+#       Construire le filtre avec les fichiers inscrits dans to_do
+# si le groupe est vide, passer au suivant.
+
+TO_DO=$WDIR/to_do ; > $TO_DO
+FILTRE=$WDIR/filtre_to_do ; > $FILTRE
+for GROUPE in $CONFIG_SPECIF.fic_exist $CONFIG_GENERIQUE.fic_exist $CONFIG_CATEGORIE.fic_exist
+do
+	[ -s $GROUPE ] && {                   #si le groupe n'est pas vide
+		if [ -s $FILTRE ]             #si le filtre n'est pas vide
+		then                          #ajouter le groupe filtr& a to_do
+			while read FIC_NAME
+			do
+				$AWK -v FIC_NAME="$FIC_NAME" '$2 == "FIC_NAME" {print}' $GROUPE >> $TO_DO
+			done < $FILTRE
+		else
+			cat $GROUPE >> $TO_DO  #ajouter le groupe a to_do
+		fi
+	awk '{print $2}' $TO_DO > $FILTRE       #definir le fitre avec noms de fichiers existants dans to_do
+	}
+done
+
+# Si le fichier to_do est vide , fin de la mission :
+[ -s $TO_DO ] || signalementERRSTOP RIEN_A_FAIRE
+
+##- VERBOSE : statistiques sur le fichier to_do
+[ "$OPT" = "-V" ] && signalementERRSTOP STATCONF $TO_DO
+
+## Rapport OK
+while read LIGNE
+do
+	FILE=$(echo $LIGNE|$AWK '{print $2}')
+	MD5_FIC=$($MD5SUM $FILE|sed "s@.*\([0-9a-f]\{32\}\).*@\1@")
+	echo $LIGNE|$AWK -v MD5_FIC="$MD5_FIC" -v HOST="$NET_HOSTNAME" 'MD5_FIC == $3 {print "OK "HOST":"$2" ("MD5_FIC")"}'
+done < $TO_DO > $WDIR/rapport.Test_OK
+cut -f2 -d: $WDIR/rapport.Test_OK|awk '{print $1}' > $WDIR/Fic_OK
+
+## TO_DO (-) les lignes des fichiers OK
+cat $TO_DO > ${TO_DO}-OK
+[ -s $WDIR/Fic_OK ] && {
+	$GREP -vf $WDIR/Fic_OK $TO_DO > ${TO_DO}-OK 
+}
+
+## Rapport KO
+while read LIGNE
+do
+        FILE=$(echo $LIGNE|$AWK '{print $2}')
+        MD5_FIC=$($MD5SUM $FILE|sed "s@.*\([0-9a-f]\{32\}\).*@\1@")
+        echo $LIGNE|$AWK -v MD5_FIC="$MD5_FIC" -v HOST="$NET_HOSTNAME" 'MD5_FIC != $3 {print HOST":"$1,$2,MD5_FIC" expecting "$3}'
+done < ${TO_DO}-OK > $WDIR/rapport.Test_KO
+
+
+##-----------------------------------------------------------------
+## categorie/nom    FICHIER    md5_fic    "expecting"  md5_to_match
+##-----------------------------------------------------------------
+
+[ "$OPT" = "-v" -o "$OPT" = "-V" ] || Nettoyage 
+Nettoyage "rapport.Test_OK$|"
+[ "$OPT" = "-V" ] && Affichage
+[ "$OPT" = "-v" ] && cat $WDIR/rapport.Test_KO $WDIR/rapport.Test_OK 2> /dev/null

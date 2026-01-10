@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compétences - AUTOM@CLOUD</title>
+	<script>
+	  window.addEventListener("pageshow", function (event) {
+		if (event.persisted) {
+		  window.location.reload();
+		}
+	  });
+	</script>
+    <style>
+        :root {
+            --primary: #00ff88;
+            --secondary: #0088ff;
+            --dark: #0a0e1a;
+            --dark-2: #131824;
+            --dark-3: #1a2133;
+            --text: #e4e8f0;
+            --text-dim: #9ca3af;
+            --grid: #1e2842;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.15), transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .glow-2 {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 136, 255, 0.1), transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+            top: 50%;
+            right: 0;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(100px, 100px); }
+            50% { transform: translate(-50px, 200px); }
+            75% { transform: translate(150px, 50px); }
+        }
+
+		.container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            padding: 0.5rem 0;
+            position: sticky;
+            top: 0;
+            background: rgba(10, 14, 26, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--grid);
+            z-index: 100;
+            overflow-x: auto;
+        }
+
+        /* Personnaliser la barre de défilement du header */
+        header::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        header::-webkit-scrollbar-track {
+            background: var(--dark-2);
+        }
+
+        header::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        header::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-width: max-content;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.35rem;
+            font-weight: 500;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+
+        .logo img {
+            height: 100px;
+            width: auto;
+            max-width: 300px;
+            object-fit: contain;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            padding: 4rem 0;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-text h1 .highlight {
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-text .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            animation: slideUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero-text .description {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            animation: slideUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            animation: slideUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--grid);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .hero-image {
+            animation: slideUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .profile-card {
+            background: var(--dark-2);
+            border: 1px solid var(--grid);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .profile-img {
+            width: 30%;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+			display: block;          /* transforme l'image en élément de bloc */
+			margin-left: auto;       /* marge automatique à gauche ou bien 50px, ça va aussi*/
+			margin-right: auto;      /* marge automatique à droite */
+
+        }
+
+        .profile-info {
+            text-align: center;
+        }
+
+        .profile-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+			font-weight: 400; /* plus fin */
+        }
+
+        .profile-info p {
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat {
+            background: var(--dark-3);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            margin-top: 0.25rem;
+        }
+
+        .section-title {
+            font-size: 2.7rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            margin-bottom: 4rem;
+            font-size: 1.2rem;
+        }
+
+        /* CLOUD COMPUTING SECTION - PRINCIPALE */
+        .skills {
+            padding: 6rem 0;
+            background: var(--dark);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-card {
+            background: var(--dark-2);
+            border: 1px solid var(--grid);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .skill-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.1);
+        }
+
+        .skill-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--dark-3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .skill-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .skill-card p {
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            background: var(--dark-3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* UNIX SECTION - SECONDAIRE */
+        .unix-section {
+            padding: 6rem 0;
+            background: var(--dark-3);
+            opacity: 0.9;
+        }
+
+        .unix-intro {
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            padding: 2rem;
+            background: var(--dark-2);
+            border-left: 3px solid var(--text-dim);
+            border-radius: 8px;
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .unix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .unix-card {
+            background: var(--dark-2);
+            border: 1px solid var(--grid);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .unix-card:hover {
+            border-color: var(--text-dim);
+        }
+
+        .unix-card h4 {
+            color: var(--text);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .unix-card p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .unix-toggle {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .unix-details {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--dark-2);
+            border-radius: 12px;
+            border: 1px solid var(--grid);
+        }
+
+        .unix-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .detail-block h5 {
+            color: var(--text);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--grid);
+        }
+
+        .detail-block ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .detail-block li {
+            color: var(--text-dim);
+            padding: 0.4rem 0;
+            padding-left: 1.2rem;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .detail-block li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--text-dim);
+        }
+
+        /* PROJECTS SECTION */
+        .projects {
+            padding: 6rem 0;
+            background: var(--dark-2);
+        }
+
+        .projects-grid {
+            display: grid;
+            gap: 3rem;
+        }
+
+        .project-card {
+            background: var(--dark);
+            border: 1px solid var(--grid);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.1);
+        }
+
+        .project-header {
+            padding: 2rem;
+            background: var(--dark-3);
+            border-bottom: 1px solid var(--grid);
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            margin-bottom: 0rem;
+            color: var(--primary);
+        }
+
+        .project-company {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-period {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+
+        .project-body {
+            padding: 2rem;
+        }
+
+        .project-description {
+            margin-bottom: 0rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+        }
+
+        .project-highlights {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .project-highlights li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+        }
+
+        .project-highlights li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .tech-tag {
+            background: var(--dark-2);
+            border: 1px solid var(--grid);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+        }
+
+        /* CV SECTION */
+        .cv-section {
+            padding: 6rem 0;
+            background: var(--dark);
+        }
+
+        .cv-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .cv-card {
+            background: var(--dark-2);
+            border: 2px solid var(--grid);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .cv-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .cv-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .cv-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .cv-card p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* CONTACT SECTION */
+        .contact {
+            padding: 6rem 0;
+            text-align: center;
+            background: var(--dark-2);
+        }
+
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 1.2rem;
+            color: var(--text-dim);
+        }
+
+        .contact-item a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-item a:hover {
+            color: var(--secondary);
+        }
+
+        footer {
+            background: var(--dark-3);
+            border-top: 1px solid var(--grid);
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 1.5rem;
+                white-space: nowrap;
+            }
+
+            nav {
+                padding: 0 1rem;
+                gap: 1.5rem;
+            }
+
+            .logo {
+                flex-shrink: 0;
+                font-size: 1rem;
+            }
+
+            .logo img {
+                height: 100px;
+                max-width: 230px;
+            }
+
+            header {
+                padding: 0.25rem 0;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .skills-grid,
+            .unix-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+	<header>
+        <nav class="container">
+            <a href="https://www.pappers.fr/entreprise/autom-at-cloud-822738548" class="logo">
+                <img src="logo.png" alt="AUTOM@CLOUD">
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="index.html#cv">CV</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+
+        <div class="page-header">
+            <h1><br>Domaines de Compétences<br><br></h1>
+
+        </div>
+
+        <div class="skills-grid">
+            <div class="skill-card">
+                <h3>🚀 Cloud Computing</h3>
+                <p><strong style="color: white;">Expert ARIA - vRO/vRA 8.x</strong> – Compétences développées au sein de grands projets (Défense, bancaire, télécom, transport, FAI).</p>
+                <div class="skill-tags">
+                    <span class="tag">vRO 8.x</span>
+                    <span class="tag">vRA 8.x</span>
+                    <span class="tag">ARIA</span>
+                    <span class="tag">vCloud Director 9.2</span>
+                    <span class="tag">NSX</span>
+                    <span class="tag">vSphere 6.7</span>
+                    <span class="tag">Terraform</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🤖 Intelligence Artificielle</h3>
+                <p>Exploitation des LLM pour aprofondir des aspects techniques ou fonctionnels.</p>
+                <div class="skill-tags">
+                    <span class="tag">ChatGPT / Claude ai</span>
+                    <span class="tag">IA Integration</span>
+                    <span class="tag">Auto-formation</span>
+					<span class="tag">API DALL-E pour les images</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>💻 Languages</h3>
+                <p>Maîtrise complète des langages de scripting et de développement pour l'automatisation cloud.</p>
+                <div class="skill-tags">
+                    <span class="tag">JavaScript (Expert)</span>
+                    <span class="tag">Bash (Expert)</span>
+                    <span class="tag">PowerShell</span>
+                    <span class="tag">Python</span>
+                    <span class="tag">Algorithm (++)</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🖥️ Operating Systems</h3>
+                <p>Administration système multi-plateformes avec 20+ ans d'expérience UNIX/Linux.</p>
+                <div class="skill-tags">
+                    <span class="tag">RedHat 5/6/7</span>
+                    <span class="tag">RHN Satellite v5.2</span>
+                    <span class="tag">Suse</span>
+                    <span class="tag">AIX 5.3 & 6</span>
+                    <span class="tag">Solaris 10</span>
+                    <span class="tag">Windows</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🔧 DevOps & Outils</h3>
+                <p>Stack DevOps moderne pour l'automatisation, CI/CD et gestion d'infrastructure.</p>
+                <div class="skill-tags">
+                    <span class="tag">Ansible</span>
+                    <span class="tag">Git</span>
+                    <span class="tag">GitLab CI/CD</span>
+                    <span class="tag">Terraform</span>
+                    <span class="tag">Kubernetes</span>
+                    <span class="tag">Docker</span>
+                    <span class="tag">Nagios</span>
+                    <span class="tag">Big Brother</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>💾 Stockage</h3>
+                <p>Expertise en solutions de stockage et architecture réseau pour infrastructures critiques.</p>
+                <div class="skill-tags">
+                    <span class="tag">NetApp DataOntap V8</span>
+                    <span class="tag">FCoE</span>
+                    <span class="tag">CIFS/NFS</span>
+                    <span class="tag">WAFL</span>
+                    <span class="tag">WFA</span>
+                    <span class="tag">QNAP</span>
+                    <span class="tag">SAN HP EVA 8400</span>
+                    <span class="tag">Brocade</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🌐 TCP/IP & Réseau</h3>
+                <p>Maîtrise complète des protocoles réseau et infrastructures de communication.</p>
+                <div class="skill-tags">
+                    <span class="tag">IPv4</span>
+                    <span class="tag">Bonding Linux</span>
+                    <span class="tag">VLAN</span>
+                    <span class="tag">HTTP/HTTPS</span>
+                    <span class="tag">SSL Certificates</span>
+                    <span class="tag">SSH</span>
+                    <span class="tag">NTP</span>
+                    <span class="tag">DNS</span>
+                    <span class="tag">FTP</span>
+                    <span class="tag">Tunneling</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🔌 Intégration</h3>
+                <p>Sur schémas d'architecture : Création documentaire d'exploitation, d'installation et de spécifications. Support niveau 3.</p>
+                <div class="skill-tags">
+                    <span class="tag">REST API</span>
+                    <span class="tag">JSON (Expert)</span>
+                    <span class="tag">XML</span>
+                    <span class="tag">SoapUI</span>
+                    <span class="tag">Postman</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🗄️ Bases de Données</h3>
+                <p>Exploitation de bases de données Oracle en environnement de production.</p>
+                <div class="skill-tags">
+                    <span class="tag">Oracle 9/10</span>
+                    <span class="tag">SQL Plus</span>
+                    <span class="tag">PL/SQL</span>
+                    <span class="tag">TOAD</span>
+                    <span class="tag">SQL Developer</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🌐 WebApp & Middleware</h3>
+                <p>Déploiement et administration de serveurs d'applications et middleware.</p>
+                <div class="skill-tags">
+                    <span class="tag">Apache Tomcat</span>
+                    <span class="tag">JBOSS</span>
+                    <span class="tag">IIS</span>
+                    <span class="tag">Apache Web Server</span>
+                    <span class="tag">NGINX</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>📦 Sauvegarde & Restauration</h3>
+                <p>Solutions de backup et disaster recovery pour environnements critiques.</p>
+                <div class="skill-tags">
+                    <span class="tag">Netbackup 7</span>
+                    <span class="tag">TimeNavigator</span>
+                    <span class="tag">TSM</span>
+                    <span class="tag">Veeam</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🔐 Annuaire & Sécurité</h3>
+                <p>Gestion des identités et des accès dans des environnements d'entreprise.</p>
+                <div class="skill-tags">
+                    <span class="tag">Active Directory</span>
+                    <span class="tag">LDAP</span>
+                    <span class="tag">SSL/TLS</span>
+                    <span class="tag">Kerberos</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🌍 Langues</h3>
+                <p>Communication efficace dans un environnement international.</p>
+                <div class="skill-tags">
+                    <span class="tag">Français (Courant)</span>
+                    <span class="tag">Anglais (Avancé)</span>
+                    <span class="tag">Anglais Technique</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>📊 Méthodologie</h3>
+                <p>Approches modernes de gestion de projet et développement.</p>
+                <div class="skill-tags">
+                    <span class="tag">Merise</span>
+                    <span class="tag">UML</span>
+                    <span class="tag">AGILE</span>
+                    <span class="tag">DevOps</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🛠️ Outils Système</h3>
+                <p>Maîtrise des outils Unix/Linux pour administration et automatisation.</p>
+                <div class="skill-tags">
+                    <span class="tag">AWK</span>
+                    <span class="tag">SED</span>
+                    <span class="tag">VI/VIM</span>
+                    <span class="tag">Regular Expressions</span>
+                    <span class="tag">LVM</span>
+                    <span class="tag">IOZONE</span>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <h3>🎯 Compétences transverses</h3>
+                <p>Soft skills essentiels pour la réussite des projets complexes.</p>
+                <div class="skill-tags">
+                    <span class="tag">Communication MOA/MOE</span>
+                    <span class="tag">Analyse technico-fonctionnelle</span>
+                    <span class="tag">Leadership technique</span>
+                    <span class="tag">Travail d'équipe</span>
+                    <span class="tag">Esprit critique</span>
+                    <span class="tag">Veille technologique</span>
+                </div>
+            </div>
+        </div>
+    </div>
+	<br>
+    <footer>
+        <p>&copy; 2025 AUTOM@CLOUD - Laurent Graignic - Expert VMware ARIA (vRO/vRA)</p>
+    </footer>
+</body>
+</html>

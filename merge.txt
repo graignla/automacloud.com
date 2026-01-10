@@ -1,0 +1,45 @@
+#!/bin/ksh
+#set -x
+echo $*|egrep -v "S.?S ([0-9]+,?)+ [^ ]+.*" && {
+	echo "$(basename $0) S[separateur]S N°Champs1,N°Champs2,..,N°ChampsN FICH_1 FICH_2 ...FICH_N"
+cat << EOF
+	$(basename $0) permet de fournir en sortie un merge des fichiers en argument.
+	Ce merge, fourni sur la sortie standart, une concatenation sans doublon des fichiers cites en argument.
+	L'elimination des doublons se fait sur la base d'une cle unique composee des champs fournis en argument.
+	En cas d'occurences multiple d'une cle, celle retenue sera la premiere determinee par l'ordre des fichiers
+	tel que places en arguments.
+EOF
+	exit 1
+}
+COMMANDE="$0 $@"
+TMP=/tmp/merge.$$
+mkdir -p $TMP || exit 1
+S=$(echo $1|sed "s/^.\(.\).$/\1/")
+[ "$S" = "SS" ] && S=" "
+# ($1,$2,$3 ....)
+PRINT_AWK=$(echo $2|sed "s/\([0-9][0-9]*\)/$\1/g")
+shift 2
+FIC_LIST="$@"
+echo "s/^$//
+s/#.*//" > $TMP/sed
+RECORD=0
+> $TMP/cles ; > $TMP/result
+cat $FIC_LIST > $TMP/concat_fic
+TOTAL=$(cat $TMP/concat_fic|wc -l|awk '{print $1}')
+while read LINE
+do
+	RECORD=$(expr $RECORD + 1 )
+	echo "$COMMANDE	(Record $RECORD/$TOTAL)" >&2
+	echo "echo '$LINE'|sed -f $TMP/sed|awk -F'$S' -v OFS='$S' '\$0 !~/^$/ {print $PRINT_AWK}'"|sh 2>/dev/null > $TMP/extract_cle
+	grep -vxf $TMP/cles $TMP/extract_cle |tee $TMP/cle_valide >> $TMP/cles
+	if [ -s $TMP/cle_valide ]
+	then
+		awk -v RECORD=$RECORD 'NR == RECORD {print}' $TMP/concat_fic|grep -vxf $TMP/result >> $TMP/result
+	elif	[ ! -s $TMP/extract_cle ]
+	then	awk -v RECORD=$RECORD 'NR == RECORD {print}' $TMP/concat_fic|grep -vxf $TMP/result >> $TMP/result
+	fi
+	clear
+done < $TMP/concat_fic
+cat $TMP/result
+trap "rm -fr /tmp/merge.$$" EXIT
+

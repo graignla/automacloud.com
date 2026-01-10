@@ -1,0 +1,290 @@
+#############################################################################
+#                                                                           #
+#       Auteur : Laurent Graignic http://l.graignic.online        #
+#       Objet  : Mettre deux machines en conformite concernant              #
+#              les droits et les appartenances de fichiers                  #
+#       Usage  : FixRight LISTING_FIND_LS                                   #
+#              "LISTING_FIND_LS" est obtenu a partir de la commande         #
+#              (Exemple) find / -user prod -user cft -ls > LISTING_FIND_LS  #
+#              Ce fichier est ensuite a transfere de la machine de          #
+#              reference vers la machine cible. Ce script est alors         #
+#              utilisable. Une fonction undo permet un retour arriere       #
+#                                                                           #
+#############################################################################
+#!/bin/ksh
+#set -x
+# Determination du systeme (Sun ou AIX)
+OS=INCONU
+uname -a|grep -i aix > /dev/null && OS=AIX
+uname -a|grep -i sun > /dev/null && OS=SOLARIS
+
+# En fonction de l'OS, choix de la commande grep
+################################################
+case $OS in
+AIX)
+        GREP=/usr/bin/grep
+;;
+SOLARIS)
+        GREP=/usr/xpg4/bin/grep
+;;
+INCONU)
+        echo "Attention, systeme UNIX non determine, la commande grep doit supporter l'option \"x\""
+        which grep
+;;
+esac
+
+# Test de l'argument
+[ -f $1 -a -s $1 ] || {
+        echo "fichier donne en argument invalide, Abort."
+        exit
+}
+# Le fichier donne en argument doit provenir d'un "find -ls" realise sur la machine de reference.
+echo "******************************************************************************
+Info :  Le fichier donne en argument doit etre un listing de fichiers
+        de type \"find ABSOLUTE_PATH [-option arg] -ls\" :
+        * Le point de depart de la recherche est un ou plusieurs chemins absolus.
+        * Les droits et appartanances de ce fichiers sont a reproduire sur $(hostname).
+******************************************************************************"
+nettoyer()
+{
+# Nettoyage des fichiers vides et classement des autres
+########################################################
+for FICHIER in warning.log $FICREF.travail not_found LOCAL.REP.formate REF.REP.formate REF.FIC.formate LOCAL.FIC.formate LOCAL.COM.FIC LOCAL.COM.REP DIFF.REP.
+formate REF.REP.DroitsSpeciaux DIFF.FIC.formate REF.FIC.DroitsSpeciaux DIFF.REP.DroitsSpeciaux.formate REF.REP.DroitsSpeciaux.ExpReg DIFF.REP.DroitsNormaux.fo
+rmate DIFF.FIC.DroitsSpeciaux.formate REF.FIC.DroitsSpeciaux.ExpReg DIFF.FIC.DroitsNormaux.formate DIFF.DroitsSpeciaux.formate DIFF.DroitsNormaux.formate LOGG
+EN.$FICREF LOG.$FICREF
+do
+        if [ -s $FICHIER ]
+        then
+                [ -d $FICREF.$$ ] || mkdir $FICREF.$$
+                mv $FICHIER $FICREF.$$ 2>/dev/null
+        else
+                rm $FICHIER 2>/dev/null
+        fi
+done
+[ -s $FICREF.$$/LOG.$FICREF ] || rm undo.$$ 2>/dev/null
+rm sed*.txt 2>/dev/null
+exit
+}
+# En cas de sortie forcee
+trap nettoyer EXIT
+
+echo "Inspection du fichier $1 ? O/N [O]:"
+read REP
+[ "$REP" = "" ] && REP=O
+[ "$REP" != "0" -a "$REP" != "o" ] && exit 1
+FICREF=$(basename $1)
+# Mise a "0" des fichier de log specifique a cette cession et a ce fichier de reference
+>LOG.$FICREF
+>LOGGEN.$FICREF
+
+#########################################
+# Transformation du 'find -ls' en un format simplifie (Cette transformation peut s'appliquer à son propre resultat sans le modifier - utile pour le "undo"):
+# FORMAT :droits user group "chemin_absolu_fichier_ou_repertoire"
+#########################################
+echo "s/^.*\([-bcdsl][rsSwx-]\{9\}\)[ \t][ \t]*[0-9][0-9]*[ \t][ \t]*\([^ ][^ ]*\)[ \t][ \t]*\([^ ][^ ]*\)[^/][^/]*\(\/.*\)/\1 \2 \3 \"\4\"/" > sed.txt
+sed -f sed.txt $1 > $FICREF.travail
+
+#########################################
+echo "Verification d'intégrité des donnees extraites ..."
+$GREP -vn "^[-bcdsl][rsSwx-]\{9\} [^ ][^ ]* [^ ][^ ]* .*$" $FICREF.travail && {
+        echo "Probleme d'intégrité sur ces lignes, vérifier que $1 est bien issu de la commande \"find /ABSOLUTE_PATH -ls\". Abort..."
+        exit
+        }
+echo "--->OK"
+
+
+
+#########################################
+#Verification des droits inscrits au fichier $FICREF.travail.
+echo "Inspection des droits dans $1..."
+awk '{print $1}' $FICREF.travail|$GREP -n -v "[-cdbsl][-rwxSs]\{9\}"|awk -F":" '{print "Ligne "$1"> \""$2"\":      Droits invalides"}'|head|$GREP ".*" && echo
+ "Abort..." && exit 1
+
+echo "Verification des utilisateurs inscrits dans $1"
+>warning.log
+for USERS in $(awk '{print $2}' $FICREF.travail|sort -u)
+do
+        id $USERS > /dev/null 2>> warning.log
+        echo $USERS|$GREP "^root$" > /dev/null && echo "ATTENTION !!!$(awk '$2 ~ /root/ {print}' $FICREF.travail|wc -l) fichiers \"root\" sont inclus dans la
+liste des fichiers a controler"
+done
+
+[ -s warning.log ] && {
+        echo "$(cat warning.log|tr -s '\012' " ") : Attention, ces utilisateurs sont inconus du systeme"
+        echo "Continuer la verification ? O/N [O]:"
+        read REP
+        [ "$REP" = "" ] && REP=O
+        [ "$REP" != "0" -a "$REP != "o" ] && exit 1
+}
+##########################################
+echo "Verification des groupes inscrits dans $FICREF.travail..."
+GROUPS=$(awk '{print $3}' $FICREF.travail|sort -u|$GREP -v "^[0-9][0-9]*$")
+[ "$GROUPS" != "" ] && {
+        echo "$GROUPS : Attention, ces groupes sont inconus du systeme"
+        echo "Continuer le rapport ? O/N [O]:"
+        read REP
+        [ "$REP" = "" ] && REP=O
+        [ "$REP" != "0" -a "$REP != "o" ] && exit 1
+}
+echo "\nRepartition des fichiers inscrits dans \"$1\" par user et group :
+NBRE USERS:GROUPS"
+awk '{print $2":"$3}' $FICREF.travail | sort | uniq -c|sort -nr
+
+#########################################
+# Sindage du fichier original en 4 fichiers formates:
+#   "droits user group nom_fic" :
+# 1 pour les repertoires de reference
+# 1 pour les fichiers de reference
+# 1 pour les repertoires locaux correspondants presents
+# 1 pour les fichiers locaux correspondants presents
+#########################################
+$GREP "^[d][rsSwx-]\{9\}" $FICREF.travail > REF.REP.formate
+sed "s/.*\(\".*\"\)$/\1/" REF.REP.formate | xargs ls -ld 2> not_found|sed -f sed.txt > LOCAL.REP.formate
+$GREP "^[-l][rwsSx-]\{9\}" $FICREF.travail > REF.FIC.formate
+sed "s/.*\(\".*\"\)$/\1/" REF.FIC.formate | xargs ls -ld 2>> not_found|sed -f sed.txt > LOCAL.FIC.formate
+
+#########################################
+# Nombre de repertoires communs
+NBRE_REP_COM=$(wc -l LOCAL.REP.formate|awk '{print $1}')
+
+#########################################
+# Nombre de fichiers communs
+NBRE_FIC_COM=$(wc -l LOCAL.FIC.formate|awk '{print $1}')
+echo "\nNOTE :     $(wc -l not_found|awk '{print $1}') element(s) present(s) dans $FICREF sont introuvable(s) sur $(hostname)"
+
+#########################################
+# Fichiers communs et differents sur machine locale
+$GREP -v -x -f REF.FIC.formate LOCAL.FIC.formate | tee undo.$$ | sed "s/.*\(\".*\"\)$/\1/" > LOCAL.COM.FIC
+$GREP -f LOCAL.COM.FIC REF.FIC.formate > DIFF.FIC.formate
+NBRE_FIC_DIFF=$(wc -l DIFF.FIC.formate|awk '{print $1}')
+
+#########################################
+# Repertoires communs et differents sur machine locale
+$GREP -v -x -f REF.REP.formate LOCAL.REP.formate | tee -a undo.$$ |sed "s/.*\(\".*\"\)$/\1/" > LOCAL.COM.REP
+$GREP -f LOCAL.COM.REP REF.REP.formate > DIFF.REP.formate
+NBRE_REP_DIFF=$(wc -l DIFF.REP.formate|awk '{print $1}')
+
+#########################################
+# Extraction des droits spéciaux inscrits dans ces fichiers :
+awk '{print $1}' DIFF.REP.formate | $GREP -i s | sort -u > REF.REP.DroitsSpeciaux
+awk '{print $1}' DIFF.FIC.formate | $GREP -i s | sort -u > REF.FIC.DroitsSpeciaux
+
+#########################################
+# Transformation en expression reguliere
+awk '{print "^"$0}' REF.REP.DroitsSpeciaux > REF.REP.DroitsSpeciaux.ExpReg
+awk '{print "^"$0}' REF.FIC.DroitsSpeciaux > REF.FIC.DroitsSpeciaux.ExpReg
+
+#########################################
+# Repertoires communs, differents, sur distant, ayant des droits Normaux
+cat DIFF.REP.formate | $GREP -E -v -f REF.REP.DroitsSpeciaux > DIFF.REP.DroitsNormaux.formate
+NBRE_REP_DIFF_NORM=$(wc -l DIFF.REP.DroitsNormaux.formate|awk '{print $1}')
+
+#########################################
+# Fichiers communs, differents, sur distant, ayant des droits Normaux
+cat DIFF.FIC.formate | $GREP -E -v -f REF.FIC.DroitsSpeciaux > DIFF.FIC.DroitsNormaux.formate
+NBRE_FIC_DIFF_NORM=$(wc -l DIFF.FIC.DroitsNormaux.formate|awk '{print $1}')
+
+#########################################
+# Repertoires communs, differents, sur distant, ayant des droits Speciaux
+cat DIFF.REP.formate | $GREP -E -f REF.REP.DroitsSpeciaux.ExpReg > DIFF.REP.DroitsSpeciaux.formate
+NBRE_REP_DIFF_SPEC=$(wc -l DIFF.REP.DroitsSpeciaux.formate|awk '{print $1}')
+
+#########################################
+# Fichiers communs, differents, sur distant, ayant des droits Speciaux
+cat DIFF.FIC.formate | $GREP -E -f REF.FIC.DroitsSpeciaux.ExpReg > DIFF.FIC.DroitsSpeciaux.formate
+NBRE_FIC_DIFF_SPEC=$(wc -l DIFF.FIC.DroitsSpeciaux.formate|awk '{print $1}')
+
+#########################################
+# Concatenation pour droits normaux :
+cat DIFF.REP.DroitsNormaux.formate DIFF.FIC.DroitsNormaux.formate > DIFF.DroitsNormaux.formate
+
+#########################################
+# Possibilité de retrait selectif des fichiers particuliers (Socket, bloc) + Retrait systematique des fichiers en mode caractere
+$GREP "^[scb][rsSwx-]\{9\}" DIFF.DroitsNormaux.formate > /dev/null || {
+        echo "Certains fichiers sont du type Socket ou fichier special en mode bloc ou caractere et diffèrent sur $(hostname)
+Sont ils a prendre en compte dans l'analyse ?
+Choisir entre : [sb] -> Oui pour TOUS ; \"s\" -> socket ; \"b\" -> bloc ; \"N\" -> NON pour Aucun"
+        read REP
+        [ "$REP" = "" ] && REP=sb
+        until $(echo $REP|$GREP "[Nsb]\{1,3\}" > /dev/null)
+        do
+               echo "REPONSE parmis : N (Pour aucun), s ; b ou sb (Pour TOUS)"
+               read REP
+        done
+        echo $REP|$GREP N >/dev/null && REP=N
+        echo "Reponse = $(echo $REP|sed "s/s/Sockets /"|sed "s/b/Bloc /"|sed "s/N/ Aucun/")"
+        $GREP "^[-dl$REP]" DIFF.DroitsNormaux.formate > DIFF.DroitsNormaux.formate-
+        mv DIFF.DroitsNormaux.formate- DIFF.DroitsNormaux.formate
+}
+NBRE_DIFF_NORM=$(wc -l DIFF.DroitsNormaux.formate|awk '{print $1}')
+
+#########################################
+# Concatenation pour droits Speciaux :
+cat DIFF.REP.DroitsSpeciaux.formate DIFF.FIC.DroitsSpeciaux.formate > DIFF.DroitsSpeciaux.formate
+NBRE_DIFF_SPEC=$(wc -l DIFF.DroitsSpeciaux.formate|awk '{print $1}')
+
+echo "\n            *****************************************************
+              RAPPORT DE COMPARAISON \"$1\" VS $(hostname)
+            *****************************************************
+
+Sur les $(cat $FICREF.travail|wc -l|awk '{print $1}') fichiers ou repertoires inscrits dans le fichier \"$1\", $NBRE_FIC_COM fichiers et $NBRE_REP_COM
+repertoires sont communs aux deux environnements."
+echo "Sur ce nombre, $(expr $NBRE_DIFF_NORM + $NBRE_DIFF_SPEC) possèdent une appartenance ou des droits differents.\n"
+
+if [ -s DIFF.DroitsSpeciaux.formate ]
+then
+        echo "Parmis ceux-ci, $NBRE_FIC_DIFF_SPEC fichiers et $NBRE_REP_DIFF_SPEC répertoires possedent les droits speciaux suivants :
+$(cat DIFF.DroitsSpeciaux.formate|awk '{print $1}'|tr -s '\012' " "), et ne pourrons pas etre modifies automatiquement.\n"
+
+        echo "La repartitions par utlisateurs et groupes est la suivante :
+$(echo "NBRE USERS:GROUPS";cat DIFF.DroitsSpeciaux.formate|awk '{print $2":"$3}'|sort|uniq -c)"
+
+        echo "\nLa liste de ces $NBRE_DIFF_SPEC fichiers et/ou repertoires est contenue
+dans le fichier \"DIFF.DroitsSpeciaux.formate\", dont apercu :
+$(head DIFF.DroitsSpeciaux.formate)
+   etc...\n"
+
+else
+        echo "les droits et appartenances sont identiques pour les fichiers ayant des droits Speciaux.
+Aucune modification n'est a effectuer.\n"
+fi
+
+if [ -s DIFF.DroitsNormaux.formate ]
+then
+        echo "Le nombre de fichiers differents en droits et/ou appartenance, ayant des droits classiques et pouvant être corrigés automatiquement est de $NBRE
+_DIFF_NORM.
+La repartitions par utlisateurs et groupes est la suivante :
+$(echo "NBRE USERS:GROUPS";cat DIFF.DroitsNormaux.formate|awk '{print $2":"$3}'|sort|uniq -c)
+Voulez-vous lancer ces corrections ?"
+        read REP
+        [ "$REP" != "0" -a "$REP" != "o" ] && exit {
+
+        # Pour fournir un etat d'avancement de l'execution du script
+        CURRENT=0
+
+        # Modification sur local de tous les fichiers differents avec droit normaux
+        while read LIGNE
+        do
+               DROIT=$(echo $LIGNE|awk '{print $1}')
+                       U=$(echo $DROIT|cut -c2-4|sed "s/--*//"|sed "s/-//")
+                       G=$(echo $DROIT|cut -c5-7|sed "s/--*//"|sed "s/-//")
+                       O=$(echo $DROIT|cut -c8-10|sed "s/--*//"|sed "s/-//")
+               USER=$(echo $LIGNE|awk '{print $2}')
+               GROUP=$(echo $LIGNE|awk '{print $3}')
+               NOMFIC=$(echo $LIGNE|sed "s/.*\(\".*\"\)$/\1/")
+               CURRENT=$(expr $CURRENT + 1)
+               # ACTIONS
+               echo "Modification ($CURRENT / $NBRE_DIFF_NORM) de $NOMFIC"|tee -a LOGGEN.$FICREF
+               echo "Modification de $NOMFIC :" >> LOG.$FICREF
+               echo "Avant : $(echo $NOMFIC|xargs ls -ld)" >> LOG.$FICREF
+               echo $NOMFIC|xargs chmod u=$U,g=$G,o=$O && echo "chmod u=$U,g=$G,o=$O" >> LOG.$FICREF && echo "chmod OK"|tee -a LOGGEN.$FICREF
+               echo $NOMFIC|xargs chown $USER:$GROUP && echo "chown $USER:$GROUP" >> LOG.$FICREF && echo "chown OK"|tee -a LOGGEN.$FICREF
+               echo "Apres : $(echo $NOMFIC|xargs ls -ld)" >> LOG.$FICREF
+        done < DIFF.DroitsNormaux.formate
+        echo " Travail terminé, pour un retour arriere, lancer la commande \"./$(basename $0) undo.$$\""
+
+else
+echo "les droits et appartenances sont identiques pour les fichiers ayant des droits classiques.
+Aucune modification n'est a effectuer."
+fi

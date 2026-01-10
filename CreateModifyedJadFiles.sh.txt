@@ -1,0 +1,134 @@
+#!/bin/sh
+# Autor : Laurent Graignic : l.graignic@oberthur.com
+# Create JAD files in WWW_DIR directory for each jad file contained in the MIDLET_DIR sub directory of WWW_DIR.
+# The created JAD files are modifyed to supply URL of the other files located in the original JAD file directorys.
+# WWW_DIR can be specified as an argument. Default values are :
+
+# HELP : -h or --help message
+[ "$1" = "-h" -o "$1" = "--help" ] && { head -5 $0 ; egrep "DEFAULT=|FONT_SIZE=" $0|tail -1|sed -e "s/^/# /" -e "s/DEFAULT/WWW_DIR/" ; echo "This Help is avilable using -h or --help" ; exit ; }
+
+# Because may be launched by CROND
+AWK=/bin/awk ; FIND=/usr/bin/find ; SED=/bin/sed ; ECHO=/bin/echo ; RM=/bin/rm ; LN=/bin/ln ; TEST=/usr/bin/test ; BASENAME=/bin/basename ; GREP=/bin/grep ; CAT=/bin/cat ; DIRNAME=/usr/bin/dirname ; LS=/bin/ls ; SORT=/bin/sort ; CUT=/bin/cut ; UNIQ=/usr/bin/uniq
+
+MY_DIR=$(cd $(dirname $0) ; pwd )
+NEW_MID_DIR=$MY_DIR/NEW_MID_DIR
+mkdir -p $NEW_MID_DIR
+# TIME & Process Stamp used for logs
+REF="$(date "+%F at %H:%M") - $($BASENAME $0):"
+export REF2=$(date '+%F_at_%Hh%M'_PID$$)
+OLD_MID_DIR=$MY_DIR/OLD_MID_DIR/$REF2
+mkdir -p $OLD_MID_DIR
+
+# Default Directory:
+DEFAULT=/home/apache/apache2/htdocs
+
+# Just to make nice output report
+DOMAIN_URL=https://santander.oberthur.com/
+
+# WWW directory (May be given as an arument)
+WWW_DIR=${1:-$DEFAULT}
+# Must contain Midlet package sub dir
+
+# Check that WWW-REP is defined as an absolute path or exit
+$ECHO $WWW_DIR|$AWK -v REF="$REF" '$0!~/^[/]/ {print REF,"\""$0"\" is Not an absolute path\n"}'|$GREP . >&2 &&  exit 1
+
+# Remove possible "/" at the end of the path of WWW-REP
+WWW_DIR=$($ECHO "$WWW_DIR"|$SED "s%/$%%g")
+
+# Location of the  midlet's file sets
+export MIDLET_DIR_NAME=midlets
+export MIDLET_DIR=$WWW_DIR/$MIDLET_DIR_NAME
+
+# Cmdes "SED" : Definition d'utilisation des noms de dossier pour la creation des noms des fichier JAD
+echo "s/ /.jad /g
+s/$/.jad/
+s/ot_SAN//g
+s/_//g" > $MY_DIR/.rename.sed
+
+
+# Check for a valid directory structure, if not, notify and exit
+[ -d $WWW_DIR ] || { $ECHO $REF \"$WWW_DIR\" is not a directory, please specify a valid directory or try \"$0\" \without argument, default $DEFAULT will be used >&2; exit 1; }
+[ -d $MIDLET_DIR ] || { $ECHO $REF \"$MIDLET_DIR\" directory must exist to run this script >&2; exit 1; }
+
+
+(
+# new midlet listing
+cd $NEW_MID_DIR
+LISTE2=$(find * -type f -name "*debug" -o -name "*cod" -o -name "*jar" -o -name "*jad" 2>/dev/null|awk -F"/" '{print $1}'|uniq)
+
+# Transfering midlet
+cd $MIDLET_DIR
+mv $LISTE2 $OLD_MID_DIR 2>/dev/null||{ rmdir $OLD_MID_DIR && echo "$REF2 : No middlets are to be backed up" ; }
+cd $NEW_MID_DIR
+mv $LISTE2 $MIDLET_DIR 2>/dev/null && echo $LISTE2|tr '|' ' '|sed "s/^/Suplyed middlets: /"
+cd $MIDLET_DIR
+
+# Current midlet listing
+LISTE=$(find * -type f -name "*debug" -o -name "*cod" -o -name "*jar" -o -name "*jad"|awk -F"/" '{print $1}'|uniq)
+
+# Check for missing jad file to be created again
+>$MY_DIR/.DIFF
+for REP_NAME in $LISTE 
+do
+	FILE=$(echo $REP_NAME|sed -f $MY_DIR/.rename.sed|sed -e "s%^%$WWW_DIR/%" -e "s% % $WWW_DIR/%g")
+	test -f $FILE || echo $REP_NAME|sed "s%^%$MIDLET_DIR/%"|tee -a $MY_DIR/.DIFF|sed "s%$% : Remaking  $FILE%"
+done
+
+# Check for extra files to be deleted in the midlet dir
+FILTRE=$(echo $LISTE|tr ' ' '|'|sed "s/$//")
+ls|egrep -v "$FILTRE"|while read DELFILE ; do echo $REF2 : $DELFILE deleted|tee -a $MY_DIR/changes.log ; rm -r $DELFILE ; done
+
+# Check for extra files to be deleted in the WWW_DIR dir
+FILTRE2="$(echo $LISTE|sed -f $MY_DIR/.rename.sed|sed -e "s/ /$|/g" -e "s/$//")|README.txt$|$MIDLET_DIR_NAME$"
+ls -ld $WWW_DIR/*|egrep -v "$FILTRE2"|sed "s/$/ ......DELETED/"
+ls -d $WWW_DIR/*|egrep -v "$FILTRE2"|while read LINE ; do rm -r "$LINE" && echo $REF $(basename $LINE) has been deleted >> $MY_DIR/changes.log ; done
+
+# Check for archive under midlet DIR, decompress it in midlet DIR and supress archives.
+find */*/* -type f -name "*debug" -o -name "*cod" -o -name "*jar" -o -name "*jad" 2>/dev/null |awk -F"/" '{print "mv "$0" "$1}'|sh
+find */*  -prune -type d -exec rm -rf {} \;
+find . -type f -name "*.cod" -exec file {} \;|grep ": Zip archive data, at least v1.0 to extract$"|sed "s/: Zip archive data, at least v1.0 to extract$//"|awk -F"/" '{print "(cd $(dirname "$0") ; unzip -o "$NF")"}'|sh
+
+# creation of a  signature for each midlet
+for I in $LISTE; do (echo -n "$I."; find $I -type f|xargs md5sum|md5sum|sed "s/[ -]//g") ; done > $MY_DIR/packageSignature/$REF2
+
+# Liste des midlets ayant des signatures differentes de la precedente installation
+DIFF=$(diff $(ls -rt $MY_DIR/packageSignature/*|tail -2)|egrep "^>|^<"|awk '{print $2}'|cut -f1 -d"."|sort -u)
+
+# Si aucune midlet n'a change, supprimer le fichier des signatures, sinon referencer les nouvelles midlet en vu de creer un nouveau fichier JAD
+#if echo $DIFF|grep -q .
+if [ -n "$DIFF" ]
+then
+        echo  $REF2 : $DIFF has changed |tee -a $MY_DIR/changes.log
+	echo $DIFF|tr ' ' '\012'|sed "s%^%$MIDLET_DIR/%" >> $MY_DIR/.DIFF
+else
+        echo  $REF2 : No change detected|tee -a $MY_DIR/changes.log
+	rm $MY_DIR/packageSignature/$REF2
+fi
+)
+
+
+# If required, create needed version of jad file according to the changes which have been detected
+grep -q . $MY_DIR/.DIFF && {
+$FIND $(cat $MY_DIR/.DIFF|sort -u) -type f -iname "*.jad" 2>/dev/null|(while read JAD_FILE
+do
+	#set -x
+	JAD_WWW_PATH=$(echo $JAD_FILE|$SED "s%$WWW_DIR/%%")				# ex : midlets/Visa_Classic/Card_Visa_Classic.jad
+	DIR_REL_PATH=$(dirname $JAD_WWW_PATH)						# ex : midlets/Visa_Classic 
+	NEW_JAD_NAME=$(echo $DIR_REL_PATH|awk -F/ '{print $NF}'|$SED -f $MY_DIR/.rename.sed)  # ex : Visa_Classic.jad
+	NEW_JAD_FILE=$WWW_DIR/$NEW_JAD_NAME # ex : /home/apache/apache2/htdocs/Visa_Classic.jad
+	$CAT $JAD_FILE|$SED "s%^\(.*-URL.*: \)\(.*\)$%\1$DIR_REL_PATH/\2%" > $NEW_JAD_FILE
+	## Check that all URL have been changed, else remove created JAR.
+	$CAT $JAD_FILE $NEW_JAD_FILE|$GREP URL|sed "s%$DIR_REL_PATH/%%"|$SORT|$UNIQ -c|$AWK '$1 == 1'|$GREP -q . && {
+	$RM $NEW_JAD_FILE ; echo "$REF Error - $NEW_JAD_FILE not created" >&2 ; }
+	## Check that all file path exists in the new JAD files
+	$GREP URL $NEW_JAD_FILE|$CUT -f2 -d:|$SED "s%^ %$WWW_DIR/%"|while read LINE
+	do
+		test -f "$LINE" || { echo $REF $LINE: Missing file - $NEW_JAD_NAME, not supplyed|tee -a $MY_DIR/changes.log >&2 ; rm $NEW_JAD_FILE ; break ; }
+	done
+done
+)
+}
+echo $REF LAST UPDATES :
+(cd $WWW_DIR ; ls -l *.jad)|awk -v DOMAINE=$DOMAIN_URL '{print $6,$7,$8,DOMAINE$9}'> $WWW_DIR/README.txt
+cat $WWW_DIR/README.txt
+echo
