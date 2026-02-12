@@ -20,57 +20,6 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-		/* Conteneur du texte */
-		.tooltip-target {
-			position: relative;
-			cursor: help;
-			border-bottom: 1px dotted #6e8efb; /* Optionnel : souligne le texte pour indiquer l'interaction */
-			color: #6e8efb; /* Optionnel : change la couleur pour attirer l'œil */
-		}
-
-		/* Création de la bulle via l'attribut data-tooltip */
-		.tooltip-target::after {
-			content: attr(data-tooltip);
-			position: absolute;
-			bottom: 125%; /* Place la bulle au-dessus du texte */
-			left: 50%;
-			transform: translateX(-50%) scale(0.9);
-			background-color: #333;
-			color: #fff;
-			padding: 8px 12px;
-			border-radius: 6px;
-			font-size: 0.85rem;
-			white-space: nowrap;
-			opacity: 0;
-			visibility: hidden;
-			transition: all 0.3s ease;
-			box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-			z-index: 10;
-		}
-
-		/* Petite flèche sous la bulle */
-		.tooltip-target::before {
-			content: "";
-			position: absolute;
-			bottom: 115%;
-			left: 50%;
-			transform: translateX(-50%);
-			border-width: 5px;
-			border-style: solid;
-			border-color: #333 transparent transparent transparent;
-			opacity: 0;
-			visibility: hidden;
-			transition: all 0.3s ease;
-			z-index: 10;
-		}
-
-		/* Affichage au survol */
-		.tooltip-target:hover::after, 
-		.tooltip-target:hover::before {
-			opacity: 1;
-			visibility: visible;
-			transform: translateX(-50%) scale(1);
-		}
         :root {
             --primary: #00ff88;
             --secondary: #0088ff;
@@ -914,11 +863,7 @@
     <section class="skills" id="skills">
         <div class="container">
             <h2 class="section-title">Expertise Cloud Privé</h2>
-            <p class="section-subtitle">Automatisation complète d'infrastructures VMware<br><span class="logo">&#128074; 
-    <span class="tooltip-target" data-tooltip="Les conseilleurs ne sont pas les payeurs. Expertise / contre expertise et compréhension !">
-        Intégration IA
-    </span> 
-	&#128640;- &Eacute;fficacité</span></p>
+            <p class="section-subtitle">Automatisation complète d'infrastructures VMware<br><span class="logo">&#128074; Intégration IA &#128640;- &Eacute;fficacité</span></p>
             <div class="skills-grid">
                 <div class="skill-card">
                     <div class="skill-icon">☁️</div>
