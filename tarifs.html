@@ -51,25 +51,27 @@
         .panel-left { padding: 2rem 4rem; display: flex; flex-direction: column; justify-content: flex-start; gap: 0.9rem; width: 70%; max-width: 70%; margin: 0 auto; }
         .panel-title { font-size: 1.55rem; font-weight: 800; }
         .panel-title .highlight { background: linear-gradient(120deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .panel-subtitle { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-dim); }
+        .panel-subtitle { font-family: 'JetBrains Mono', monospace; font-size: 1; color: var(--text-dim); }
         .section-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-dim); letter-spacing: 0.15em; text-transform: uppercase; }
         .slider-card { background: var(--dark-2); border: 1px solid var(--grid); border-radius: 12px; padding: 1.1rem 1.4rem; position: relative; overflow: hidden; }
         .slider-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--primary), var(--secondary)); }
         .slider-label { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.7rem; }
-        .slider-label-text { font-size: 0.92rem; font-weight: 600; }
-        .slider-value-display { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 700; color: var(--primary); }
+        .slider-label-text { font-size: 0.92rem; font-weight: 400; }
+        .slider-value-display { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--primary); }
         .slider-unit { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim); margin-left: 0.25rem; }
         input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 5px; border-radius: 3px; background: var(--dark-3); outline: none; cursor: pointer; margin-bottom: 0.35rem; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 19px; height: 19px; border-radius: 50%; background: var(--primary); cursor: pointer; box-shadow: 0 0 12px rgba(0,255,136,0.4); transition: box-shadow 0.3s, transform 0.2s; }
         input[type="range"]::-webkit-slider-thumb:hover { box-shadow: 0 0 22px rgba(0,255,136,0.7); transform: scale(1.15); }
         input[type="range"]::-moz-range-thumb { width: 19px; height: 19px; border-radius: 50%; background: var(--primary); border: none; }
         .slider-bounds { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 1rem; color: var(--text-dim); }
-        .number-input-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--grid); }
+        .number-input-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 2px solid var(--grid); }
         .number-input-row label { color: var(--text-dim); font-size: 0.82rem; flex-shrink: 0; }
-        input[type="number"] { background: var(--dark-3); border: 1px solid var(--grid); border-radius: 6px; color: var(--primary); font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; padding: 0.35rem 0.7rem; width: 85px; outline: none; transition: border-color 0.3s; }
+        input[type="number"] { background: var(--dark-3); border: 1px solid var(--grid); border-radius: 6px; color: var(--primary); font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; padding: 0.35rem 0.7rem; width: 85px; outline: none; transition: border-color 0.3s; }
         input[type="number"]:focus { border-color: var(--primary); box-shadow: 0 0 8px rgba(0,255,136,0.15); }
+		
         .result-inline { background: var(--dark-2); border: 1px solid var(--grid); border-radius: 12px; padding: 0.8rem 1.4rem; display: flex; align-items: center; gap: 1.2rem; position: relative; overflow: hidden; transition: border-color 0.4s, box-shadow 0.4s; }
-        .result-inline.active { border-color: var(--primary); box-shadow: 0 4px 24px rgba(0,255,136,0.09); }
+        
+		.result-inline.active { border-color: var(--primary); box-shadow: 0 4px 24px rgba(0,255,136,0.09); }
         .result-inline::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--secondary), var(--primary)); }
         .result-left { flex-shrink: 0; }
         .result-code { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-dim); margin-bottom: 0.1rem; }
@@ -85,7 +87,7 @@
         .info-box.highlighted { border-color: var(--primary); background: rgba(0,255,136,0.04); }
         .info-box-value { display: none; }
         .info-box-label { font-family: 'JetBrains Mono', monospace; font-size: 1.0rem; font-weight: 700; color: var(--primary); }
-        .info-box-sub { font-family: 'JetBrains Mono', monospace; font-size: 0.64rem; color: var(--secondary); margin-top: 0.25rem; }
+        .info-box-sub { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; color: var(--secondary); margin-top: 0.25rem; }
         .context-grid { display: flex; flex-direction: column; gap: 0.5rem; }
         .context-card { background: var(--dark-2); border: 1px solid var(--grid); border-radius: 10px; padding: 0.75rem 1rem; display: flex; gap: 0.65rem; align-items: flex-start; transition: border-color 0.3s, transform 0.3s; }
         .context-card:hover { border-color: var(--primary); transform: translateX(3px); }
@@ -133,34 +135,34 @@
         <div class="panel-left">
             <div>
                 <h1 class="panel-title"><span class="highlight">T J M</span></h1>
-                <p class="panel-subtitle">Selon visibilité de la mission en jours-homme</p>
+                <p class="panel-subtitle">Selon visibilité en jours-homme (JH)</p>
             </div>
 
             <div class="slider-card">
                 <div class="slider-label">
-                    <span class="slider-label-text">📅 Pour quelle charge prévisionnelle ?</span>
+                    <span class="slider-label-text">Charge prévisionnelle ?</span>
                     <div>
                         <span class="slider-value-display" id="jh-display">20</span>
-                        <span class="slider-unit">j/h</span>
+                        <span class="slider-unit">JH</span>
                     </div>
                 </div>
                 <input type="range" id="jourHomme-slider" min="1" max="200" value="200" step="1">
                 <div class="slider-bounds">
-                    <span>1 j/h</span>
+                    <span>1 JH</span>
                     <span id="label-lim-court"></span>
                     <span id="label-lim-moy"></span>
-                    <span>200 j/h</span>
+                    <span>200 JH</span>
                 </div>
                 <div class="number-input-row">
-                    <label for="jourHomme-input">Ou saisir </label>
+                    <label for="jourHomme-input">Ou bien saisir </label>
                     <input type="number" id="jourHomme-input" min="1" max="200" value="200">
-                    <span style="color:var(--text-dim);font-size:0.75rem;font-family:'JetBrains Mono',monospace;">jours / homme</span>
+                    <span style="color:var(--text-dim);font-size:0.9rem;font-family:'JetBrains Mono',monospace;">jours-homme</span>
                 </div>
             </div>
 
             <div class="result-inline active">
                 <div class="result-left">
-                    <div class="result-code">// Tarif journalier calculé</div>
+                    <div class="result-code">Tarif journalier</div>
                     <div class="result-tarif" id="tarif-display">—</div>
                     <div class="slider-bounds">€ / jour</div>
                 </div>
@@ -180,17 +182,17 @@
                 <div class="info-box" id="box-court">
                     <div class="info-box-value" id="val-court"></div>
                     <div class="info-box-label">Mission courte</div>
-                    <div class="info-box-sub">~ <span id="sub-lim-court"></span> j/h</div>
+                    <div class="info-box-sub">~ <span id="sub-lim-court"></span> JH</div>
                 </div>
                 <div class="info-box" id="box-moy">
                     <div class="info-box-value" id="val-moy"></div>
                     <div class="info-box-label">Intermédiaire</div>
-                    <div class="info-box-sub">~<span id="sub-lim-moy"></span> j/h</div>
+                    <div class="info-box-sub">~<span id="sub-lim-moy"></span> JH</div>
                 </div>
                 <div class="info-box" id="box-long">
                     <div class="info-box-value" id="val-long"></div>
                     <div class="info-box-label">Mission longue</div>
-                    <div class="info-box-sub">~ 200 j/h</div>
+                    <div class="info-box-sub">>= 130 JH</div>
                 </div>
             </div>
         </div>
@@ -211,8 +213,8 @@
 	const tarifCourt = 740;   // tarif pour mission courte (jh = limitCourt)
     const tarifMoy   = 650;   // tarif pour mission intermédiaire (jh = limitMoy)
     const tarifLong  = 570;   // tarif pour mission longue (jh = 200)
-    const limitCourt = 30;    // seuil mission courte (j/h)
-    const limitMoy   = 60;   // seuil mission intermédiaire (j/h)
+    const limitCourt = 30;    // seuil mission courte (JH)
+    const limitMoy   = 60;   // seuil mission intermédiaire (JH)
     // =============================================
 
     // --- Résolution des coefficients A, B, C de tarif = A*exp(B*jh) + C ---
@@ -315,9 +317,7 @@
         // --- Échelle de la barre de progression ---
         const plafond = Math.round(paffond * tarifCourt);
         const midTarif = Math.round((plafond + tarifLong) / 2);
-        document.getElementById('scale-long').textContent  = tarifLong + ' €';
-        document.getElementById('scale-mid').textContent   = midTarif  + ' €';
-        document.getElementById('scale-court').textContent = plafond   + ' € (plaf.)';
+
 
         // --- Formule affichée (éléments supprimés) ---
         // --- Puces d'ancrage (éléments supprimés) ---
