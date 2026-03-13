@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO principal -->
+    <title>AUTOMACLOUD SolidServer Plugin | Automatisation IPAM/DNS pour VMware vRO</title>
+    <meta name="description" content="Plugin vRO commercial pour EfficientIP SolidServer : automatisation DNS/IPAM, gestion des enregistrements, actions vRA et licence offline. Déployé à la RATP et au Ministère de l'Intérieur.">
+    <meta name="keywords" content="EfficientIP SolidServer, plugin vRO, VMware Aria Orchestrator, IPAM automatisation, DNS automation, vRA, cloud privé, AUTOM@CLOUD, Laurent Graignic">
+    <meta name="author" content="Laurent Graignic - AUTOM@CLOUD">
+    <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.automacloud.fr/SolidServerAutomation.html">
+
+    <!-- Open Graph (partage réseaux sociaux / LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AUTOMACLOUD SolidServer Plugin — Automatisation IPAM/DNS pour VMware vRO">
+    <meta property="og:description" content="Plugin vRO commercial pour EfficientIP SolidServer : gestion DNS/IPAM automatisée, actions vRA, licence offline. Références : RATP, Ministère de l'Intérieur.">
+    <meta property="og:url" content="https://www.automacloud.fr/SolidServerAutomation.html">
+    <meta property="og:site_name" content="AUTOM@CLOUD">
+    <meta property="og:locale" content="fr_FR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="AUTOMACLOUD SolidServer Plugin | VMware vRO">
+    <meta name="twitter:description" content="Plugin vRO commercial pour EfficientIP SolidServer — automatisation DNS/IPAM, actions vRA, licence offline.">
+
+    <!-- Données structurées JSON-LD : SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "AUTOMACLOUD SolidServer Plugin",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "VMware Aria Automation Orchestrator",
+      "description": "Plugin vRO commercial pour EfficientIP SolidServer permettant l'automatisation DNS/IPAM, la gestion des enregistrements, les actions vRA et une licence offline.",
+      "softwareVersion": "1.x",
+      "author": {
+        "@type": "Person",
+        "name": "Laurent Graignic",
+        "url": "https://www.automacloud.fr"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "AUTOM@CLOUD",
+        "url": "https://www.automacloud.fr"
+      },
+      "offers": {
+        "@type": "Offer",
+        "availability": "https://schema.org/InStock",
+        "priceCurrency": "EUR",
+        "seller": {
+          "@type": "Organization",
+          "name": "AUTOM@CLOUD"
+        }
+      },
+      "featureList": [
+        "Add DNS Record",
+        "Remove DNS Record and its Dependencies",
+        "Check IP Availability",
+        "Move DNS Record to New Subnet",
+        "Audit Orphan IPs",
+        "Actions vRA : listSites, listSubnets, listIPRecords, listAliases"
+      ]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #00ff88;
+            --secondary: #0088ff;
+            --eip-green: #4caf50;
+            --eip-green-glow: rgba(76, 175, 80, 0.3);
+            --dark: #0a0e1a;
+            --dark-2: #131824;
+            --dark-3: #1a2133;
+            --text: #e4e8f0;
+            --text-dim: #9ca3af;
+            --grid: #1e2842;
+            --accent: #00c6ff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Grid de fond */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(76,175,80,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(76,175,80,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10,14,26,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--grid);
+            padding: 0 2rem;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--primary); }
+        .back-link::before { content: '←'; font-size: 1rem; }
+
+        .header-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--eip-green);
+            letter-spacing: 0.05em;
+        }
+
+        .header-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            border: 1px solid var(--grid);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            padding: 6rem 2rem 4rem;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(ellipse, rgba(76,175,80,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--eip-green);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .hero-eyebrow::before,
+        .hero-eyebrow::after {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--eip-green);
+            opacity: 0.5;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 .brand {
+            background: linear-gradient(135deg, #4caf50, #00ff88, #0088ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 1.15rem;
+            color: var(--text-dim);
+            max-width: 680px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--grid);
+            color: var(--text-dim);
+            background: var(--dark-2);
+        }
+        .hero-tag.green { border-color: var(--eip-green); color: var(--eip-green); }
+        .hero-tag.blue  { border-color: var(--secondary); color: var(--secondary); }
+
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #4caf50, #00ff88);
+            color: #0a0e1a;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(76,175,80,0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(76,175,80,0.5);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 2rem;
+            border: 1px solid var(--eip-green);
+            color: var(--eip-green);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s;
+            background: transparent;
+        }
+        .btn-secondary:hover {
+            background: rgba(76,175,80,0.1);
+            transform: translateY(-2px);
+        }
+
+        /* ── CONTAINER ── */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section { padding: 5rem 0; position: relative; z-index: 1; }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--eip-green);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            color: var(--text-dim);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* ── ARCHITECTURE ── */
+        .arch-section { background: var(--dark-2); border-top: 1px solid var(--grid); border-bottom: 1px solid var(--grid); }
+
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .arch-card {
+            background: var(--dark);
+            border: 1px solid var(--grid);
+            border-radius: 12px;
+            padding: 1.75rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: visible;
+        }
+        .arch-card:hover {
+            border-color: var(--eip-green);
+            box-shadow: 0 0 20px rgba(76,175,80,0.1);
+            transform: translateY(-3px);
+        }
+
+        .arch-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .arch-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .arch-card p {
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .arch-card .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--eip-green);
+            margin-top: 0.75rem;
+            display: block;
+        }
+
+        /* ── WORKFLOWS ── */
+        .workflows-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .wf-card {
+            background: var(--dark-2);
+            border: 1px solid var(--grid);
+            border-radius: 14px;
+            padding: 1.75rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: visible;
+        }
+        .wf-card:hover {
+            border-color: rgba(76,175,80,0.4);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
+        }
+
+        .wf-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .wf-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(76,175,80,0.2), rgba(0,136,255,0.1));
+            border: 1px solid rgba(76,175,80,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .wf-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .wf-category {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--eip-green);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .wf-desc {
+            font-size: 0.87rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .wf-io {
+            background: var(--dark);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+        }
+        .wf-io .io-label {
+            color: var(--secondary);
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .wf-io .io-val { color: var(--text); }
+
+        /* ── ACTIONS vRA ── */
+        .actions-section { background: var(--dark-2); border-top: 1px solid var(--grid); border-bottom: 1px solid var(--grid); }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-card {
+            background: var(--dark);
+            border: 1px solid var(--grid);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .action-card:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 0 15px rgba(0,136,255,0.1);
+        }
+
+        .action-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .action-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .action-sig {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--eip-green);
+            margin-bottom: 0.6rem;
+            display: block;
+        }
+
+        .action-desc {
+            font-size: 0.83rem;
+            color: var(--text-dim);
+        }
+
+        /* ── INVENTORY TREE ── */
+        .tree-container {
+            background: var(--dark-2);
+            border: 1px solid var(--grid);
+            border-radius: 14px;
+            padding: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            max-width: 520px;
+        }
+
+        .tree-node {
+            padding: 0.35rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .tree-node .indent { color: var(--grid); }
+        .tree-node .type   { color: var(--secondary); }
+        .tree-node .name   { color: var(--text); }
+        .tree-node .desc   { color: var(--text-dim); font-size: 0.75rem; margin-left: auto; }
+
+        /* ── LICENCE ── */
+        .licence-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+        @media (max-width: 720px) { .licence-grid { grid-template-columns: 1fr; } }
+
+        .licence-steps {
+            list-style: none;
+            counter-reset: step;
+        }
+        .licence-steps li {
+            counter-increment: step;
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--grid);
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+        .licence-steps li:last-child { border-bottom: none; }
+        .licence-steps li::before {
+            content: counter(step, decimal-leading-zero);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--eip-green);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .licence-steps li strong { color: var(--text); display: block; margin-bottom: 0.2rem; }
+
+        .licence-tech {
+            background: var(--dark-2);
+            border: 1px solid var(--grid);
+            border-radius: 12px;
+            padding: 1.75rem;
+        }
+        .licence-tech h4 {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+        }
+        .licence-tech .tech-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--grid);
+            font-size: 0.87rem;
+        }
+        .licence-tech .tech-item:last-child { border-bottom: none; }
+        .licence-tech .tech-item span { color: var(--eip-green); font-size: 1rem; }
+
+        /* ── CLIENTS ── */
+        .clients-bar {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .client-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 1.2rem;
+            background: var(--dark-2);
+            border: 1px solid var(--grid);
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--dark-2);
+            border-top: 1px solid var(--grid);
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            position: relative;
+            z-index: 1;
+        }
+        footer a { color: var(--eip-green); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* ── DIVIDER ── */
+        .divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--eip-green), var(--secondary));
+            border-radius: 2px;
+            margin-bottom: 2rem;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.6s ease both; }
+        .fade-up-d1 { animation-delay: 0.1s; }
+        .fade-up-d2 { animation-delay: 0.2s; }
+        .fade-up-d3 { animation-delay: 0.3s; }
+
+        @media (max-width: 600px) {
+            .workflows-grid { grid-template-columns: 1fr; }
+            .hero { padding: 4rem 1rem 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+    <div class="header-inner">
+        <a href="index.html" class="back-link">Retour au portfolio</a>
+        <span class="header-logo">AUTOM@CLOUD</span>
+        <span class="header-badge">Plugin Commercial v1.x</span>
+    </div>
+</header>
+
+<!-- ── HERO ── -->
+<section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-eyebrow fade-up">Plugin vRO Commercial</div>
+    <h1 class="fade-up fade-up-d1">
+        Plugin vRO pour <span class="brand">EfficientIP SolidServer</span><br>Automatisation IPAM &amp; DNS
+    </h1>
+    <p class="hero-sub fade-up fade-up-d2">
+        Intégration native d'EfficientIP SolidServer dans VMware Aria Automation Orchestrator —
+        gestion DNS/IPAM automatisée et actions vRA.
+    </p>
+    <div class="hero-tags fade-up fade-up-d2">
+        <span class="hero-tag green">EfficientIP SolidServer</span>
+        <span class="hero-tag blue">VMware vRO / vRA</span>
+        <span class="hero-tag">Licence Offline</span>
+        <span class="hero-tag">API REST</span>
+        <span class="hero-tag green">Plugin Java</span>
+    </div>
+    <div class="cta-group fade-up fade-up-d3">
+        <a href="/cdn-cgi/l/email-protection#9cfff3f2e8fdffe8dcfde9e8f3f1fdfff0f3e9f8b2faee" class="btn-primary">📩 Demander une démo</a>
+        <a href="#workflows" class="btn-secondary">Voir les fonctionnalités</a>
+    </div>
+</section>
+
+<!-- ── ARCHITECTURE ── -->
+<section class="arch-section" aria-label="Architecture du plugin">
+    <div class="container">
+        <div class="section-label">Architecture</div>
+        <h2 class="section-title">Un plugin pensé pour la production</h2>
+        <p class="section-desc">
+            Conçu à partir d'une expérience terrain sur des environnements de grande envergure
+            (RATP & Ministère de l'interieur).
+        </p>
+        <div class="arch-grid">
+            <div class="arch-card">
+                <div class="arch-icon">🔌</div>
+                <h3>Plugin Java natif</h3>
+                <p>Déployé comme plugin vRO standard (.dar), il s'intègre dans l'interface sans configuration supplémentaire.</p>
+                <code class="mono">Packages.com.automacloud.plugin.*</code>
+            </div>
+            <div class="arch-card">
+                <div class="arch-icon">🗂️</div>
+                <h3>Inventaire vRO natif</h3>
+                <p>Arborescence SolidServer navigable dans le panneau d'inventaire vRO : Sites, Subnets, IPRecords, Aliases.</p>
+                <code class="mono">EfficientIP:SOLIDserverHost</code>
+            </div>
+            <div class="arch-card">
+                <div class="arch-icon">🔐</div>
+                <h3>Licence Offline</h3>
+                <p>Activation sans connectivité internet. La clé est liée à votre instance SolidServer, garantissant un usage nominal.</p>
+                <code class="mono">Émise par AUTOM@CLOUD sur demande</code>
+            </div>
+            <div class="arch-card">
+                <div class="arch-icon">🔒</div>
+                <h3>Sécurité & SSL</h3>
+                <p>Authentification Basic via RESTHost vRO. La gestion SSL est déléguée au RestHost — les scripts restent épurés.</p>
+                <code class="mono">GET /rest/ip_site_list?LIMIT=1</code>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── WORKFLOWS ── -->
+<section id="workflows" aria-label="Workflows inclus">
+    <div class="container">
+        <div class="section-label">Fonctionnalités</div>
+        <h2 class="section-title">Workflows inclus</h2>
+        <p class="section-desc">
+            Chaque workflow est décrit de façon concise et orientée métier, directement exploitable
+            dans un catalogue vRA ou une bibliothèque d'orchestration.
+        </p>
+        <div class="workflows-grid">
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">➕</div>
+                    <div>
+                        <div class="wf-title">Add DNS Record</div>
+                        <div class="wf-category">DNS Management</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Crée un enregistrement DNS et réserve l'IP associée dans SolidServer. Supporte la création d'aliases sur l'enregistrement.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, subnetId, hostname, [aliases]</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">🗑️</div>
+                    <div>
+                        <div class="wf-title">Remove DNS Record and its Dependencies</div>
+                        <div class="wf-category">DNS Management</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Supprime un enregistrement DNS et toutes ses dépendances (aliases, IP). Accepte une IP ou un A_name — gère automatiquement les A_names associés à plusieurs IPs via une boucle de suppression.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, a_nameOrIp</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">✅</div>
+                    <div>
+                        <div class="wf-title">Check IP Availability</div>
+                        <div class="wf-category">IPAM</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Vérifie si une adresse IP est libre dans SolidServer avant attribution. Utile en pré-check dans les workflows de provisioning.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, ipAddress</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">🔀</div>
+                    <div>
+                        <div class="wf-title">Move DNS Record to New Subnet</div>
+                        <div class="wf-category">IPAM</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Déplace un enregistrement DNS d'un subnet source vers un subnet cible, en conservant le hostname et les aliases existants.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, a_nameOrIp, targetSubnetId</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">📊</div>
+                    <div>
+                        <div class="wf-title">Audit Orphan IPs</div>
+                        <div class="wf-category">Audit & Reporting</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Génère un rapport de ping pour toutes les IPs d'un subnet : pour chaque IP, indique si elle répond ou non. Aide à détecter des équipements non référencés ou des enregistrements fantômes.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, subnetId → rapport [ip, name, ping]</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">🔍</div>
+                    <div>
+                        <div class="wf-title">Verify Connectivity</div>
+                        <div class="wf-category">Diagnostic</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Teste et valide la connectivité vers l'instance SolidServer. Vérifie que la réponse provient bien d'un SolidServer EfficientIP avant toute opération.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost → statut + version SolidServer</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ── ACTIONS vRA ── -->
+<section class="actions-section" aria-label="Actions vRA pour formulaires dynamiques">
+    <div class="container">
+        <div class="section-label">Formulaires vRA</div>
+        <h2 class="section-title">Actions de liste pour vRA</h2>
+        <p class="section-desc">
+            Quatre actions dédiées aux formulaires vRA, retournant des <code style="color:var(--eip-green);font-family:'JetBrains Mono',monospace;font-size:0.85em">Array(String)</code> pour alimenter des listes déroulantes dynamiques et chaînées.
+        </p>
+        <div class="actions-grid">
+            <div class="action-card">
+                <span class="action-num">01</span>
+                <div class="action-name">EfficientIP: Sites</div>
+                <code class="action-sig">listSites() → Array(String)</code>
+                <p class="action-desc">Liste tous les sites SolidServer au format <em>Nom(site-id)</em> — ex. <code style="color:var(--primary);font-size:0.8em">Paris(12)</code></p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">02</span>
+                <div class="action-name">EfficientIP: Subnets</div>
+                <code class="action-sig">listSubnets(siteId) → Array(String)</code>
+                <p class="action-desc">Liste les subnets d'un site au format <em>Nom(subnet-id)</em> — ex. <code style="color:var(--primary);font-size:0.8em">192.168.1.0/24(56)</code></p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">03</span>
+                <div class="action-name">EfficientIP: IP Records</div>
+                <code class="action-sig">listIPRecords(subnetId) → Array(String)</code>
+                <p class="action-desc">Liste les enregistrements IP d'un subnet au format <em>hostaddr</em> — ex. <code style="color:var(--primary);font-size:0.8em">192.168.1.10</code></p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">04</span>
+                <div class="action-name">EfficientIP: Aliases</div>
+                <code class="action-sig">listAliases(ipRecord) → Array(String)</code>
+                <p class="action-desc">Liste les aliases associés à un IPRecord au format <em>hostaddr</em> — ex. <code style="color:var(--primary);font-size:0.8em">alias1.dom.com</code></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ── LICENCE ── -->
+<section style="background:var(--dark-2);border-top:1px solid var(--grid);border-bottom:1px solid var(--grid);">
+    <div class="container">
+        <div class="section-label">Licensing</div>
+        <h2 class="section-title">Activation sans internet</h2>
+        <p class="section-desc">Le plugin fonctionne avec un système de licence offline — aucune connectivité externe requise. Adapté aux environnements fermés ou air-gappés. La clé est émise par AUTOM@CLOUD sur demande et liée à votre instance SolidServer.</p>
+        <div class="clients-bar">
+            <div class="client-pill">🔐 Licence offline</div>
+            <div class="client-pill">☁️ Zéro connectivité externe</div>
+            <div class="client-pill">📩 <a href="/cdn-cgi/l/email-protection#21424e4f55404255614054554e4c40424d4e54450f4753" style="color:inherit;text-decoration:none;">Demander une licence</a></div>
+        </div>
+    </div>
+</section>
+
+<!-- ── CLIENTS ── -->
+<section>
+    <div class="container">
+        <div class="section-label">Références</div>
+        <h2 class="section-title">Clients partenaires</h2>
+        <p class="section-desc">Ayant contribué à la définition des cas d'usages </p>
+        <div class="clients-bar">
+            <div class="client-pill">🚇 RATP <span style="color:var(--text-dim);font-size:0.8em;margin-left:0.4rem">5 300 VMs</span></div>
+            <div class="client-pill">🏛️ Ministère de l'Intérieur</div>
+        </div>
+    </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+    <p>© 2025 <a href="index.html">AUTOM@CLOUD</a> — Laurent Graignic &nbsp;|&nbsp;
+    Expert VMware ARIA &amp; Cloud Privé &nbsp;|&nbsp;
+    <a href="/cdn-cgi/l/email-protection#f5969a9b81949681b59480819a989496999a8091db9387"><span class="__cf_email__" data-cfemail="65060a0b11040611250410110a080406090a10014b0317">[email&#160;protected]</span></a></p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Smooth scroll pour ancres internes
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            const t = document.querySelector(a.get

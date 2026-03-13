@@ -3,10 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Laurent Graignic - Expert VMware ARIA (vRO/vRA) DevOps & Cloud Privé - 10 ans d'expérience">
-    <meta name="keywords" content="VMware, ARIA, vRO, vRA, DevOps, Cloud Computing, UNIX, Paris">
-    <meta name="author" content="Laurent Graignic">
-    <title>Laurent Graignic | Expert VMware ARIA & Cloud Privé</title>
+
+    <!-- SEO principal -->
+    <title>Laurent Graignic | Expert VMware ARIA vRO/vRA — Automatisation Cloud Privé</title>
+    <meta name="description" content="Laurent Graignic, expert freelance VMware ARIA (vRO/vRA), DevOps et Cloud Privé. 20 ans d'expérience IT/UNIX. Références : RATP, Ministère de l'Intérieur, BNP Paribas, SFR. Basé à Paris.">
+    <meta name="keywords" content="VMware ARIA, vRO, vRA, automatisation cloud, orchestration infrastructure, DevOps, cloud privé, EfficientIP, IPAM, freelance, Paris, Laurent Graignic, AUTOM@CLOUD">
+    <meta name="author" content="Laurent Graignic - AUTOM@CLOUD">
+    <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.automacloud.fr/index.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="profile">
+    <meta property="og:title" content="Laurent Graignic — Expert VMware ARIA vRO/vRA & Cloud Privé">
+    <meta property="og:description" content="Expert freelance VMware ARIA (vRO/vRA), DevOps et Cloud Privé. 20 ans d'expérience IT/UNIX. Références : RATP, Ministère de l'Intérieur, BNP Paribas, SFR.">
+    <meta property="og:url" content="https://www.automacloud.fr/index.html">
+    <meta property="og:site_name" content="AUTOM@CLOUD">
+    <meta property="og:locale" content="fr_FR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Laurent Graignic | Expert VMware ARIA vRO/vRA">
+    <meta name="twitter:description" content="Expert freelance VMware ARIA (vRO/vRA), DevOps et Cloud Privé — 20 ans d'expérience IT/UNIX.">
+
+    <!-- Données structurées JSON-LD : Person + ProfessionalService -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Laurent Graignic",
+      "jobTitle": "Expert VMware ARIA (vRO/vRA) — DevOps & Cloud Privé",
+      "description": "Freelance expert en automatisation d'infrastructures cloud avec VMware ARIA (vRO/vRA). 20 ans d'expérience IT/UNIX. Fondateur d'AUTOM@CLOUD.",
+      "url": "https://www.automacloud.fr",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "AUTOM@CLOUD",
+        "url": "https://www.automacloud.fr"
+      },
+      "knowsAbout": [
+        "VMware ARIA Automation",
+        "vRO", "vRA",
+        "DevOps",
+        "Cloud Privé",
+        "EfficientIP SolidServer",
+        "IPAM", "DNS",
+        "NSX",
+        "Ansible",
+        "UNIX/Linux"
+      ],
+      "hasOccupation": {
+        "@type": "Occupation",
+        "name": "Expert VMware ARIA & Cloud Privé",
+        "occupationLocation": {
+          "@type": "City",
+          "name": "Paris"
+        }
+      }
+    }
+    </script>
 <script>
   window.addEventListener("pageshow", function (event) {
     if (event.persisted) {
@@ -442,7 +497,7 @@
             padding: 2rem;
             transition: all 0.3s;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .skill-card::before {
@@ -618,7 +673,7 @@
             background: var(--dark);
             border: 1px solid var(--grid);
             border-radius: 16px;
-            overflow: hidden;
+            overflow: visible;
             transition: all 0.3s;
         }
 
@@ -835,6 +890,64 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+    /* Scintillement liseré vert EfficientIP */
+    @keyframes eip-glow {
+        0%, 100% {
+            box-shadow: 0 0 4px #4caf50, 0 0 0 1px #4caf50;
+            border-color: #4caf50;
+        }
+        50% {
+            box-shadow: 0 0 12px #4caf50, 0 0 20px rgba(76, 175, 80, 0.5), 0 0 0 1px #81c784;
+            border-color: #81c784;
+        }
+    }
+    .eip-plugin-tooltip {
+        animation: eip-glow 2s ease-in-out infinite;
+    }
+
+    /* Infobulle EfficientIP plugin - même mécanisme que tooltip-target */
+    .eip-plugin-tooltip {
+        position: relative;
+        cursor: help;
+    }
+    .eip-plugin-tooltip::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%) scale(0.9);
+        background-color: #333;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        z-index: 99999;
+    }
+    .eip-plugin-tooltip::before {
+        content: "";
+        position: absolute;
+        bottom: 115%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 5px;
+        border-style: solid;
+        border-color: #333 transparent transparent transparent;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 99999;
+    }
+    .eip-plugin-tooltip:hover::after,
+    .eip-plugin-tooltip:hover::before {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) scale(1);
+    }
     </style>
 </head>
 <body>
@@ -861,13 +974,13 @@
     </header>
 
     <!-- HERO SECTION -->
-    <section class="hero" id="about">
+    <section class="hero" id="about" aria-label="Présentation de Laurent Graignic">
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
                     <h1>
                         Expert <span class="highlight">VMware ARIA</span><br>
-                        vRA / vRO
+                        vRO / vRA &amp; Cloud Privé
                     </h1>
                     <p class="subtitle">// 10 ans d'automatisation cloud</p>
                     <p class="description">
@@ -912,7 +1025,7 @@
     </section>
 
     <!-- CLOUD SKILLS - SECTION PRINCIPALE -->
-    <section class="skills" id="skills">
+    <section class="skills" id="skills" aria-label="Expertise VMware ARIA et Cloud Privé">
         <div class="container">
             <h2 class="section-title">Expertise Cloud Privé</h2>
             <p class="section-subtitle">Automatisation complète d'infrastructures VMware<br><span class="logo">&#128074; 
@@ -982,13 +1095,13 @@
                     </div>
                 </div>
 
-                <div class="skill-card">
+                <div class="skill-card" onclick="window.location.href='SolidServerAutomation.html'" style="cursor:pointer;">
                     <div class="skill-icon">🌐</div>
-                    <h3>Réseau & IPAM</h3>
+                    <h3 style="display:inline-block;border-bottom:1px dashed rgba(76,175,80,0.5);">Réseau & IPAM</h3>
                     <p>Automatisation réseau NSX (segments réseau et Tiers1), intégration IPAM API(EfficientIP), gestion DNS</p>
                     <div class="skill-tags">
                         <span class="tag">NSX Automation</span>
-                        <span class="tag">IPAM EfficientIP</span>
+                        <span class="tag eip-plugin-tooltip" data-tooltip="Expertise d'orchestration et développement d'un plugin commercial vRO pour SolidServer" style="border: 2px solid #4caf50; box-shadow: 0 0 0 1px #4caf50;">IPAM EfficientIP</span>
                         <span class="tag">DNS</span>
                     </div>
                 </div>
@@ -1111,7 +1224,7 @@
     </section>
 
     <!-- PROJECTS SECTION -->
-    <section class="projects" id="projects">
+    <section class="projects" id="projects" aria-label="Projets marquants">
         <div class="container">
             <h2 class="section-title">Projets marquants</h2>
             <p class="section-subtitle">Missions stratégiques à forte valeur ajoutée</p>
@@ -1144,7 +1257,7 @@
                 <!-- RATP -->
                 <div class="project-card">
                     <div class="project-header">
-                        <h3 class="project-title">Cloud Privé RATP</h3>
+                        <h3 class="project-title" style="display:inline-block;border-bottom:1px dashed rgba(76,175,80,0.5);cursor:pointer;" onclick="window.location.href='SolidServerAutomation.html'">Cloud Privé RATP</h3>
                         <p class="project-company">🏢 RATP - Transport public</p>
                         <p class="project-period">📅 Novembre 2019 - Juin 2022 • 2.5 ans</p>
                     </div>
@@ -1155,7 +1268,7 @@
                         <div class="project-tech">
                             <span class="tech-tag">vRO 7.3</span>
                             <span class="tech-tag">vRA 7.3</span>
-                            <span class="tech-tag">EfficientIP</span>
+                            <span class="tech-tag eip-plugin-tooltip" data-tooltip="Expertise d'orchestration et développement d'un plugin commercial vRO pour SolidServer" style="border: 2px solid #4caf50; box-shadow: 0 0 0 1px #4caf50;">EfficientIP</span>
                             <span class="tech-tag">vCenter 6.0</span>
                             <span class="tech-tag">Ansible</span>
                             <span class="tech-tag">JavaScript</span>
@@ -1257,7 +1370,7 @@
                 <div class="contact-info">
                     <div class="contact-item">
                         <span>📧</span>
-                        <a href="mailto:graignla@hotmail.fr" target="_blank"><span class="__cf_email__" data-cfemail="583f2a39313f3634391830372c35393134763e2a">graignla@hotmail.fr</span></a>
+                        <a href="/cdn-cgi/l/email-protection#b4d3c6d5ddd3dad8d5f4dcdbc0d9d5ddd89ad2c6" target="_blank"><span class="__cf_email__" data-cfemail="583f2a39313f3634391830372c35393134763e2a"><span class="__cf_email__" data-cfemail="395e4b58505e5755587951564d54585055175f4b">[email&#160;protected]</span></span></a>
                     </div>
                     <div class="contact-item">
                         <span>📱</span>
@@ -1285,7 +1398,7 @@
             </p>
         </div>
     </footer>
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1315,12 +1428,4 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.skill-card, .project-card, .cv-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
-        });
-    </script>
-</body>
-</html>
+        document.querySelectorAll('.skill-card, .project-card, .cv-card').forEach(el =>
