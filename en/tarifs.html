@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laurent Graignic | Tarifs</title>
+    <title>Laurent Graignic | Rates</title>
+    <link rel="canonical" href="https://www.automacloud.com/en/tarifs.html">
+    <link rel="alternate" hreflang="fr" href="https://automacloud.com/tarifs.html" />
+    <link rel="alternate" hreflang="en" href="https://automacloud.com/en/tarifs.html" />
+    <link rel="alternate" hreflang="x-default" href="https://automacloud.com/tarifs.html" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -115,18 +119,18 @@
         <nav>
 			<a href="https://www.pappers.fr/entreprise/autom-at-cloud-822738548" class="logo">
                 <img src="logo.png" alt="AUTOM@CLOUD">
-				<a class="logo"> Partenaire de votre ESN</a>
+				<a class="logo"> Your IT Services Partner</a>
             </a>
             <ul class="nav-links">
-                <li><a href="index.html#about">Accueil</a></li>
-                <li><a href="index.html#skills">Cloud Privé</a></li>
-                <li><a href="index.html#unix">UNIX</a></li>
-                <li><a href="parcours.html">Projets</a></li>
-                <li><a href="index.html#cv">CV</a></li>
+                <li><a href="/en/#about">Home</a></li>
+                <li><a href="/en/#skills">Private Cloud</a></li>
+                <li><a href="/en/#unix">UNIX</a></li>
+                <li><a href="/en/parcours.html">Projects</a></li>
+                <li><a href="/en/#cv">CV</a></li>
                 <li><a href="#" class="active">€</a></li>
-				<li><a href="SolidServerAutomation.html">Plugin vRO</a></li>
-                <li><a href="index.html#contact">Contact</a></li>
-                <li><a href="/en/tarifs.html" class="lang-btn">🇬🇧 EN</a></li>
+				<li><a href="/en/SolidServerAutomation.html">vRO Plugin</a></li>
+                <li><a href="/en/#contact">Contact</a></li>
+                <li><a href="/tarifs.html" class="lang-btn">🇫🇷 FR</a></li>
             </ul>
         </nav>
     </header>
@@ -137,36 +141,36 @@
         <div class="panel-left">
             <div>
                 <h1 class="panel-title"><span class="highlight">T J M</span></h1>
-                <p class="panel-subtitle">Selon visibilité en jours-homme (JH)</p>
+                <p class="panel-subtitle">Based on estimated man-days (MD)</p>
             </div>
 
             <div class="slider-card">
                 <div class="slider-label">
-                    <span class="slider-label-text">Charge prévisionnelle ?</span>
+                    <span class="slider-label-text">Estimated workload?</span>
                     <div>
                         <span class="slider-value-display" id="jh-display">20</span>
-                        <span class="slider-unit">JH</span>
+                        <span class="slider-unit">MD</span>
                     </div>
                 </div>
                 <input type="range" id="jourHomme-slider" min="1" max="200" value="200" step="1">
                 <div class="slider-bounds">
-                    <span>1 JH</span>
+                    <span>1 MD</span>
                     <span id="label-lim-court"></span>
                     <span id="label-lim-moy"></span>
-                    <span>200 JH</span>
+                    <span>200 MD</span>
                 </div>
                 <div class="number-input-row">
-                    <label for="jourHomme-input">Ou bien saisir </label>
+                    <label for="jourHomme-input">Or enter </label>
                     <input type="number" id="jourHomme-input" min="1" max="200" value="200">
-                    <span style="color:var(--text-dim);font-size:0.9rem;font-family:'JetBrains Mono',monospace;">jours-homme</span>
+                    <span style="color:var(--text-dim);font-size:0.9rem;font-family:'JetBrains Mono',monospace;">man-days</span>
                 </div>
             </div>
 
             <div class="result-inline active">
                 <div class="result-left">
-                    <div class="result-code">Tarif journalier</div>
+                    <div class="result-code">Daily rate</div>
                     <div class="result-tarif" id="tarif-display">—</div>
-                    <div class="slider-bounds">€ / jour</div>
+                    <div class="slider-bounds">€ / day</div>
                 </div>
                 <div class="result-right">
                     <div class="tarif-bar-wrapper">
@@ -183,18 +187,18 @@
             <div class="info-grid">
                 <div class="info-box" id="box-court">
                     <div class="info-box-value" id="val-court"></div>
-                    <div class="info-box-label">Mission courte</div>
-                    <div class="info-box-sub">~ <span id="sub-lim-court"></span> JH</div>
+                    <div class="info-box-label">Short mission</div>
+                    <div class="info-box-sub">~ <span id="sub-lim-court"></span> MD</div>
                 </div>
                 <div class="info-box" id="box-moy">
                     <div class="info-box-value" id="val-moy"></div>
-                    <div class="info-box-label">Intermédiaire</div>
-                    <div class="info-box-sub">~<span id="sub-lim-moy"></span> JH</div>
+                    <div class="info-box-label">Intermediate</div>
+                    <div class="info-box-sub">~<span id="sub-lim-moy"></span> MD</div>
                 </div>
                 <div class="info-box" id="box-long">
                     <div class="info-box-value" id="val-long"></div>
-                    <div class="info-box-label">Mission longue</div>
-                    <div class="info-box-sub">>= 130 JH</div>
+                    <div class="info-box-label">Long mission</div>
+                    <div class="info-box-sub">>= 130 MD</div>
                 </div>
             </div>
         </div>
@@ -202,7 +206,7 @@
         </div>
 
     <footer>
-        <p>&copy; 2025 Laurent Graignic — Expert VMware ARIA &amp; Cloud Privé &nbsp;|&nbsp; AUTOM@CLOUD — 10 ans DevOps — 20 ans UNIX</p>
+        <p>&copy; 2025 Laurent Graignic — VMware ARIA &amp; Private Cloud Expert &nbsp;|&nbsp; AUTOM@CLOUD — 10 yrs DevOps — 20 yrs UNIX</p>
     </footer>
 
 </div>

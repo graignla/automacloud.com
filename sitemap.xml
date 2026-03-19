@@ -70,12 +70,24 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/parcours.html"/>
     </url>
 
-    <!-- Tarifs -->
+    <!-- Tarifs FR -->
     <url>
         <loc>https://automacloud.com/tarifs.html</loc>
         <lastmod>2026-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://automacloud.com/tarifs.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/tarifs.html"/>
+    </url>
+
+    <!-- Tarifs EN -->
+    <url>
+        <loc>https://automacloud.com/en/tarifs.html</loc>
+        <lastmod>2026-03-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://automacloud.com/tarifs.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/tarifs.html"/>
     </url>
 
     <!-- Compétences -->
