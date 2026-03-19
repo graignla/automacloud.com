@@ -52,7 +52,13 @@
 
     <!-- Parcours -->
     <url>
-        <loc>https://automacloud.com/parcours</loc>
+        <loc>https://automacloud.com/parcours.html</loc>
+        <lastmod>2026-03-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+	<url>
+        <loc>https://automacloud.com/en/parcours.html</loc>
         <lastmod>2026-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -60,7 +66,7 @@
 
     <!-- Tarifs -->
     <url>
-        <loc>https://automacloud.com/tarifs</loc>
+        <loc>https://automacloud.com/tarifs.html</loc>
         <lastmod>2026-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
