@@ -1,37 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
+    <!-- Racine (redirection) -->
     <url>
         <loc>https://automacloud.com/</loc>
-        <lastmod>2026-03-13</lastmod>
+        <lastmod>2026-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
     </url>
 
+    <!-- Index FR -->
+    <url>
+        <loc>https://automacloud.com/fr/</loc>
+        <lastmod>2026-03-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://automacloud.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/"/>
+    </url>
+
+    <!-- Index EN -->
+    <url>
+        <loc>https://automacloud.com/en/</loc>
+        <lastmod>2026-03-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://automacloud.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/"/>
+    </url>
+
+    <!-- SolidServerAutomation -->
     <url>
         <loc>https://automacloud.com/SolidServerAutomation</loc>
-        <lastmod>2026-03-13</lastmod>
+        <lastmod>2026-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
     </url>
 
+    <!-- Parcours -->
     <url>
         <loc>https://automacloud.com/parcours</loc>
-        <lastmod>2026-03-13</lastmod>
+        <lastmod>2026-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
 
+    <!-- Tarifs -->
     <url>
         <loc>https://automacloud.com/tarifs</loc>
-        <lastmod>2026-03-13</lastmod>
+        <lastmod>2026-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
-    
+
+    <!-- Compétences -->
     <url>
         <loc>https://automacloud.com/competences-page</loc>
-        <lastmod>2026-03-13</lastmod>
+        <lastmod>2026-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
