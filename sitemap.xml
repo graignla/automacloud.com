@@ -50,18 +50,24 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/SolidServerAutomation.html"/>
     </url>
 
-    <!-- Parcours -->
+    <!-- Parcours FR -->
     <url>
-        <loc>https://automacloud.com/parcours.html</loc>
+        <loc>https://automacloud.com/fr/parcours.html</loc>
         <lastmod>2026-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://automacloud.com/fr/parcours.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/parcours.html"/>
     </url>
-	<url>
+
+    <!-- Parcours EN -->
+    <url>
         <loc>https://automacloud.com/en/parcours.html</loc>
         <lastmod>2026-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://automacloud.com/fr/parcours.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/parcours.html"/>
     </url>
 
     <!-- Tarifs -->
@@ -74,7 +80,7 @@
 
     <!-- Compétences -->
     <url>
-        <loc>https://automacloud.com/competences-page</loc>
+        <loc>https://automacloud.com/competences-page.html</loc>
         <lastmod>2026-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
