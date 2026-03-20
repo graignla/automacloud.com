@@ -57,12 +57,22 @@
         }
       },
       "featureList": [
-        "Add DNS Record",
-        "Remove DNS Record and its Dependencies",
-        "Check IP Availability",
-        "Move DNS Record to New Subnet",
-        "Audit Orphan IPs",
-        "Actions vRA : listSites, listSubnets, listIPRecords, listAliases"
+        "Provision IP and aliases (idempotent)",
+        "Create A Record (idempotent)",
+        "Set exact aliases to ip_id (idempotent)",
+        "Remove DNS record and its dependencies",
+        "Free an IP address",
+        "Change record (a_name, ip) from ip_id",
+        "Move DNS record to new subnet",
+        "Get first free IP from subnet",
+        "Get infos from name or IP",
+        "Get aliases from ip_id",
+        "Update aliases to ip_id",
+        "Check availability of name or IP",
+        "Check site_id or site_name",
+        "Audit orphan IPs",
+        "Actions vRA : listSites, listSitesWithFreeIp, listSubnets, listFreeSubnets, listIPRecords, listAliases, listRestHost",
+        "Actions utilitaires : checkLicence, waitForCheckHostByPing, WaitForValidateDnsRecordViaHostCmd, Get_ip_ids_from_alias_names, Get_site_id_from_ip_id, get_Or_CreateAndGet_ResElt"
       ]
     }
     </script>
@@ -669,7 +679,7 @@
         <span class="hero-tag green">Plugin Java</span>
     </div>
     <div class="cta-group fade-up fade-up-d3">
-        <a href="mailto:graignla@hotmail.fr" class="btn-primary">📩 Demander une démo</a>
+        <a href="/cdn-cgi/l/email-protection#3c5b4e5d555b52505d7c545348515d5550125a4e" class="btn-primary">📩 Demander une démo</a>
         <a href="#workflows" class="btn-secondary">Voir les fonctionnalités</a>
     </div>
 </section>
@@ -717,54 +727,167 @@
     <div class="container">
         <div class="section-label">Fonctionnalités</div>
         <h2 class="section-title">Workflows inclus</h2>
+        <!-- IDEMPOTENCE BANNER -->
+        <div style="background:linear-gradient(135deg,rgba(76,175,80,0.08),rgba(0,136,255,0.06));border:1px solid rgba(76,175,80,0.3);border-radius:12px;padding:1.5rem 2rem;margin-bottom:2.5rem;display:flex;align-items:flex-start;gap:1.25rem;">
+            <div style="font-size:1.8rem;flex-shrink:0;">♻️</div>
+            <div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.4rem;">Principe fondateur</div>
+                <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.4rem;">L'idempotence comme dénominateur commun</div>
+                <div style="font-size:0.87rem;color:var(--text-dim);line-height:1.6;">Les workflows de provisioning peuvent être rejoués sans effet de bord : si l'état cible est déjà atteint, ils sortent proprement sans erreur ni doublon. Cette garantie simplifie radicalement les pipelines vRA en cas de retry, d'interruption ou de convergence d'état.</div>
+            </div>
+        </div>
         <p class="section-desc">
-            14 workflows et 12 actions orientés métier, décrits de façon précise sont livrés pour répondre intelligemment à vos cas d'usage. Les composants les plus simples s'assemblent pour former des processus métiers robustes directement utilisables dans les phases de provionnements  / déprovisionnements vRO.<br>
-			Tous, constituent une bibliothèque en mode "couteau suisse" exploitable par les équipes d'orchestration.
+            14 workflows et 12 actions orientés métier, décrits de façon précise sont livrés pour répondre intelligemment à vos cas d'usage. Les composants les plus simples s'assemblent pour former des processus métiers robustes directement utilisables dans les phases de provionnements / déprovisionnements vRO.
+            Tous, constituent une bibliothèque en mode "couteau suisse" exploitable par les équipes d'orchestration.
         </p>
+        <!-- Catégorie : Provisioning -->
+        <div class="wf-category-header" style="grid-column:1/-1;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.15em;text-transform:uppercase;padding:0.5rem 0 0.25rem;border-bottom:1px solid var(--grid);margin-bottom:0.25rem;">Provisioning</div>
         <div class="workflows-grid">
 
-            <div class="wf-card">
+            <div class="wf-card" style="border-color:rgba(76,175,80,0.3);">
+                <div class="wf-header">
+                    <div class="wf-icon">🚀</div>
+                    <div>
+                        <div class="wf-title">Provision ip and alias from a_name &amp; alias names</div>
+                        <div class="wf-category">Provisioning <span style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.4);border-radius:4px;padding:1px 6px;font-size:0.65rem;color:var(--eip-green);margin-left:6px;">♻ idempotent</span></div>
+                    </div>
+                </div>
+                <p class="wf-desc">Orchestre la séquence complète de provisioning : vérifie que le hostname et les aliases sont libres sur un autre IP, détecte les machines fantômes (ping), crée l'enregistrement A et positionne exactement les aliases demandés. Peut être rejoué sans effet de bord si partiellement exécuté.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, a_name, aliasNames[], subnetId/subnetAddr, site_id, isVroRoutedEverywhere</span>
+                </div>
+            </div>
+
+            <div class="wf-card" style="border-color:rgba(76,175,80,0.3);">
                 <div class="wf-header">
                     <div class="wf-icon">➕</div>
                     <div>
-                        <div class="wf-title">Add DNS Record</div>
-                        <div class="wf-category">DNS Management</div>
+                        <div class="wf-title">Create RECORD from a_name &amp; ip &amp; site_id</div>
+                        <div class="wf-category">Provisioning <span style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.4);border-radius:4px;padding:1px 6px;font-size:0.65rem;color:var(--eip-green);margin-left:6px;">♻ idempotent</span></div>
                     </div>
                 </div>
-                <p class="wf-desc">Crée un enregistrement DNS et réserve l'IP associée dans SolidServer. Supporte la création d'aliases sur l'enregistrement.</p>
+                <p class="wf-desc">Crée un enregistrement A dans SolidServer en associant un hostname (FQDN) à une adresse IP dans l'espace (site) spécifié. Si l'enregistrement existe déjà avec le même nom et la même IP, sort proprement sans erreur. Retourne l'ip_id de l'enregistrement créé ou existant.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost, subnetId, hostname, [aliases]</span>
+                    <span class="io-val">ipamRestHost, a_name, ip, site_id → ip_id</span>
                 </div>
             </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">🔎</div>
+                    <div>
+                        <div class="wf-title">Get first free ip from subnet</div>
+                        <div class="wf-category">Provisioning</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Résout un subnet par son ID ou par adresse+site, puis trouve la première IP libre dans la plage demandée. Ne retourne une IP que si le nombre minimum de libres (minFreeIp) est atteint, évitant d'épuiser le réseau avant provisioning.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, subnetId | (subnetAddr, site_id), minFreeIp → firstFreeIp, freeCount</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Catégorie : Gestion des aliases -->
+        <div class="wf-category-header" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.15em;text-transform:uppercase;padding:2rem 0 0.25rem;border-bottom:1px solid var(--grid);margin-bottom:0.75rem;">Gestion des aliases</div>
+        <div class="workflows-grid">
+
+            <div class="wf-card" style="border-color:rgba(76,175,80,0.3);">
+                <div class="wf-header">
+                    <div class="wf-icon">🎯</div>
+                    <div>
+                        <div class="wf-title">Set exact aliases to ip_id</div>
+                        <div class="wf-category">Aliases <span style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.4);border-radius:4px;padding:1px 6px;font-size:0.65rem;color:var(--eip-green);margin-left:6px;">♻ idempotent</span></div>
+                    </div>
+                </div>
+                <p class="wf-desc">Positionne les aliases d'un ip_id pour correspondre exactement à la liste fournie. Calcule le delta entre l'état courant et l'état désiré, puis applique additions et suppressions. Rejouer avec la même liste ne produit aucun changement.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, ip_id, aliasNames[] → aliasIds[]</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">🔄</div>
+                    <div>
+                        <div class="wf-title">Update Aliases to ip_id</div>
+                        <div class="wf-category">Aliases</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Ajoute et supprime des aliases sur un ip_id à partir de deux listes explicites. Traite les additions avant les suppressions. Gère les renommages (1 ajout + 1 suppression) via ip_alias_update pour éviter les cycles inutiles. Ignore silencieusement les aliases déjà existants ou introuvables.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, ip_id, aliasesToAdd[], aliasesToDel[] → aliasIds[]</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">📋</div>
+                    <div>
+                        <div class="wf-title">Get aliases prop from ip_id</div>
+                        <div class="wf-category">Aliases</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Récupère tous les aliases associés à un ip_id depuis SolidServer. Retourne un tableau de propriétés contenant les détails de chaque alias (alias_name, ip_name_id, ip_id, hostaddr), ou un tableau vide si aucun alias n'existe.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, ip_id → Properties[]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Catégorie : Déprovisioning & modification -->
+        <div class="wf-category-header" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.15em;text-transform:uppercase;padding:2rem 0 0.25rem;border-bottom:1px solid var(--grid);margin-bottom:0.75rem;">Déprovisioning &amp; modification</div>
+        <div class="workflows-grid">
 
             <div class="wf-card">
                 <div class="wf-header">
                     <div class="wf-icon">🗑️</div>
                     <div>
-                        <div class="wf-title">Remove DNS Record and its Dependencies</div>
-                        <div class="wf-category">DNS Management</div>
+                        <div class="wf-title">Remove DNS record and its dependencies</div>
+                        <div class="wf-category">Déprovisioning</div>
                     </div>
                 </div>
-                <p class="wf-desc">Supprime un enregistrement DNS et toutes ses dépendances (aliases, IP). Accepte une IP ou un A_name — gère automatiquement les A_names associés à plusieurs IPs via une boucle de suppression.</p>
+                <p class="wf-desc">Supprime toutes les IPs attachées à un hostname ou à une IP, avec leurs aliases. Si une IP ou l'un de ses aliases est fourni, seule cette IP est ciblée. Si un hostname est fourni, toutes les IPs qui y sont rattachées sont supprimées avec leurs dépendances.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost, a_nameOrIp</span>
+                    <span class="io-val">ipamRestHost, nameOrIp</span>
                 </div>
             </div>
 
             <div class="wf-card">
                 <div class="wf-header">
-                    <div class="wf-icon">✅</div>
+                    <div class="wf-icon">🆓</div>
                     <div>
-                        <div class="wf-title">Check IP Availability</div>
-                        <div class="wf-category">IPAM</div>
+                        <div class="wf-title">Free an ip from "ip XOR ip_id" and site_id</div>
+                        <div class="wf-category">Déprovisioning</div>
                     </div>
                 </div>
-                <p class="wf-desc">Vérifie si une adresse IP est libre dans SolidServer avant attribution. Utile en pré-check dans les workflows de provisioning.</p>
+                <p class="wf-desc">Libère une adresse IP dans SolidServer, identifiée soit par son adresse IP (nécessite site_id) soit directement par ip_id. Lève une erreur si les deux identifiants sont fournis simultanément, si aucun ne l'est, ou si l'IP est introuvable.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost, ipAddress</span>
+                    <span class="io-val">ipamRestHost, ip + site_id | ip_id</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">✏️</div>
+                    <div>
+                        <div class="wf-title">Change record (a_name, ip, site_id) from ip_id</div>
+                        <div class="wf-category">Modification</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Met à jour un enregistrement IP existant identifié par son ip_id. Permet de modifier le hostname (a_name), l'adresse IP, ou les deux simultanément. Seuls les champs fournis sont mis à jour — les champs omis restent inchangés. Lève une erreur en cas de conflit avec un enregistrement existant.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, ip_id, [a_name], [ip]</span>
                 </div>
             </div>
 
@@ -772,44 +895,86 @@
                 <div class="wf-header">
                     <div class="wf-icon">🔀</div>
                     <div>
-                        <div class="wf-title">Move DNS Record to New Subnet</div>
-                        <div class="wf-category">IPAM</div>
+                        <div class="wf-title">Move DNS record to new subnet</div>
+                        <div class="wf-category">Modification</div>
                     </div>
                 </div>
-                <p class="wf-desc">Déplace un enregistrement DNS d'un subnet source vers un subnet cible, en conservant le hostname et les aliases existants.</p>
+                <p class="wf-desc">Déplace un enregistrement DNS (identifié par IP ou FQDN) vers un nouveau subnet cible, en conservant le hostname et les aliases existants.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost, a_nameOrIp, targetSubnetId</span>
+                    <span class="io-val">ipamRestHost, nameOrIP, targetSubnetId</span>
                 </div>
             </div>
 
-            <div class="wf-card">
-                <div class="wf-header">
-                    <div class="wf-icon">📊</div>
-                    <div>
-                        <div class="wf-title">Audit Orphan IPs</div>
-                        <div class="wf-category">Audit & Reporting</div>
-                    </div>
-                </div>
-                <p class="wf-desc">Génère un rapport de ping pour toutes les IPs d'un subnet : pour chaque IP, indique si elle répond ou non. Aide à détecter des équipements non référencés ou des enregistrements fantômes.</p>
-                <div class="wf-io">
-                    <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost, subnetId → rapport [ip, name, ping]</span>
-                </div>
-            </div>
+        </div>
+
+        <!-- Catégorie : Recherche & résolution -->
+        <div class="wf-category-header" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.15em;text-transform:uppercase;padding:2rem 0 0.25rem;border-bottom:1px solid var(--grid);margin-bottom:0.75rem;">Recherche &amp; résolution</div>
+        <div class="workflows-grid">
 
             <div class="wf-card">
                 <div class="wf-header">
                     <div class="wf-icon">🔍</div>
                     <div>
-                        <div class="wf-title">Verify Connectivity</div>
-                        <div class="wf-category">Diagnostic</div>
+                        <div class="wf-title">Get infos from (name or ip) and site_id</div>
+                        <div class="wf-category">Recherche</div>
                     </div>
                 </div>
-                <p class="wf-desc">Teste et valide la connectivité vers l'instance SolidServer. Vérifie que la réponse provient bien d'un SolidServer EfficientIP avant toute opération.</p>
+                <p class="wf-desc">Recherche un enregistrement IP correspondant à un hostname (FQDN) ou une adresse IP. Détecte automatiquement le type d'entrée. Filtre optionnellement par site_id. Retourne les propriétés (ip_id, ip_addr, name, site_id) ou un tableau vide si non trouvé. Lève une erreur si plusieurs enregistrements existent sans filtre site.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost → statut + version SolidServer</span>
+                    <span class="io-val">ipamRestHost, nameOrIp, [site_id] → Properties</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">✅</div>
+                    <div>
+                        <div class="wf-title">Check for availability of name or ip</div>
+                        <div class="wf-category">Recherche</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Vérifie si un hostname (FQDN) ou une adresse IP est disponible dans SolidServer. Détecte automatiquement le type d'entrée et interroge l'IPAM en conséquence. Utile comme pré-check dans les pipelines de provisioning.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, nameOrIp → available (boolean)</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">🗺️</div>
+                    <div>
+                        <div class="wf-title">Check site_id or site_name</div>
+                        <div class="wf-category">Recherche</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Résout un espace SolidServer par site_id ou site_name. Retourne les deux identifiants de l'espace correspondant. Lève une erreur si ni l'un ni l'autre n'est fourni, ou si aucun espace correspondant n'est trouvé.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, site_id | site_name → site_id, site_name</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Catégorie : Audit -->
+        <div class="wf-category-header" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.15em;text-transform:uppercase;padding:2rem 0 0.25rem;border-bottom:1px solid var(--grid);margin-bottom:0.75rem;">Audit &amp; diagnostic</div>
+        <div class="workflows-grid">
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">📊</div>
+                    <div>
+                        <div class="wf-title">Audit orphan IPs</div>
+                        <div class="wf-category">Audit</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Pour chaque enregistrement DNS d'un subnet, collecte : ip_id, adresse IP, hostname, aliases, et état de réponse ping. Aide à détecter les machines fantômes non référencées dans l'IPAM ou les enregistrements obsolètes.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, subnetId → [ip_id, ip, hostname, aliases, pingOk]</span>
                 </div>
             </div>
 
@@ -818,37 +983,87 @@
 </section>
 
 <!-- ── ACTIONS vRA ── -->
-<section class="actions-section" aria-label="Actions vRA pour formulaires dynamiques">
+<section class="actions-section" aria-label="Actions incluses dans le package">
     <div class="container">
-        <div class="section-label">Formulaires vRA</div>
-        <h2 class="section-title">Actions de liste pour vRA</h2>
+        <div class="section-label">Actions</div>
+        <h2 class="section-title">Actions JavaScript</h2>
         <p class="section-desc">
-            Quatre actions dédiées aux formulaires vRA, retournant des <code style="color:var(--eip-green);font-family:'JetBrains Mono',monospace;font-size:0.85em">Array(String)</code> pour alimenter des listes déroulantes dynamiques et chaînées.
+            Briques atomiques invocables depuis n'importe quel workflow vRO ou formulaire vRA — listes déroulantes chaînées, validations et checks réseau.
         </p>
-        <div class="actions-grid">
+
+        <!-- Listes pour formulaires vRA -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--secondary);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--grid);">Listes pour formulaires vRA (dropdowns chaînés)</div>
+        <div class="actions-grid" style="margin-bottom:2.5rem;">
             <div class="action-card">
                 <span class="action-num">01</span>
-                <div class="action-name">EfficientIP: Sites</div>
-                <code class="action-sig">listSites() → Array(String)</code>
-                <p class="action-desc">Liste tous les sites SolidServer au format <em>Nom(site-id)</em> — ex. <code style="color:var(--primary);font-size:0.8em">Paris(12)</code></p>
+                <div class="action-name">listSites</div>
+                <code class="action-sig">() → Array(String)</code>
+                <p class="action-desc">Tous les espaces — ex. <code style="color:var(--primary);font-size:0.8em">Paris(12)</code></p>
             </div>
             <div class="action-card">
                 <span class="action-num">02</span>
-                <div class="action-name">EfficientIP: Subnets</div>
-                <code class="action-sig">listSubnets(siteId) → Array(String)</code>
-                <p class="action-desc">Liste les subnets d'un site au format <em>Nom(subnet-id)</em> — ex. <code style="color:var(--primary);font-size:0.8em">192.168.1.0/24(56)</code></p>
+                <div class="action-name">listSitesWithFreeIp</div>
+                <code class="action-sig">() → Array(String)</code>
+                <p class="action-desc">Espaces ayant au moins une IP libre — filtre les sites provisionnables.</p>
             </div>
             <div class="action-card">
                 <span class="action-num">03</span>
-                <div class="action-name">EfficientIP: IP Records</div>
-                <code class="action-sig">listIPRecords(subnetId) → Array(String)</code>
-                <p class="action-desc">Liste les enregistrements IP d'un subnet au format <em>hostaddr</em> — ex. <code style="color:var(--primary);font-size:0.8em">192.168.1.10</code></p>
+                <div class="action-name">listSubnetsFrom_site_id</div>
+                <code class="action-sig">(site_id) → Array(String)</code>
+                <p class="action-desc">Subnets d'un site — ex. <code style="color:var(--primary);font-size:0.8em">192.168.1.0/24(56)</code></p>
             </div>
             <div class="action-card">
                 <span class="action-num">04</span>
-                <div class="action-name">EfficientIP: Aliases</div>
-                <code class="action-sig">listAliases(ipRecord) → Array(String)</code>
-                <p class="action-desc">Liste les aliases associés à un IPRecord au format <em>hostaddr</em> — ex. <code style="color:var(--primary);font-size:0.8em">alias1.dom.com</code></p>
+                <div class="action-name">listFreeSubnets</div>
+                <code class="action-sig">(site_id) → Array(String)</code>
+                <p class="action-desc">Subnets ayant des IPs libres — filtre les réseaux provisionnables.</p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">05</span>
+                <div class="action-name">listRecordsFrom_subnet_id</div>
+                <code class="action-sig">(subnet_id) → Array(String)</code>
+                <p class="action-desc">Enregistrements IP d'un subnet — ex. <code style="color:var(--primary);font-size:0.8em">192.168.1.10</code></p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">06</span>
+                <div class="action-name">listAliasesFrom_ip_id</div>
+                <code class="action-sig">(ip_id) → Array(String)</code>
+                <p class="action-desc">Aliases d'un enregistrement — ex. <code style="color:var(--primary);font-size:0.8em">alias1.dom.com</code></p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">07</span>
+                <div class="action-name">listRestHost</div>
+                <code class="action-sig">() → Array(String)</code>
+                <p class="action-desc">RESTHost vRO disponibles — sélection du connecteur SolidServer dans les formulaires.</p>
+            </div>
+        </div>
+
+        <!-- Validation & checks réseau -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--secondary);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--grid);">Validation &amp; checks réseau</div>
+        <div class="actions-grid">
+            <div class="action-card">
+                <span class="action-num">08</span>
+                <div class="action-name">Get_ip_ids_from_alias_names</div>
+                <code class="action-sig">(aliasNames[]) → Properties</code>
+                <p class="action-desc">Vérifie si des alias FQDN sont déjà pris dans SolidServer. Retourne un mapping <code style="color:var(--primary);font-size:0.8em">alias_name → ip_id</code> — un alias absent est libre.</p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">09</span>
+                <div class="action-name">Get_site_id_from_ip_id</div>
+                <code class="action-sig">(ip_id) → String</code>
+                <p class="action-desc">Retourne le site_id de l'espace contenant un ip_id donné.</p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">10</span>
+                <div class="action-name">waitForCheckHostByPing</div>
+                <code class="action-sig">(target, expectPing, maxAttempts) → Boolean</code>
+                <p class="action-desc">Ping répété jusqu'à <em>maxAttempts</em> fois. Détecte les machines fantômes ou confirme la joinabilité après provisioning.</p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">11</span>
+                <div class="action-name">WaitForValidateDnsRecordViaHostCmd</div>
+                <code class="action-sig">(target, type, expectResolv, maxAttempts, [dnsServer]) → Boolean</code>
+                <p class="action-desc">Résolution DNS répétée via <code style="color:var(--primary);font-size:0.8em">host</code>. Supporte A, CNAME et reverse. Peut cibler un serveur DNS spécifique.</p>
             </div>
         </div>
     </div>
@@ -864,7 +1079,7 @@
         <div class="clients-bar">
             <div class="client-pill">🔐 Licence offline</div>
             <div class="client-pill">☁️ Zéro connectivité externe</div>
-            <div class="client-pill">📩 <a href="mailto:graignla@hotmail.fr" style="color:inherit;text-decoration:none;">Demander une licence</a></div>
+            <div class="client-pill">📩 <a href="/cdn-cgi/l/email-protection#9ff8edfef6f8f1f3fedff7f0ebf2fef6f3b1f9ed" style="color:inherit;text-decoration:none;">Demander une licence</a></div>
         </div>
     </div>
 </section>
@@ -884,14 +1099,9 @@
 
 <!-- ── FOOTER ── -->
 <footer>
-    <p>© 2025 <a href="index.html">AUTOM@CLOUD</a> — Laurent Graignic &nbsp;|&nbsp;
+    <p>© 2026 <a href="index.html">AUTOM@CLOUD</a> — Laurent Graignic &nbsp;|&nbsp;
     Expert VMware ARIA &amp; Cloud Privé &nbsp;|&nbsp;
-    <a href="mailto:graignla@hotmail.fr">graignla@hotmail.fr</a></p>
+    <a href="/cdn-cgi/l/email-protection#6c0b1e0d050b02000d2c040318010d0500420a1e"><span class="__cf_email__" data-cfemail="6b0c190a020c05070a2b03041f060a0207450d19">[email&#160;protected]</span></a></p>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // Smooth scroll pour ancres internes
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-        a.addEventListener('click', e => {
-            e.preventDefault();
-            const t = document.querySelector(a.get
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasy

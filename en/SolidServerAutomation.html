@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- SEO principal -->
-    <title>New vRO Plugin for SolidServer 2026 - IPAM/DNS Automation | AUTOMACLOUD</title>
-    <meta name="description" content="New vRO plugin for EfficientIP SolidServer: DNS/IPAM Automation">
-    <meta name="keywords" content="EfficientIP SolidServer, SolidServer vRO, SolidServer automation, New vRO plugin for SolidServer, DNS orchestration, IPAM orchestration, VMware Aria, IPAM automation, DNS automation, vRA, private cloud, AUTOMACLOUD, Laurent Graignic">
+    <!-- SEO -->
+    <title>vRO SolidServer Plugin 2026 - IPAM/DNS Automation | AUTOMACLOUD</title>
+    <meta name="description" content="Commercial vRO plugin for EfficientIP SolidServer: DNS/IPAM automation, vRA actions, offline licence.">
+    <meta name="keywords" content="EfficientIP SolidServer, SolidServer vRO, SolidServer automation, vRO plugin SolidServer, DNS orchestration, IPAM orchestration, New vRO plugin for SolidServer, VMware Aria, IPAM automation, DNS automation, vRA, private cloud, AUTOMACLOUD, Laurent Graignic">
     <meta name="author" content="Laurent Graignic - AUTOM@CLOUD">
     <meta name="robots" content="index, follow">
 
@@ -17,20 +17,20 @@
     <link rel="alternate" hreflang="en" href="https://automacloud.com/en/SolidServerAutomation.html" />
     <link rel="alternate" hreflang="x-default" href="https://automacloud.com/SolidServerAutomation.html" />
 
-    <!-- Open Graph (partage réseaux sociaux / LinkedIn) -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="AUTOMACLOUD SolidServer Plugin — Automatisation IPAM/DNS pour VMware vRO">
-    <meta property="og:description" content="Commercial vRO plugin for EfficientIP SolidServer: automated DNS/IPAM management, vRA actions, offline license. References: RATP, French Ministry of Interior.">
-    <meta property="og:url" content="https://www.automacloud.com/SolidServerAutomation.html">
+    <meta property="og:title" content="AUTOMACLOUD SolidServer Plugin — IPAM/DNS Automation for VMware vRO">
+    <meta property="og:description" content="Commercial vRO plugin for EfficientIP SolidServer: automated DNS/IPAM management, vRA actions, offline licence. References: RATP, French Ministry of the Interior.">
+    <meta property="og:url" content="https://www.automacloud.com/en/SolidServerAutomation.html">
     <meta property="og:site_name" content="AUTOM@CLOUD">
     <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="AUTOMACLOUD SolidServer Plugin | VMware vRO">
-    <meta name="twitter:description" content="Commercial vRO plugin for EfficientIP SolidServer — DNS/IPAM automation, vRA actions, offline license.">
+    <meta name="twitter:description" content="Commercial vRO plugin for EfficientIP SolidServer — DNS/IPAM automation, vRA actions, offline licence.">
 
-    <!-- Données structurées JSON-LD : SoftwareApplication -->
+    <!-- JSON-LD : SoftwareApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -60,12 +60,22 @@
         }
       },
       "featureList": [
-        "Add DNS Record",
-        "Remove DNS Record and its Dependencies",
-        "Check IP Availability",
-        "Move DNS Record to New Subnet",
-        "Audit Orphan IPs",
-        "Actions vRA : listSites, listSubnets, listIPRecords, listAliases"
+        "Provision IP and aliases (idempotent)",
+        "Create A Record (idempotent)",
+        "Set exact aliases to ip_id (idempotent)",
+        "Remove DNS record and its dependencies",
+        "Free an IP address",
+        "Change record (a_name, ip) from ip_id",
+        "Move DNS record to new subnet",
+        "Get first free IP from subnet",
+        "Get infos from name or IP",
+        "Get aliases from ip_id",
+        "Update aliases to ip_id",
+        "Check availability of name or IP",
+        "Check site_id or site_name",
+        "Audit orphan IPs",
+        "vRA Actions: listSites, listSitesWithFreeIp, listSubnets, listFreeSubnets, listIPRecords, listAliases, listRestHost",
+        "Utility actions: waitForCheckHostByPing, WaitForValidateDnsRecordViaHostCmd, Get_ip_ids_from_alias_names, Get_site_id_from_ip_id"
       ]
     }
     </script>
@@ -646,7 +656,7 @@
     <div class="header-inner">
         <a href="/en/" class="back-link">Back to home</a>
         <span class="header-logo">AUTOM@CLOUD</span>
-        <span class="header-badge">Plugin Commercial v1.x</span>
+        <span class="header-badge">Commercial Plugin v1.x</span>
         <a href="/SolidServerAutomation.html" class="lang-btn">🇫🇷 FR</a>
     </div>
 </header>
@@ -656,9 +666,9 @@
     <div class="hero-glow"></div>
     <div class="hero-eyebrow fade-up">Commercial vRO Plugin</div>
 <h1 class="fade-up fade-up-d1">
-   Plugin vRO <span class="brand"> SolidServer 2026:</span>
+   vRO Plugin <span class="brand"> SolidServer 2026:</span>
    <br>
-   <small>Extended version</small>
+   <small>Extended Edition</small>
 </h1>
     <p class="hero-sub fade-up fade-up-d2">
         Native integration of EfficientIP SolidServer into VMware Aria Automation Orchestrator —
@@ -669,22 +679,22 @@
         <span class="hero-tag blue">VMware vRO / vRA</span>
         <span class="hero-tag">Offline License</span>
         <span class="hero-tag">API REST</span>
-        <span class="hero-tag green">Plugin Java</span>
+        <span class="hero-tag green">Java Plugin</span>
     </div>
     <div class="cta-group fade-up fade-up-d3">
-        <a href="mailto:graignla@hotmail.fr" class="btn-primary">📩 Request a demo</a>
+        <a href="/cdn-cgi/l/email-protection#3c5b4e5d555b52505d7c545348515d5550125a4e" class="btn-primary">📩 Request a demo</a>
         <a href="#workflows" class="btn-secondary">See features</a>
     </div>
 </section>
 
 <!-- ── ARCHITECTURE ── -->
-<section class="arch-section" aria-label="Architecture du plugin">
+<section class="arch-section" aria-label="Plugin architecture">
     <div class="container">
         <div class="section-label">Architecture</div>
         <h2 class="section-title">A plugin built for production</h2>
         <p class="section-desc">
-            Designed from real-world experience on large-scale environments
-            (RATP & French Ministry of Interior).
+            Designed from hands-on experience in large-scale environments
+            (RATP &amp; French Ministry of Interior).
         </p>
         <div class="arch-grid">
             <div class="arch-card">
@@ -696,7 +706,7 @@
             <div class="arch-card">
                 <div class="arch-icon">🗂️</div>
                 <h3>Native vRO Inventory</h3>
-                <p>SolidServer tree browsable in the vRO inventory panel: Sites, Subnets, IPRecords, Aliases.</p>
+                <p>Browsable SolidServer tree in the vRO inventory panel: Sites, Subnets, IPRecords, Aliases.</p>
                 <code class="mono">EfficientIP:SOLIDserverHost</code>
             </div>
             <div class="arch-card">
@@ -707,7 +717,7 @@
             </div>
             <div class="arch-card">
                 <div class="arch-icon">🔒</div>
-                <h3>Sécurité & SSL</h3>
+                <h3>Security &amp; SSL</h3>
                 <p>Basic authentication via vRO RESTHost. SSL management is delegated to the RestHost — scripts remain clean.</p>
                 <code class="mono">GET /rest/ip_site_list?LIMIT=1</code>
             </div>
@@ -716,58 +726,171 @@
 </section>
 
 <!-- ── WORKFLOWS ── -->
-<section id="workflows" aria-label="Workflows inclus">
+<section id="workflows" aria-label="Included workflows">
     <div class="container">
         <div class="section-label">Features</div>
         <h2 class="section-title">Included Workflows</h2>
+        <!-- IDEMPOTENCE BANNER -->
+        <div style="background:linear-gradient(135deg,rgba(76,175,80,0.08),rgba(0,136,255,0.06));border:1px solid rgba(76,175,80,0.3);border-radius:12px;padding:1.5rem 2rem;margin-bottom:2.5rem;display:flex;align-items:flex-start;gap:1.25rem;">
+            <div style="font-size:1.8rem;flex-shrink:0;">♻️</div>
+            <div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.4rem;">Core principle</div>
+                <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.4rem;">Idempotency as a common denominator</div>
+                <div style="font-size:0.87rem;color:var(--text-dim);line-height:1.6;">Provisioning workflows can be replayed without side effects: if the target state is already reached, they exit cleanly without error or duplicate. This guarantee radically simplifies vRA pipelines in case of retry, interruption, or state convergence.</div>
+            </div>
+        </div>
         <p class="section-desc">
-            14 business-oriented workflows and 12 precisely documented actions are delivered to intelligently address your use cases. The simplest components can be assembled into robust business processes directly usable in vRO provisioning/deprovisioning phases.<br>
-			Together, they form a Swiss Army knife library exploitable by orchestration teams.
+            14 workflows and 12 business-oriented actions, precisely described, are delivered to intelligently address your use cases. The simpler components combine to form robust business processes directly usable in vRO provisioning / deprovisioning phases.
+            Together, they form a Swiss Army knife library exploitable by orchestration teams.
         </p>
+        <!-- Catégorie : Provisioning -->
+        <div class="wf-category-header" style="grid-column:1/-1;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.15em;text-transform:uppercase;padding:0.5rem 0 0.25rem;border-bottom:1px solid var(--grid);margin-bottom:0.25rem;">Provisioning</div>
         <div class="workflows-grid">
 
-            <div class="wf-card">
+            <div class="wf-card" style="border-color:rgba(76,175,80,0.3);">
+                <div class="wf-header">
+                    <div class="wf-icon">🚀</div>
+                    <div>
+                        <div class="wf-title">Provision ip and alias from a_name &amp; alias names</div>
+                        <div class="wf-category">Provisioning <span style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.4);border-radius:4px;padding:1px 6px;font-size:0.65rem;color:var(--eip-green);margin-left:6px;">♻ idempotent</span></div>
+                    </div>
+                </div>
+                <p class="wf-desc">Orchestrates the full provisioning sequence: verifies that the hostname and aliases are free on any other IP, detects ghost machines (ping), creates the A record and sets exactly the requested aliases. Can be replayed without side effects if partially executed.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, a_name, aliasNames[], subnetId/subnetAddr, site_id, isVroRoutedEverywhere</span>
+                </div>
+            </div>
+
+            <div class="wf-card" style="border-color:rgba(76,175,80,0.3);">
                 <div class="wf-header">
                     <div class="wf-icon">➕</div>
                     <div>
-                        <div class="wf-title">Add DNS Record</div>
-                        <div class="wf-category">DNS Management</div>
+                        <div class="wf-title">Create RECORD from a_name &amp; ip &amp; site_id</div>
+                        <div class="wf-category">Provisioning <span style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.4);border-radius:4px;padding:1px 6px;font-size:0.65rem;color:var(--eip-green);margin-left:6px;">♻ idempotent</span></div>
                     </div>
                 </div>
-                <p class="wf-desc">Creates a DNS record and reserves the associated IP in SolidServer. Supports alias creation on the record.</p>
+                <p class="wf-desc">Creates an A record in SolidServer associating a hostname (FQDN) with an IP address in the specified space (site). If the record already exists with the same name and IP, exits cleanly without error. Returns the ip_id of the created or existing record.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost, subnetId, hostname, [aliases]</span>
+                    <span class="io-val">ipamRestHost, a_name, ip, site_id → ip_id</span>
                 </div>
             </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">🔎</div>
+                    <div>
+                        <div class="wf-title">Get first free ip from subnet</div>
+                        <div class="wf-category">Provisioning</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Resolves a subnet by its ID or by address+site, then finds the first free IP in the requested range. Only returns an IP if the minimum number of free addresses (minFreeIp) is met, preventing network exhaustion before provisioning.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, subnetId | (subnetAddr, site_id), minFreeIp → firstFreeIp, freeCount</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Category: Alias management -->
+        <div class="wf-category-header" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.15em;text-transform:uppercase;padding:2rem 0 0.25rem;border-bottom:1px solid var(--grid);margin-bottom:0.75rem;">Alias Management</div>
+        <div class="workflows-grid">
+
+            <div class="wf-card" style="border-color:rgba(76,175,80,0.3);">
+                <div class="wf-header">
+                    <div class="wf-icon">🎯</div>
+                    <div>
+                        <div class="wf-title">Set exact aliases to ip_id</div>
+                        <div class="wf-category">Aliases <span style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.4);border-radius:4px;padding:1px 6px;font-size:0.65rem;color:var(--eip-green);margin-left:6px;">♻ idempotent</span></div>
+                    </div>
+                </div>
+                <p class="wf-desc">Sets the aliases of an ip_id to exactly match the provided list. Computes the delta between the current state and the desired state, then applies additions and deletions. Replaying with the same list produces no changes.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, ip_id, aliasNames[] → aliasIds[]</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">🔄</div>
+                    <div>
+                        <div class="wf-title">Update Aliases to ip_id</div>
+                        <div class="wf-category">Aliases</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Adds and removes aliases on an ip_id from two explicit lists. Processes additions before deletions. Handles renames (1 addition + 1 deletion) via ip_alias_update to avoid unnecessary cycles. Silently ignores already existing or missing aliases.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, ip_id, aliasesToAdd[], aliasesToDel[] → aliasIds[]</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">📋</div>
+                    <div>
+                        <div class="wf-title">Get aliases prop from ip_id</div>
+                        <div class="wf-category">Aliases</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Retrieves all aliases associated with an ip_id from SolidServer. Returns an array of properties containing each alias's details (alias_name, ip_name_id, ip_id, hostaddr), or an empty array if no aliases exist.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, ip_id → Properties[]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Catégorie : Déprovisioning & modification -->
+        <div class="wf-category-header" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.15em;text-transform:uppercase;padding:2rem 0 0.25rem;border-bottom:1px solid var(--grid);margin-bottom:0.75rem;">Deprovisioning &amp; Modification</div>
+        <div class="workflows-grid">
 
             <div class="wf-card">
                 <div class="wf-header">
                     <div class="wf-icon">🗑️</div>
                     <div>
-                        <div class="wf-title">Remove DNS Record and its Dependencies</div>
-                        <div class="wf-category">DNS Management</div>
+                        <div class="wf-title">Remove DNS record and its dependencies</div>
+                        <div class="wf-category">Deprovisioning</div>
                     </div>
                 </div>
-                <p class="wf-desc">Deletes a DNS record and all its dependencies (aliases, IP). Accepts an IP or A_name — automatically handles A_names associated with multiple IPs via a deletion loop.</p>
+                <p class="wf-desc">Removes all IPs attached to a hostname or an IP, along with their aliases. If an IP or one of its aliases is provided, only that specific IP is targeted. If a hostname is provided, all IPs attached to it are deleted with their dependencies.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost, a_nameOrIp</span>
+                    <span class="io-val">ipamRestHost, nameOrIp</span>
                 </div>
             </div>
 
             <div class="wf-card">
                 <div class="wf-header">
-                    <div class="wf-icon">✅</div>
+                    <div class="wf-icon">🆓</div>
                     <div>
-                        <div class="wf-title">Check IP Availability</div>
-                        <div class="wf-category">IPAM</div>
+                        <div class="wf-title">Free an ip from "ip XOR ip_id" and site_id</div>
+                        <div class="wf-category">Deprovisioning</div>
                     </div>
                 </div>
-                <p class="wf-desc">Checks whether an IP address is available in SolidServer before assignment. Useful as a pre-check in provisioning workflows.</p>
+                <p class="wf-desc">Releases an IP address in SolidServer, identified either by its IP address (requires site_id) or directly by ip_id. Throws an error if both identifiers are provided simultaneously, if neither is, or if the IP cannot be found.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost, ipAddress</span>
+                    <span class="io-val">ipamRestHost, ip + site_id | ip_id</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">✏️</div>
+                    <div>
+                        <div class="wf-title">Change record (a_name, ip, site_id) from ip_id</div>
+                        <div class="wf-category">Modification</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Updates an existing IP record identified by its ip_id. Allows changing the hostname (a_name), the IP address, or both simultaneously. Only provided fields are updated — omitted fields remain unchanged. Throws an error if the changes conflict with an existing record.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, ip_id, [a_name], [ip]</span>
                 </div>
             </div>
 
@@ -775,44 +898,86 @@
                 <div class="wf-header">
                     <div class="wf-icon">🔀</div>
                     <div>
-                        <div class="wf-title">Move DNS Record to New Subnet</div>
-                        <div class="wf-category">IPAM</div>
+                        <div class="wf-title">Move DNS record to new subnet</div>
+                        <div class="wf-category">Modification</div>
                     </div>
                 </div>
-                <p class="wf-desc">Moves a DNS record from a source subnet to a target subnet, preserving the hostname and existing aliases.</p>
+                <p class="wf-desc">Moves a DNS record (identified by IP or FQDN) to a new target subnet, preserving the existing hostname and aliases.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost, a_nameOrIp, targetSubnetId</span>
+                    <span class="io-val">ipamRestHost, nameOrIP, targetSubnetId</span>
                 </div>
             </div>
 
-            <div class="wf-card">
-                <div class="wf-header">
-                    <div class="wf-icon">📊</div>
-                    <div>
-                        <div class="wf-title">Audit Orphan IPs</div>
-                        <div class="wf-category">Audit & Reporting</div>
-                    </div>
-                </div>
-                <p class="wf-desc">Generates a ping report for all IPs in a subnet: for each IP, indicates whether it responds or not. Helps detect unregistered devices or ghost records.</p>
-                <div class="wf-io">
-                    <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost, subnetId → rapport [ip, name, ping]</span>
-                </div>
-            </div>
+        </div>
+
+        <!-- Catégorie : Recherche & résolution -->
+        <div class="wf-category-header" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.15em;text-transform:uppercase;padding:2rem 0 0.25rem;border-bottom:1px solid var(--grid);margin-bottom:0.75rem;">Search &amp; Resolution</div>
+        <div class="workflows-grid">
 
             <div class="wf-card">
                 <div class="wf-header">
                     <div class="wf-icon">🔍</div>
                     <div>
-                        <div class="wf-title">Verify Connectivity</div>
-                        <div class="wf-category">Diagnostic</div>
+                        <div class="wf-title">Get infos from (name or ip) and site_id</div>
+                        <div class="wf-category">Search</div>
                     </div>
                 </div>
-                <p class="wf-desc">Tests and validates connectivity to the SolidServer instance. Verifies that the response comes from an EfficientIP SolidServer before any operation.</p>
+                <p class="wf-desc">Searches for an IP record matching a hostname (FQDN) or an IP address. Automatically detects the input type. Optionally filters by site_id. Returns the properties (ip_id, ip_addr, name, site_id) or an empty array if not found. Throws an error if multiple records exist without a site filter.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
-                    <span class="io-val">ipamRestHost → status + SolidServer version</span>
+                    <span class="io-val">ipamRestHost, nameOrIp, [site_id] → Properties</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">✅</div>
+                    <div>
+                        <div class="wf-title">Check for availability of name or ip</div>
+                        <div class="wf-category">Search</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Checks whether a hostname (FQDN) or an IP address is available in SolidServer. Automatically detects the input type and queries the IPAM accordingly. Useful as a pre-check in provisioning pipelines.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, nameOrIp → available (boolean)</span>
+                </div>
+            </div>
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">🗺️</div>
+                    <div>
+                        <div class="wf-title">Check site_id or site_name</div>
+                        <div class="wf-category">Search</div>
+                    </div>
+                </div>
+                <p class="wf-desc">Resolves a SolidServer space by site_id or site_name. Returns both identifiers of the matching space. Throws an error if neither is provided, or if no matching space is found.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, site_id | site_name → site_id, site_name</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Catégorie : Audit -->
+        <div class="wf-category-header" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--eip-green);letter-spacing:0.15em;text-transform:uppercase;padding:2rem 0 0.25rem;border-bottom:1px solid var(--grid);margin-bottom:0.75rem;">Audit &amp; Diagnostics</div>
+        <div class="workflows-grid">
+
+            <div class="wf-card">
+                <div class="wf-header">
+                    <div class="wf-icon">📊</div>
+                    <div>
+                        <div class="wf-title">Audit orphan IPs</div>
+                        <div class="wf-category">Audit</div>
+                    </div>
+                </div>
+                <p class="wf-desc">For each DNS record in a subnet, collects: ip_id, IP address, hostname, aliases, and ping response status. Helps detect ghost machines not referenced in the IPAM or obsolete records.</p>
+                <div class="wf-io">
+                    <span class="io-label">Inputs</span>
+                    <span class="io-val">ipamRestHost, subnetId → [ip_id, ip, hostname, aliases, pingOk]</span>
                 </div>
             </div>
 
@@ -821,37 +986,87 @@
 </section>
 
 <!-- ── ACTIONS vRA ── -->
-<section class="actions-section" aria-label="Actions vRA pour formulaires dynamiques">
+<section class="actions-section" aria-label="Included actions">
     <div class="container">
-        <div class="section-label">Formulaires vRA</div>
-        <h2 class="section-title">List Actions for vRA</h2>
+        <div class="section-label">Actions</div>
+        <h2 class="section-title">JavaScript Actions</h2>
         <p class="section-desc">
-            Four actions dedicated to vRA forms, returning <code style="color:var(--eip-green);font-family:'JetBrains Mono',monospace;font-size:0.85em">Array(String)</code> to feed dynamic and chained dropdown lists.
+            Atomic building blocks invocable from any vRO workflow or vRA form — chained dropdowns, validations and network checks.
         </p>
-        <div class="actions-grid">
+
+        <!-- Lists for vRA forms -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--secondary);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--grid);">Lists for vRA forms (chained dropdowns)</div>
+        <div class="actions-grid" style="margin-bottom:2.5rem;">
             <div class="action-card">
                 <span class="action-num">01</span>
-                <div class="action-name">EfficientIP: Sites</div>
-                <code class="action-sig">listSites() → Array(String)</code>
-                <p class="action-desc">Lists all SolidServer sites in <em>Name(site-id)</em> format — ex. <code style="color:var(--primary);font-size:0.8em">Paris(12)</code></p>
+                <div class="action-name">listSites</div>
+                <code class="action-sig">() → Array(String)</code>
+                <p class="action-desc">All spaces — e.g. <code style="color:var(--primary);font-size:0.8em">Paris(12)</code></p>
             </div>
             <div class="action-card">
                 <span class="action-num">02</span>
-                <div class="action-name">EfficientIP: Subnets</div>
-                <code class="action-sig">listSubnets(siteId) → Array(String)</code>
-                <p class="action-desc">Lists the subnets of a site in <em>Name(subnet-id)</em> format — ex. <code style="color:var(--primary);font-size:0.8em">192.168.1.0/24(56)</code></p>
+                <div class="action-name">listSitesWithFreeIp</div>
+                <code class="action-sig">() → Array(String)</code>
+                <p class="action-desc">Spaces with at least one free IP — filters provisionable sites.</p>
             </div>
             <div class="action-card">
                 <span class="action-num">03</span>
-                <div class="action-name">EfficientIP: IP Records</div>
-                <code class="action-sig">listIPRecords(subnetId) → Array(String)</code>
-                <p class="action-desc">Lists the IP records of a subnet in <em>hostaddr</em> format — ex. <code style="color:var(--primary);font-size:0.8em">192.168.1.10</code></p>
+                <div class="action-name">listSubnetsFrom_site_id</div>
+                <code class="action-sig">(site_id) → Array(String)</code>
+                <p class="action-desc">Subnets of a site — e.g. <code style="color:var(--primary);font-size:0.8em">192.168.1.0/24(56)</code></p>
             </div>
             <div class="action-card">
                 <span class="action-num">04</span>
-                <div class="action-name">EfficientIP: Aliases</div>
-                <code class="action-sig">listAliases(ipRecord) → Array(String)</code>
-                <p class="action-desc">Lists the aliases associated with an IPRecord in <em>hostaddr</em> format — ex. <code style="color:var(--primary);font-size:0.8em">alias1.dom.com</code></p>
+                <div class="action-name">listFreeSubnets</div>
+                <code class="action-sig">(site_id) → Array(String)</code>
+                <p class="action-desc">Subnets with free IPs — filters provisionable networks.</p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">05</span>
+                <div class="action-name">listRecordsFrom_subnet_id</div>
+                <code class="action-sig">(subnet_id) → Array(String)</code>
+                <p class="action-desc">IP records of a subnet — e.g. <code style="color:var(--primary);font-size:0.8em">192.168.1.10</code></p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">06</span>
+                <div class="action-name">listAliasesFrom_ip_id</div>
+                <code class="action-sig">(ip_id) → Array(String)</code>
+                <p class="action-desc">Aliases of a record — e.g. <code style="color:var(--primary);font-size:0.8em">alias1.dom.com</code></p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">07</span>
+                <div class="action-name">listRestHost</div>
+                <code class="action-sig">() → Array(String)</code>
+                <p class="action-desc">Available vRO RESTHosts — SolidServer connector selection in forms.</p>
+            </div>
+        </div>
+
+        <!-- Validation & checks réseau -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--secondary);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--grid);">Validation &amp; network checks</div>
+        <div class="actions-grid">
+            <div class="action-card">
+                <span class="action-num">08</span>
+                <div class="action-name">Get_ip_ids_from_alias_names</div>
+                <code class="action-sig">(aliasNames[]) → Properties</code>
+                <p class="action-desc">Checks whether FQDN aliases are already taken in SolidServer. Returns a mapping <code style="color:var(--primary);font-size:0.8em">alias_name → ip_id</code> — an absent alias is free to use.</p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">09</span>
+                <div class="action-name">Get_site_id_from_ip_id</div>
+                <code class="action-sig">(ip_id) → String</code>
+                <p class="action-desc">Returns the site_id of the space containing a given ip_id.</p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">10</span>
+                <div class="action-name">waitForCheckHostByPing</div>
+                <code class="action-sig">(target, expectPing, maxAttempts) → Boolean</code>
+                <p class="action-desc">Repeated ping up to <em>maxAttempts</em> times. Detects ghost machines or confirms reachability after provisioning.</p>
+            </div>
+            <div class="action-card">
+                <span class="action-num">11</span>
+                <div class="action-name">WaitForValidateDnsRecordViaHostCmd</div>
+                <code class="action-sig">(target, type, expectResolv, maxAttempts, [dnsServer]) → Boolean</code>
+                <p class="action-desc">Repeated DNS resolution via <code style="color:var(--primary);font-size:0.8em">host</code>. Supports A, CNAME and reverse lookups. Can target a specific DNS server.</p>
             </div>
         </div>
     </div>
@@ -862,12 +1077,12 @@
 <section style="background:var(--dark-2);border-top:1px solid var(--grid);border-bottom:1px solid var(--grid);">
     <div class="container">
         <div class="section-label">Licensing</div>
-        <h2 class="section-title">Internet-free Activation</h2>
-        <p class="section-desc">The plugin uses an offline license system with no subscription. No external connectivity required. The license key, issued by AUTOM@CLOUD, is bound to your SolidServer instance.</p>
+        <h2 class="section-title">Internet-free activation</h2>
+        <p class="section-desc">The plugin operates with a subscription-free offline license system. No external connectivity required. The license key, issued by AUTOM@CLOUD, is bound to your SolidServer instance.</p>
         <div class="clients-bar">
-            <div class="client-pill">🔐 Licence offline</div>
+            <div class="client-pill">🔐 Offline license</div>
             <div class="client-pill">☁️ Zero external connectivity</div>
-            <div class="client-pill">📩 <a href="mailto:graignla@hotmail.fr" style="color:inherit;text-decoration:none;">Request a license</a></div>
+            <div class="client-pill">📩 <a href="/cdn-cgi/l/email-protection#9ff8edfef6f8f1f3fedff7f0ebf2fef6f3b1f9ed" style="color:inherit;text-decoration:none;">Request a license</a></div>
         </div>
     </div>
 </section>
@@ -875,9 +1090,9 @@
 <!-- ── CLIENTS ── -->
 <section>
     <div class="container">
-        <div class="section-label">Références</div>
+        <div class="section-label">References</div>
         <h2 class="section-title">Partner clients</h2>
-        <p class="section-desc">Having contributed to the definition of use cases </p>
+        <p class="section-desc">Who contributed to defining the use cases</p>
         <div class="clients-bar">
             <div class="client-pill">🚇 RATP <span style="color:var(--text-dim);font-size:0.8em;margin-left:0.4rem">5 300 VMs</span></div>
             <div class="client-pill">🏛️ French Ministry of Interior</div>
@@ -887,14 +1102,9 @@
 
 <!-- ── FOOTER ── -->
 <footer>
-    <p>© 2025 <a href="index.html">AUTOM@CLOUD</a> — Laurent Graignic &nbsp;|&nbsp;
+    <p>© 2026 <a href="/en/">AUTOM@CLOUD</a> — Laurent Graignic &nbsp;|&nbsp;
     VMware ARIA &amp; Private Cloud Expert &nbsp;|&nbsp;
-    <a href="mailto:graignla@hotmail.fr">graignla@hotmail.fr</a></p>
+    <a href="/cdn-cgi/l/email-protection#6c0b1e0d050b02000d2c040318010d0500420a1e"><span class="__cf_email__" data-cfemail="6b0c190a020c05070a2b03041f060a0207450d19">[email&#160;protected]</span></a></p>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // Smooth scroll pour ancres internes
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-        a.addEventListener('click', e => {
-            e.preventDefault();
-            const t = document.querySelector(a.get
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasy
