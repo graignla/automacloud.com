@@ -705,12 +705,6 @@
                 <code class="mono">Packages.com.automacloud.plugin.*</code>
             </div>
             <div class="arch-card">
-                <div class="arch-icon">🗂️</div>
-                <h3>Native vRO Inventory</h3>
-                <p>Browsable SOLIDserver tree in the vRO inventory panel: Sites, Subnets, IPRecords, Aliases.</p>
-                <code class="mono">EfficientIP:SOLIDserverHost</code>
-            </div>
-            <div class="arch-card">
                 <div class="arch-icon">🔐</div>
                 <h3>Offline License</h3>
                 <p>Activation without internet connectivity. The key is bound to your SOLIDserver instance, ensuring nominal usage.</p>
@@ -786,7 +780,7 @@
                         <div class="wf-category">Provisioning</div>
                     </div>
                 </div>
-                <p class="wf-desc">Resolves a subnet by its ID or by address+site, then finds the first free IP in the requested range. Only returns an IP if the minimum number of free addresses (minFreeIp) is met, preventing network exhaustion before provisioning.</p>
+                <p class="wf-desc">Resolves a subnet by its ID or by address+site, then finds the first available IP within the requested range. Only returns an IP if the 'minFreeIp' number of free addresses remains on the subnet, ensuring an adjustable buffer for network flexibility.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
                     <span class="io-val">ipamRestHost, subnetId | (subnetAddr, site_id), minFreeIp → firstFreeIp, freeCount</span>
@@ -1105,8 +1099,8 @@
 <section id="PRICING">
     <div class="container">
         <div class="section-label">PRICING</div>
-        <h2 class="section-title">Per SolidServer License</h2>
-        <p class="section-desc">- Type: Perpetual<br>- Price: €5,000 (Basic Support included)<br>- (Opt) Environment Integration: €1,000/day (~ 3 days)<br>- Partner ? -> Contact us.</p>
+        <h2 class="section-title">Per SOLIDserver License</h2>
+        <p class="section-desc">- Type: Perpetual<br>- Price: €4,500 (Basic Support included)<br>- (Opt) Training and/or environment Integration: €990/day (~ 3 days)<br>- Partner ? - Contact me.</p>
     </div>
 </section>																																			  
 <!-- ── FOOTER ── -->

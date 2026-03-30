@@ -680,7 +680,7 @@
     </div>
     <div class="cta-group fade-up fade-up-d3">
         <a href="#" onclick="window.location.href='mailto:graignla@hotmail.fr?subject=Demande%20de%20d%C3%A9mo%20-%20Plugin%20vRO%20SOLIDserver';return false;" class="btn-primary">📩 Contact</a>
-        <a href="#workflows" class="btn-secondary">Voir les fonctionnalités</a>
+        <a href="#workflows" class="btn-secondary">Fonctionnalités</a>
 		<a href="#TARIFS" class="btn-secondary">Tarifs</a>
     </div>
 </section>
@@ -700,12 +700,6 @@
                 <h3>Plugin Java natif</h3>
                 <p>Déployé comme plugin vRO standard (.dar), il s'intègre dans l'interface sans configuration supplémentaire.</p>
                 <code class="mono">Packages.com.automacloud.plugin.*</code>
-            </div>
-            <div class="arch-card">
-                <div class="arch-icon">🗂️</div>
-                <h3>Inventaire vRO natif</h3>
-                <p>Arborescence SOLIDserver navigable dans le panneau d'inventaire vRO : Sites, Subnets, IPRecords, Aliases.</p>
-                <code class="mono">EfficientIP:SOLIDserverHost</code>
             </div>
             <div class="arch-card">
                 <div class="arch-icon">🔐</div>
@@ -783,7 +777,7 @@
                         <div class="wf-category">Provisioning</div>
                     </div>
                 </div>
-                <p class="wf-desc">Résout un subnet par son ID ou par adresse+site, puis trouve la première IP libre dans la plage demandée. Ne retourne une IP que si le nombre minimum de libres (minFreeIp) est atteint, évitant d'épuiser le réseau avant provisioning.</p>
+                <p class="wf-desc">Résout un subnet par son ID ou par adresse+site, puis trouve la première IP libre dans la plage demandée. Ne retourne une IP que si le nombre "minFreeIp" d'IP libres subsiste sur le subnet pour garantir un marge de manoeuvre ajustable sur le réseau.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
                     <span class="io-val">ipamRestHost, subnetId | (subnetAddr, site_id), minFreeIp → firstFreeIp, freeCount</span>
@@ -804,7 +798,7 @@
                         <div class="wf-category">Aliases <span style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.4);border-radius:4px;padding:1px 6px;font-size:0.65rem;color:var(--eip-green);margin-left:6px;">♻ idempotent</span></div>
                     </div>
                 </div>
-                <p class="wf-desc">Positionne les aliases d'un ip_id pour correspondre exactement à la liste fournie. Calcule le delta entre l'état courant et l'état désiré, puis applique additions et suppressions. Rejouer avec la même liste ne produit aucun changement.</p>
+                <p class="wf-desc">Positionne les aliases d'un ip_id pour correspondre exactement à la liste fournie. Calcule le delta entre l'état courant et l'état désiré, puis applique additions et suppressions. Rejouer avec la même liste, ne produit aucun changement.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
                     <span class="io-val">ipamRestHost, ip_id, aliasNames[] → aliasIds[]</span>
@@ -1076,7 +1070,7 @@
     <div class="container">
         <div class="section-label">Licensing</div>
         <h2 class="section-title">Activation sans internet</h2>
-        <p class="section-desc">Le plugin fonctionne avec un système de licence offline sans abonnement. Aucune connectivité externe requise. La clé de licence, émise par AUTOM@CLOUD, est liée à votre instance SOLIDserver.</p>
+        <p class="section-desc">Le plugin fonctionne avec un système de licence offline sans abonnement. Aucune connectivité externe requise. Clé de licence: Emise par AUTOM@CLOUD. Liée à votre instance SOLIDserver.</p>
         <div class="clients-bar">
             <div class="client-pill">🔐 Licence offline</div>
             <div class="client-pill">☁️ Zéro connectivité externe</div>
@@ -1102,8 +1096,8 @@
 <section id="TARIFS">
     <div class="container">
         <div class="section-label">TARIFS</div>
-        <h2 class="section-title">Licence par SolidServer</h2>
-        <p class="section-desc">- Type: Perpétuel<br>- Prix: 5000 € (Assistance de base incluse)<br>- (Opt) Intégration dans votre environnement: 1000€/j (~ 3 jours)<br>- Partenaire? -> Contactez-nous.</p>
+        <h2 class="section-title">Licence par SOLIDserver</h2>
+        <p class="section-desc">- Type: Perpétuel<br>- Coût: 4500 € (Avec assistance de base incluse)<br>- (Opt.) Formation et/ou Intégration dans votre environnement: 990€/j (~ 3 jours)<br>- Partenaire ? - Contactez-moi</p>
     </div>
 </section>
 <!-- ── FOOTER ── -->
