@@ -777,7 +777,7 @@
                         <div class="wf-category">Provisioning</div>
                     </div>
                 </div>
-                <p class="wf-desc">Résout un subnet par son ID ou par adresse+site, puis trouve la première IP libre dans la plage demandée. Ne retourne une IP que si le nombre "minFreeIp" d'IP libres subsiste sur le subnet pour garantir un marge de manoeuvre ajustable sur le réseau.</p>
+                <p class="wf-desc">Résout un subnet par son ID ou par adresse+site, puis trouve la première IP libre dans la plage demandée. Ne retourne une IP que si le nombre d'IP libres sur le réseau est supérieur à "minFreeIp" garantissant une réserve ajustable.</p>
                 <div class="wf-io">
                     <span class="io-label">Inputs</span>
                     <span class="io-val">ipamRestHost, subnetId | (subnetAddr, site_id), minFreeIp → firstFreeIp, freeCount</span>
