@@ -98,4 +98,12 @@
         <priority>0.7</priority>
     </url>
 
+    <!-- comparison -->
+    <url>
+        <loc>https://automacloud.com/comparison.html</loc>
+        <lastmod>2026-04-07</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
 </urlset>
