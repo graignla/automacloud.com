@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vRO Plugin Comparison — EfficientIP SOLIDserver | AUTOMACLOUD</title>
+<meta name="description" content="Detailed comparison of all vRO plugins for EfficientIP SOLIDserver: EfficientIP official, JuliaLblnd Python, and AUTOMACLOUD plugin.">
+<link rel="canonical" href="https://www.automacloud.com/en/comparison.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #00ff88;
+  --secondary: #0088ff;
+  --eip-green: #4caf50;
+  --eip-green-glow: rgba(76,175,80,0.2);
+  --dark: #0a0e1a;
+  --dark-2: #131824;
+  --dark-3: #1a2133;
+  --text: #e4e8f0;
+  --text-dim: #9ca3af;
+  --grid: #1e2842;
+  --accent: #00c6ff;
+  --red: #ef4444;
+  --amber: #fbbf24;
+  --col-w: 190px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(76,175,80,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(76,175,80,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── HEADER ── */
+header {
+  position:sticky; top:0; z-index:100;
+  background:rgba(10,14,26,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--grid);
+  padding:0 2rem;
+}
+.header-inner {
+  max-width:1300px; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+  height:64px;
+}
+.back-link {
+  display:flex; align-items:center; gap:.5rem;
+  color:var(--text-dim); text-decoration:none;
+  font-size:.85rem; font-family:'JetBrains Mono',monospace;
+  transition:color .2s;
+}
+.back-link:hover { color:var(--primary); }
+.back-link::before { content:'←'; font-size:1rem; }
+.header-logo { font-family:'JetBrains Mono',monospace; font-size:.9rem; color:var(--eip-green); letter-spacing:.05em; }
+.header-badge {
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  color:var(--text-dim); border:1px solid var(--grid);
+  padding:4px 10px; border-radius:20px;
+}
+
+/* ── HERO ── */
+.hero {
+  position:relative; padding:5rem 2rem 3rem;
+  text-align:center; overflow:hidden; z-index:1;
+}
+.hero-glow {
+  position:absolute; top:-80px; left:50%; transform:translateX(-50%);
+  width:700px; height:400px;
+  background:radial-gradient(ellipse, rgba(76,175,80,0.1) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-eyebrow {
+  font-family:'JetBrains Mono',monospace; font-size:.78rem;
+  color:var(--eip-green); letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:1.2rem;
+  display:flex; align-items:center; justify-content:center; gap:.75rem;
+}
+.hero-eyebrow::before,.hero-eyebrow::after {
+  content:''; width:40px; height:1px; background:var(--eip-green); opacity:.5;
+}
+.hero h1 {
+  font-size:clamp(1.8rem,4vw,3rem); font-weight:800; line-height:1.15;
+  margin-bottom:1rem;
+}
+.hero h1 .brand {
+  background:linear-gradient(135deg,#4caf50,#00ff88,#0088ff);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.hero-sub {
+  font-size:1.05rem; color:var(--text-dim);
+  max-width:640px; margin:0 auto 2rem; line-height:1.7;
+}
+
+/* ── CONTAINER ── */
+.container { max-width:1300px; margin:0 auto; padding:0 2rem; }
+section { padding:4rem 0; position:relative; z-index:1; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  color:var(--eip-green); letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem;
+}
+.section-title { font-size:clamp(1.4rem,2.5vw,2rem); font-weight:800; margin-bottom:.75rem; }
+.section-desc { color:var(--text-dim); max-width:700px; margin-bottom:2.5rem; font-size:1rem; line-height:1.7; }
+
+/* ── WINNER BANNER ── */
+.winner-banner {
+  background:linear-gradient(135deg,rgba(76,175,80,0.08),rgba(0,136,255,0.06));
+  border:1px solid rgba(76,175,80,0.3);
+  border-radius:12px; padding:1.25rem 1.75rem;
+  margin-bottom:2.5rem;
+  display:flex; align-items:center; gap:1.25rem;
+}
+.winner-banner .icon { font-size:1.6rem; flex-shrink:0; }
+.winner-banner .label {
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  color:var(--eip-green); letter-spacing:.12em; text-transform:uppercase; margin-bottom:.2rem;
+}
+.winner-banner .text { font-size:.9rem; color:var(--text-dim); line-height:1.5; }
+
+/* ── COMPARISON TABLE ── */
+.cmp-wrap {
+  overflow-x:auto;
+  border:1px solid var(--grid);
+  border-radius:14px;
+  background:var(--dark-2);
+}
+
+table.cmp {
+  width:100%; border-collapse:collapse;
+  font-size:.85rem;
+}
+
+table.cmp thead tr {
+  background:var(--dark-3);
+  border-bottom:2px solid var(--grid);
+}
+
+table.cmp th {
+  padding:1rem 1.25rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem; font-weight:700;
+  letter-spacing:.08em; text-align:center;
+  white-space:nowrap;
+}
+table.cmp th:first-child { text-align:left; }
+table.cmp th.col-eip { color:var(--text-dim); }
+table.cmp th.col-julia { color:var(--text-dim); }
+table.cmp th.col-ac {
+  color:var(--eip-green);
+  position:relative;
+}
+table.cmp th.col-ac::after {
+  content:'★ RECOMMENDED';
+  display:block;
+  font-size:.55rem; font-weight:400;
+  color:var(--eip-green); opacity:.7;
+  letter-spacing:.1em;
+}
+
+/* Group header rows */
+table.cmp tr.group-hdr td {
+  background:rgba(30,40,66,0.8);
+  padding:.5rem 1.25rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem; font-weight:700;
+  letter-spacing:.15em; text-transform:uppercase;
+  color:var(--secondary);
+  border-top:1px solid var(--grid);
+  border-bottom:1px solid var(--grid);
+}
+
+table.cmp tbody tr { border-bottom:1px solid rgba(30,40,66,0.6); }
+table.cmp tbody tr:hover { background:rgba(76,175,80,0.03); }
+
+table.cmp tbody tr:last-child { border-bottom:none; }
+
+table.cmp td {
+  padding:.75rem 1.25rem;
+  vertical-align:middle;
+  color:var(--text-dim);
+}
+table.cmp td:first-child {
+  color:var(--text);
+  font-weight:500;
+  white-space:nowrap;
+}
+table.cmp td.center { text-align:center; }
+
+/* AUTOMACLOUD column highlight */
+table.cmp td.col-ac {
+  background:rgba(76,175,80,0.04);
+  border-left:1px solid rgba(76,175,80,0.15);
+  border-right:1px solid rgba(76,175,80,0.15);
+}
+table.cmp th.col-ac {
+  background:rgba(76,175,80,0.06);
+  border-left:1px solid rgba(76,175,80,0.2);
+  border-right:1px solid rgba(76,175,80,0.2);
+}
+
+/* Cell value styles */
+.v-yes { color:var(--eip-green); font-weight:700; font-size:1rem; }
+.v-no  { color:var(--red); font-size:1rem; }
+.v-partial { color:var(--amber); font-size:.85rem; font-weight:600; }
+.v-text { color:var(--text); font-family:'JetBrains Mono',monospace; font-size:.78rem; }
+.v-text-dim { color:var(--text-dim); font-family:'JetBrains Mono',monospace; font-size:.78rem; }
+.v-badge {
+  display:inline-block;
+  padding:2px 8px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.68rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.08em;
+}
+.badge-green { background:rgba(76,175,80,0.15); color:var(--eip-green); border:1px solid rgba(76,175,80,0.3); }
+.badge-red   { background:rgba(239,68,68,0.12);  color:#f87171;          border:1px solid rgba(239,68,68,0.2); }
+.badge-amber { background:rgba(251,191,36,0.12); color:var(--amber);     border:1px solid rgba(251,191,36,0.2); }
+.badge-blue  { background:rgba(0,136,255,0.12);  color:var(--secondary); border:1px solid rgba(0,136,255,0.2); }
+.badge-gray  { background:rgba(156,163,175,0.1); color:var(--text-dim);  border:1px solid rgba(156,163,175,0.15); }
+
+/* Row note (sub-text in cell) */
+.row-note { display:block; font-size:.72rem; color:var(--text-dim); margin-top:.15rem; font-family:'JetBrains Mono',monospace; }
+
+/* ── FEATURE DEEP DIVE ── */
+.deep-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:1.25rem;
+  margin-top:2rem;
+}
+.deep-card {
+  background:var(--dark-2); border:1px solid var(--grid);
+  border-radius:12px; padding:1.5rem;
+  transition:all .3s;
+}
+.deep-card:hover {
+  border-color:rgba(76,175,80,0.35);
+  box-shadow:0 6px 24px rgba(0,0,0,.3);
+  transform:translateY(-2px);
+}
+.deep-card .dc-icon { font-size:1.5rem; margin-bottom:.75rem; }
+.deep-card .dc-title { font-size:.9rem; font-weight:700; margin-bottom:.4rem; }
+.deep-card .dc-desc  { font-size:.82rem; color:var(--text-dim); line-height:1.6; }
+.deep-card .dc-winner {
+  margin-top:.75rem;
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  color:var(--eip-green);
+}
+.deep-card .dc-winner::before { content:'✓ '; }
+
+/* ── VERDICT ── */
+.verdict-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.25rem;
+  margin-top:2rem;
+}
+@media(max-width:768px){ .verdict-grid { grid-template-columns:1fr; } }
+
+.verdict-card {
+  background:var(--dark-2); border:1px solid var(--grid);
+  border-radius:12px; padding:1.5rem;
+  position:relative; overflow:hidden;
+}
+.verdict-card.winner {
+  border-color:rgba(76,175,80,0.4);
+  background:linear-gradient(135deg,rgba(76,175,80,0.06),var(--dark-2));
+}
+.verdict-card .vc-tag {
+  font-family:'JetBrains Mono',monospace; font-size:.65rem;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--text-dim); margin-bottom:.5rem;
+}
+.verdict-card.winner .vc-tag { color:var(--eip-green); }
+.verdict-card .vc-name { font-size:1rem; font-weight:800; margin-bottom:.75rem; }
+.verdict-card .vc-pros { list-style:none; font-size:.83rem; color:var(--text-dim); }
+.verdict-card .vc-pros li { padding:.25rem 0; border-bottom:1px solid rgba(30,40,66,0.5); }
+.verdict-card .vc-pros li:last-child { border-bottom:none; }
+.verdict-card .vc-pros li::before { content:'+ '; color:var(--eip-green); font-weight:700; }
+.verdict-card .vc-cons li::before { content:'− '; color:var(--red); font-weight:700; }
+.verdict-card .vc-verdict {
+  margin-top:1rem; padding:.75rem 1rem;
+  background:rgba(0,0,0,.2); border-radius:8px;
+  font-size:.82rem; color:var(--text-dim); line-height:1.5;
+}
+.verdict-card.winner .vc-verdict { background:rgba(76,175,80,0.08); color:var(--text); }
+
+/* ── CTA ── */
+.cta-section {
+  background:var(--dark-2); border-top:1px solid var(--grid); border-bottom:1px solid var(--grid);
+  text-align:center; padding:4rem 2rem;
+}
+.btn-primary {
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.85rem 2rem;
+  background:linear-gradient(135deg,#4caf50,#00ff88);
+  color:#0a0e1a; font-weight:700; font-size:.9rem;
+  border-radius:8px; text-decoration:none;
+  transition:all .3s; box-shadow:0 0 20px rgba(76,175,80,0.3);
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 0 35px rgba(76,175,80,0.5); }
+.btn-secondary {
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.85rem 2rem; border:1px solid var(--eip-green);
+  color:var(--eip-green); font-weight:600; font-size:.9rem;
+  border-radius:8px; text-decoration:none; background:transparent; transition:all .3s;
+}
+.btn-secondary:hover { background:rgba(76,175,80,0.1); transform:translateY(-2px); }
+.cta-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:1.5rem; }
+
+/* ── FOOTER ── */
+footer {
+  background:var(--dark-2); border-top:1px solid var(--grid);
+  padding:2rem; text-align:center;
+  font-size:.82rem; color:var(--text-dim); position:relative; z-index:1;
+}
+footer a { color:var(--eip-green); text-decoration:none; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.fade-up { animation:fadeUp .6s ease both; }
+.fade-up-d1 { animation-delay:.1s; }
+.fade-up-d2 { animation-delay:.2s; }
+
+@media(max-width:900px){
+  table.cmp { font-size:.78rem; }
+  table.cmp th, table.cmp td { padding:.6rem .75rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/en/" class="back-link">Back to home</a>
+    <span class="header-logo">AUTOM@CLOUD</span>
+    <span class="header-badge">Plugin Comparison 2026</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow fade-up">Independent Analysis</div>
+  <h1 class="fade-up fade-up-d1">
+    Every vRO Plugin for<br>
+    <span class="brand">EfficientIP SOLIDserver</span>
+  </h1>
+  <p class="hero-sub fade-up fade-up-d2">
+    A complete, technical comparison of all available automation options
+    for integrating SOLIDserver into VMware Aria Automation Orchestrator — as of 2026.
+  </p>
+</section>
+
+<!-- MAIN COMPARISON -->
+<section>
+  <div class="container">
+    <div class="section-label">Full comparison</div>
+    <h2 class="section-title">Side-by-side feature matrix</h2>
+
+    <div class="winner-banner">
+      <div class="icon">♻️</div>
+      <div>
+        <div class="label">Key differentiator</div>
+        <div class="text">
+          Only the AUTOMACLOUD plugin implements <strong style="color:var(--text)">idempotent provisioning</strong> —
+          workflows can be replayed without side effects, simplifying vRA pipelines in case of retry or partial execution.
+          No other solution addresses this.
+        </div>
+      </div>
+    </div>
+
+    <div class="cmp-wrap">
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th style="min-width:200px;text-align:left;">Criterion</th>
+          <th class="col-eip" style="width:var(--col-w)">EfficientIP official</th>
+          <th class="col-julia" style="width:var(--col-w)">JuliaLblnd<br><span style="font-weight:400;color:var(--text-dim);font-size:.65rem">Python / GitHub</span></th>
+          <th class="col-ac" style="width:var(--col-w)">AUTOMACLOUD</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- GENERAL -->
+        <tr class="group-hdr"><td colspan="4">General</td></tr>
+
+        <tr>
+          <td>Version</td>
+          <td class="center"><span class="v-text">0.9.0</span></td>
+          <td class="center"><span class="v-text-dim">—</span></td>
+          <td class="center col-ac"><span class="v-text" style="color:var(--eip-green)">1.x</span></td>
+        </tr>
+        <tr>
+          <td>Target platform</td>
+          <td class="center"><span class="v-badge badge-amber">vRO 7.x</span></td>
+          <td class="center"><span class="v-badge badge-blue">vRA 8 IPAM Provider</span></td>
+          <td class="center col-ac"><span class="v-badge badge-green">vRO 8.x</span></td>
+        </tr>
+        <tr>
+          <td>Implementation</td>
+          <td class="center"><span class="v-text">Java .dar</span></td>
+          <td class="center"><span class="v-text">Python + Docker</span></td>
+          <td class="center col-ac"><span class="v-text" style="color:var(--eip-green)">Java .dar</span></td>
+        </tr>
+        <tr>
+          <td>SOLIDserver API</td>
+          <td class="center"><span class="v-badge badge-red">SOAP (legacy)</span></td>
+          <td class="center"><span class="v-badge badge-green">REST</span></td>
+          <td class="center col-ac"><span class="v-badge badge-green">REST</span></td>
+        </tr>
+        <tr>
+          <td>Extra infrastructure</td>
+          <td class="center"><span class="v-text">None</span></td>
+          <td class="center"><span class="v-partial">Docker host required</span></td>
+          <td class="center col-ac"><span class="v-text" style="color:var(--eip-green)">None</span></td>
+        </tr>
+        <tr>
+          <td>License</td>
+          <td class="center"><span class="v-badge badge-gray">Free</span></td>
+          <td class="center"><span class="v-badge badge-gray">MIT open source</span></td>
+          <td class="center col-ac"><span class="v-badge badge-green">Commercial offline</span></td>
+        </tr>
+        <tr>
+          <td>Actively maintained</td>
+          <td class="center"><span class="v-badge badge-red">Abandoned</span></td>
+          <td class="center"><span class="v-badge badge-amber">Last: Oct 2023</span></td>
+          <td class="center col-ac"><span class="v-badge badge-green">✓ 2026</span></td>
+        </tr>
+
+        <!-- IPAM FEATURES -->
+        <tr class="group-hdr"><td colspan="4">IPAM features</td></tr>
+
+        <tr>
+          <td>IP record creation</td>
+          <td class="center"><span class="v-partial">Basic</span></td>
+          <td class="center"><span class="v-partial">Basic</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">with full idempotency</span></td>
+        </tr>
+        <tr>
+          <td>IP record deletion</td>
+          <td class="center"><span class="v-partial">Basic</span></td>
+          <td class="center"><span class="v-partial">Basic</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">+ cascade (aliases)</span></td>
+        </tr>
+        <tr>
+          <td>IP record update</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">hostname, IP or both</span></td>
+        </tr>
+        <tr>
+          <td>First free IP from subnet</td>
+          <td class="center"><span class="v-partial">Basic</span></td>
+          <td class="center"><span class="v-yes">✓</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">with minFreeIp guard</span></td>
+        </tr>
+        <tr>
+          <td>Free IP address</td>
+          <td class="center"><span class="v-partial">Basic</span></td>
+          <td class="center"><span class="v-yes">✓</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">ip XOR ip_id logic</span></td>
+        </tr>
+        <tr>
+          <td>Move record to new subnet</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>Space (site) resolution</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-partial">Partial</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">by site_id or site_name</span></td>
+        </tr>
+        <tr>
+          <td>Search by name or IP</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">auto-detects input type</span></td>
+        </tr>
+
+        <!-- DNS FEATURES -->
+        <tr class="group-hdr"><td colspan="4">DNS features</td></tr>
+
+        <tr>
+          <td>DNS A record management</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>Alias management</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">add, remove, exact-set</span></td>
+        </tr>
+        <tr>
+          <td>Alias conflict detection</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">pre-provision check</span></td>
+        </tr>
+        <tr>
+          <td>DNS validation (host cmd)</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">A, CNAME, reverse</span></td>
+        </tr>
+
+        <!-- PROVISIONING -->
+        <tr class="group-hdr"><td colspan="4">Provisioning quality</td></tr>
+
+        <tr>
+          <td>Idempotent provisioning</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">safe to replay</span></td>
+        </tr>
+        <tr>
+          <td>Ghost machine detection</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">ping check before assign</span></td>
+        </tr>
+        <tr>
+          <td>Full lifecycle (provision → deprovision)</td>
+          <td class="center"><span class="v-partial">Partial</span></td>
+          <td class="center"><span class="v-partial">Partial</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>Orphan IP audit</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">with ping status per record</span></td>
+        </tr>
+
+        <!-- vRA INTEGRATION -->
+        <tr class="group-hdr"><td colspan="4">vRA integration</td></tr>
+
+        <tr>
+          <td>vRA IPAM Provider</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-yes">✓</span> <span class="row-note">native integration</span></td>
+          <td class="center col-ac"><span class="v-partial">Via workflows</span></td>
+        </tr>
+        <tr>
+          <td>Dynamic form actions (dropdowns)</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">7 chained list actions</span></td>
+        </tr>
+        <tr>
+          <td>listSites</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>listSitesWithFreeIp</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>listSubnets / listFreeSubnets</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>listIPRecords / listAliases</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span></td>
+        </tr>
+
+        <!-- ARCHITECTURE -->
+        <tr class="group-hdr"><td colspan="4">Architecture &amp; security</td></tr>
+
+        <tr>
+          <td>vRO native inventory</td>
+          <td class="center"><span class="v-partial">7.x only</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-no">✗</span></td>
+        </tr>
+        <tr>
+          <td>RESTHost-based auth (SSL delegated)</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-partial">Configurable</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>Offline license (no external call)</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">bound to SOLIDserver instance</span></td>
+        </tr>
+        <tr>
+          <td>vRO 8.x compatible</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-partial">vRA only</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>Production references</td>
+          <td class="center"><span class="v-text-dim">Unknown</span></td>
+          <td class="center"><span class="v-text-dim">Unknown</span></td>
+          <td class="center col-ac"><span class="v-text" style="color:var(--eip-green)">RATP, Min. Intérieur</span></td>
+        </tr>
+
+        <!-- WORKFLOW COUNT -->
+        <tr class="group-hdr"><td colspan="4">Package content</td></tr>
+
+        <tr>
+          <td>Workflow count</td>
+          <td class="center"><span class="v-text">~5</span></td>
+          <td class="center"><span class="v-text-dim">N/A</span></td>
+          <td class="center col-ac"><span class="v-text" style="color:var(--eip-green)">14</span></td>
+        </tr>
+        <tr>
+          <td>Action count</td>
+          <td class="center"><span class="v-text">~3</span></td>
+          <td class="center"><span class="v-text-dim">N/A</span></td>
+          <td class="center col-ac"><span class="v-text" style="color:var(--eip-green)">11</span></td>
+        </tr>
+        <tr>
+          <td>Composable building blocks</td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center"><span class="v-no">✗</span></td>
+          <td class="center col-ac"><span class="v-yes">✓</span> <span class="row-note">atomic actions + high-level workflows</span></td>
+        </tr>
+
+      </tbody>
+    </table>
+    </div><!-- /cmp-wrap -->
+  </div>
+</section>
+
+<!-- VERDICT -->
+<section style="background:var(--dark-2);border-top:1px solid var(--grid);border-bottom:1px solid var(--grid);">
+  <div class="container">
+    <div class="section-label">Verdict</div>
+    <h2 class="section-title">Which plugin for which use case?</h2>
+    <p class="section-desc">Three very different tools for three very different contexts.</p>
+
+    <div class="verdict-grid">
+
+      <div class="verdict-card">
+        <div class="vc-tag">EfficientIP official</div>
+        <div class="vc-name" style="color:var(--text-dim)">Legacy environments only</div>
+        <ul class="vc-pros vc-cons">
+          <li>SOAP API — not compatible with vRO 8.x</li>
+          <li>No DNS, no alias management</li>
+          <li>No form actions for vRA</li>
+          <li>Unmaintained since ~2021</li>
+        </ul>
+        <div class="vc-verdict">
+          Only viable if you are still running <strong>vRO 7.x</strong> and have no intention of upgrading.
+          Not suitable for production automation at scale.
+        </div>
+      </div>
+
+      <div class="verdict-card">
+        <div class="vc-tag">JuliaLblnd Python plugin</div>
+        <div class="vc-name" style="color:var(--amber)">Narrow vRA IPAM use case</div>
+        <ul class="vc-pros">
+          <li>Native vRA 8 IPAM Provider integration</li>
+          <li>REST API, open source MIT</li>
+        </ul>
+        <ul class="vc-pros vc-cons" style="margin-top:.5rem;">
+          <li>Requires Docker infrastructure</li>
+          <li>No DNS, no aliases, no workflows</li>
+          <li>Last commit October 2023</li>
+        </ul>
+        <div class="vc-verdict">
+          Good fit if you only need <strong>automatic IP assignment</strong> during VM lifecycle in vRA 8,
+          and are comfortable maintaining a Python/Docker stack yourself.
+        </div>
+      </div>
+
+      <div class="verdict-card winner">
+        <div class="vc-tag">AUTOMACLOUD plugin</div>
+        <div class="vc-name" style="color:var(--eip-green)">Full-stack production solution</div>
+        <ul class="vc-pros">
+          <li>Full DNS + IPAM + alias lifecycle</li>
+          <li>Idempotent — safe to retry</li>
+          <li>7 vRA form actions for dynamic dropdowns</li>
+          <li>Ghost machine detection (ping check)</li>
+          <li>Offline license — air-gap ready</li>
+          <li>Actively maintained in 2026</li>
+          <li>No extra infrastructure required</li>
+        </ul>
+        <div class="vc-verdict">
+          The only option covering the <strong>complete DNS/IPAM automation lifecycle</strong>
+          on vRO 8.x.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" style="position:relative;z-index:1;">
+  <div class="container">
+    <div class="section-label" style="justify-content:center;display:flex;">AUTOMACLOUD plugin</div>
+    <h2 class="section-title" style="margin-bottom:.5rem;">Ready to automate SOLIDserver properly?</h2>
+    <p style="color:var(--text-dim);max-width:500px;margin:0 auto;font-size:.95rem;line-height:1.7;">
+      See the full workflow and action breakdown, or reach out for a demo.
+    </p>
+    <div class="cta-btns">
+      <a href="/en/SolidServerAutomation.html" class="btn-primary">📋 Full feature breakdown</a>
+      <a href="#" onclick="window.location.href='mailto:graignla@hotmail.fr?subject=Demo%20request%20-%20vRO%20Plugin%20SolidServer';return false;" class="btn-secondary">📩 Contact</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 <a href="/en/">AUTOM@CLOUD</a> — Laurent Graignic &nbsp;|&nbsp;
+  VMware ARIA &amp; Private Cloud Expert &nbsp;|&nbsp;
+  <a href="#" onclick="window.location.href='mailto:graignla@hotmail.fr';return false;">graignla@hotmail.fr</a></p>
+</footer>
+
+</body>
+</html>
