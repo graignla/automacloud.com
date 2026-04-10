@@ -2,7 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-    <!-- Racine (redirection) -->
     <url>
         <loc>https://automacloud.com/</loc>
         <lastmod>2026-03-19</lastmod>
@@ -10,7 +9,6 @@
         <priority>1.0</priority>
     </url>
 
-    <!-- Index FR -->
     <url>
         <loc>https://automacloud.com/fr/</loc>
         <lastmod>2026-03-19</lastmod>
@@ -20,7 +18,6 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/"/>
     </url>
 
-    <!-- Index EN -->
     <url>
         <loc>https://automacloud.com/en/</loc>
         <lastmod>2026-03-19</lastmod>
@@ -30,7 +27,6 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/"/>
     </url>
 
-    <!-- SolidServerAutomation FR -->
     <url>
         <loc>https://automacloud.com/SolidServerAutomation.html</loc>
         <lastmod>2026-03-19</lastmod>
@@ -40,7 +36,6 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/SolidServerAutomation.html"/>
     </url>
 
-    <!-- SolidServerAutomation EN -->
     <url>
         <loc>https://automacloud.com/en/SolidServerAutomation.html</loc>
         <lastmod>2026-03-19</lastmod>
@@ -50,7 +45,6 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/SolidServerAutomation.html"/>
     </url>
 
-    <!-- Parcours FR -->
     <url>
         <loc>https://automacloud.com/fr/parcours.html</loc>
         <lastmod>2026-03-19</lastmod>
@@ -60,7 +54,6 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/parcours.html"/>
     </url>
 
-    <!-- Parcours EN -->
     <url>
         <loc>https://automacloud.com/en/parcours.html</loc>
         <lastmod>2026-03-19</lastmod>
@@ -70,7 +63,6 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/parcours.html"/>
     </url>
 
-    <!-- Tarifs FR -->
     <url>
         <loc>https://automacloud.com/tarifs.html</loc>
         <lastmod>2026-03-19</lastmod>
@@ -80,7 +72,6 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/tarifs.html"/>
     </url>
 
-    <!-- Tarifs EN -->
     <url>
         <loc>https://automacloud.com/en/tarifs.html</loc>
         <lastmod>2026-03-19</lastmod>
@@ -90,7 +81,6 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://automacloud.com/en/tarifs.html"/>
     </url>
 
-    <!-- Compétences -->
     <url>
         <loc>https://automacloud.com/competences-page.html</loc>
         <lastmod>2026-03-19</lastmod>
@@ -98,7 +88,6 @@
         <priority>0.7</priority>
     </url>
 
-    <!-- comparison -->
     <url>
         <loc>https://automacloud.com/comparison.html</loc>
         <lastmod>2026-04-07</lastmod>
